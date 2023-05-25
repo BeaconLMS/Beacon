@@ -43,6 +43,13 @@ steps:
     projects: '**/Beacon.WebHost.csproj'
     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
+- task: DotNetCoreCLI@2
+  displayName: 'Generate Db Migrations Script'
+  inputs:
+    command: 'custom'
+    custom: 'ef'
+    arguments: migrations script --output $(Build.ArtifactStagingDirectory)/Migrations.sql --project Beacon.API --startup-project Beacon.WebHost
+
 - task: PublishBuildArtifacts@1
   displayName: 'Publish artifacts'
   inputs:
