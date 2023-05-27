@@ -8,7 +8,7 @@ using System.Net.Http.Json;
 
 namespace BeaconUI.Core.Auth;
 
-public sealed class BeaconAuthClient
+public class BeaconAuthClient
 {
     private readonly HttpClient _http;
 
@@ -20,7 +20,10 @@ public sealed class BeaconAuthClient
         _http = http;
     }
 
-    public async Task<UserDto?> GetCurrentUser(CancellationToken ct = default)
+    // For testing:
+    protected BeaconAuthClient() { }
+
+    public virtual async Task<UserDto?> GetCurrentUser(CancellationToken ct = default)
     {
         var response = await _http.GetAsync("api/users/current", ct);
 
@@ -30,7 +33,7 @@ public sealed class BeaconAuthClient
         return await response.Content.ReadFromJsonAsync<UserDto>(cancellationToken: ct);
     }
 
-    public async Task<OneOf<UserDto, ValidationProblemResponse>> Register(RegisterRequest request, CancellationToken ct = default)
+    public virtual async Task<OneOf<UserDto, ValidationProblemResponse>> Register(RegisterRequest request, CancellationToken ct = default)
     {
         var response = await _http.PostAsJsonAsync("api/auth/register", request, ct);
 
@@ -52,7 +55,7 @@ public sealed class BeaconAuthClient
         return user;
     }
 
-    public async Task<OneOf<UserDto, ValidationProblemResponse>> Login(LoginRequest request, CancellationToken ct = default)
+    public virtual async Task<OneOf<UserDto, ValidationProblemResponse>> Login(LoginRequest request, CancellationToken ct = default)
     {
         var response = await _http.PostAsJsonAsync("api/auth/login", request, ct);
 
@@ -74,7 +77,7 @@ public sealed class BeaconAuthClient
         return user;
     }
 
-    public async Task Logout(CancellationToken ct = default)
+    public virtual async Task Logout(CancellationToken ct = default)
     {
         await _http.PostAsync("api/auth/logout", null, ct);
         OnLogout?.Invoke();
