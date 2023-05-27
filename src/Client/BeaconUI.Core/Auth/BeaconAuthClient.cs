@@ -20,9 +20,6 @@ public class BeaconAuthClient
         _http = http;
     }
 
-    // For testing:
-    protected BeaconAuthClient() { }
-
     public virtual async Task<UserDto?> GetCurrentUser(CancellationToken ct = default)
     {
         var response = await _http.GetAsync("api/users/current", ct);

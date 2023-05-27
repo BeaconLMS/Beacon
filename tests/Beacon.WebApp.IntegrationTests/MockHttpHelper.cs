@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Beacon.Common.Responses;
+using Microsoft.Extensions.DependencyInjection;
 using RichardSzalay.MockHttp;
 using System.Net;
 using System.Net.Http.Headers;
@@ -26,7 +27,7 @@ public static class MockHttpHelper
 
     public static MockedRequest ThenRespondValidationProblem(this MockedRequest request, Dictionary<string, string[]> errors)
     {
-        return request.Respond(_ => CreateResponse(HttpStatusCode.UnprocessableEntity, errors));
+        return request.Respond(_ => CreateResponse(HttpStatusCode.UnprocessableEntity, new ValidationProblemResponse { Errors = errors }));
     }
 
     private static HttpResponseMessage CreateResponse<T>(HttpStatusCode statusCode, T content)

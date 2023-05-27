@@ -56,5 +56,6 @@ public class LoginPageTests : TestContext
 
         // Assert:
         navManager.History.Should().BeEmpty();
+        cut.Find(".validation-message").TextContent.Should().Be("Some error message");
     }
 }
