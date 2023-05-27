@@ -46,7 +46,7 @@ jobs:
         workingDirectory=$(echo $(System.DefaultWorkingDirectory) | tr '\\' '/')
         reportFiles=$(find $workingDirectory -name 'coverage.cobertura.xml' | tr '\n' ';')
         reportgenerator "-reports:$reportFiles" "-targetdir:$workingDirectory/MergedCoverageReport" -reporttypes:Cobertura
-    displayName: 'Merge coverage reports'
+      displayName: 'Merge coverage reports'
     
     - task: PublishCodeCoverageResults@1
       displayName: 'Publish code coverage'
