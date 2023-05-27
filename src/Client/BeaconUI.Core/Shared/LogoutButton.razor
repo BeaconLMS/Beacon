@@ -1,8 +1,10 @@
-﻿ @inject BeaconAuthClient AuthClient
+﻿@inject BeaconAuthClient AuthClient
+@inject NavigationManager NavManager
 
-<button id="logout" type="button" @attributes="Attributes" @onclick="() => AuthClient.Logout()">
+<button id="logout" type="button" @attributes="Attributes" @onclick="Logout">
     @ChildContent
 </button>
+
 
 @code {
 
@@ -11,4 +13,10 @@
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
+
+    private async Task Logout()
+    {
+        await AuthClient.Logout();
+        NavManager.NavigateTo("login");
+    }
 }
