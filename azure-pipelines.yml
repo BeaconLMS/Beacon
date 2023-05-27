@@ -33,7 +33,7 @@ jobs:
       inputs:
         command: test
         projects: '$(solution)'
-        arguments: '--configuration $(buildConfiguration) --collect:"XPlat Code Coverage"'
+        arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:ExcludeByFile="**/Migrations/*.cs"'
         publishTestResults: true
 
     - script: |
