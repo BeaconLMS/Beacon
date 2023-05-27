@@ -29,11 +29,23 @@ steps:
     projects: '$(solution)'
     arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:ExcludeByFile="**/Migrations/*.cs"'
 
+- task: DotNetCoreCLI@2
+  displayName: 'Install report generator'
+  inputs:
+    command: 'custom'
+    custom: 'tool'
+    arguments: 'install --global dotnet-reportgenerator-globaltool'
+
+- script: |
+    reportFiles=$(find $(Build.SourcesDirectory) -name 'coverage.cobertura.xml' | tr '\n' ';')
+    reportgenerator "-reports:$reportFiles" "-targetdir:$(Build.SourcesDirectory)/MergedCoverageReport" -reporttypes:Cobertura
+  displayName: 'Merge coverage reports'
+
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage'
   inputs:
     codeCoverageTool: 'cobertura'
-    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.cobertura.xml'
+    summaryFileLocation: '$(Build.SourcesDirectory)/MergedCoverageReport/Cobertura.xml'
 
 - task: DotNetCoreCLI@2
   displayName: 'Install EF Core Tools'
