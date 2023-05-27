@@ -33,7 +33,6 @@ jobs:
       inputs:
         command: test
         projects: '$(solution)'
-        arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura '
         arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:ExcludeByFile="**/Migrations/*.cs" /p:MergeWith="coverage.json" /p:CoverletOutputFormat=\"cobertura,json\" -m:1'
         
     - task: PublishCodeCoverageResults@1
