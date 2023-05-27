@@ -43,10 +43,11 @@ jobs:
         arguments: 'install --global dotnet-reportgenerator-globaltool'
 
     - bash: |
-        reportFiles=$(find $(System.DefaultWorkingDirectory) -name 'coverage.cobertura.xml' | tr '\n' ';')
-        reportgenerator "-reports:$reportFiles" "-targetdir:$(System.DefaultWorkingDirectory)/MergedCoverageReport" -reporttypes:Cobertura
-      displayName: 'Merge coverage reports'
-
+        workingDirectory=$(echo $(System.DefaultWorkingDirectory) | tr '\\' '/')
+        reportFiles=$(find $workingDirectory -name 'coverage.cobertura.xml' | tr '\n' ';')
+        reportgenerator "-reports:$reportFiles" "-targetdir:$workingDirectory/MergedCoverageReport" -reporttypes:Cobertura
+    displayName: 'Merge coverage reports'
+    
     - task: PublishCodeCoverageResults@1
       displayName: 'Publish code coverage'
       inputs:
