@@ -2,25 +2,25 @@
 using Beacon.Common.Auth.Login;
 using Beacon.Common.Auth.Register;
 using Beacon.Common.Responses;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using OneOf;
 using System.Net;
 using System.Net.Http.Json;
 
 namespace BeaconUI.Core.Auth;
 
-public class BeaconAuthClient
+public sealed class BeaconAuthClient
 {
     private readonly HttpClient _http;
 
     public Action<UserDto>? OnLogin;
-    public Action? OnLogout;
 
     public BeaconAuthClient(HttpClient http)
     {
         _http = http;
     }
 
-    public virtual async Task<UserDto?> GetCurrentUser(CancellationToken ct = default)
+    public async Task<UserDto?> GetCurrentUser(CancellationToken ct = default)
     {
         var response = await _http.GetAsync("api/users/current", ct);
 
@@ -30,7 +30,7 @@ public class BeaconAuthClient
         return await response.Content.ReadFromJsonAsync<UserDto>(cancellationToken: ct);
     }
 
-    public virtual async Task<OneOf<UserDto, ValidationProblemResponse>> Register(RegisterRequest request, CancellationToken ct = default)
+    public async Task<OneOf<UserDto, ValidationProblemResponse>> Register(RegisterRequest request, CancellationToken ct = default)
     {
         var response = await _http.PostAsJsonAsync("api/auth/register", request, ct);
 
@@ -52,7 +52,7 @@ public class BeaconAuthClient
         return user;
     }
 
-    public virtual async Task<OneOf<UserDto, ValidationProblemResponse>> Login(LoginRequest request, CancellationToken ct = default)
+    public async Task<OneOf<UserDto, ValidationProblemResponse>> Login(LoginRequest request, CancellationToken ct = default)
     {
         var response = await _http.PostAsJsonAsync("api/auth/login", request, ct);
 
@@ -74,9 +74,8 @@ public class BeaconAuthClient
         return user;
     }
 
-    public virtual async Task Logout(CancellationToken ct = default)
+    public async Task Logout(CancellationToken ct = default)
     {
-        await _http.PostAsync("api/auth/logout", null, ct);
-        OnLogout?.Invoke();
+        await _http.GetAsync("/api/auth/logout", ct);
     }
 }

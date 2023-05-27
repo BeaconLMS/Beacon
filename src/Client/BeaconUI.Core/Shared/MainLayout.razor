@@ -1,0 +1,20 @@
+﻿@inherits LayoutComponentBase
+
+<div class="page">
+    <main>
+        <AuthorizeView>
+            @if (context.User.Identity is {IsAuthenticated: true} user)
+            {
+                <div class="top-row px-4">
+                    <div class="ml-auto">
+                        <span>Hello, @(context.User.Identity?.Name)!</span>
+                        <LogoutButton class="btn btn-link ms-1">Logout</LogoutButton>
+                    </div>
+                </div>
+            }
+        </AuthorizeView>
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>

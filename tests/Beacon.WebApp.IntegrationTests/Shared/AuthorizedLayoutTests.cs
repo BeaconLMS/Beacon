@@ -1,7 +1,6 @@
-﻿using BeaconUI.Core.Auth;
-using BeaconUI.Core.Shared;
+﻿using Beacon.Common.Auth;
+using BeaconUI.Core.Auth;
 using Bunit.TestDoubles;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using RichardSzalay.MockHttp;
 
@@ -12,15 +11,17 @@ public class AuthorizedLayoutTests : TestContext
     [Fact]
     public void AuthorizedLayout_RedirectsToLogin_WhenUserIsNotAuthorized()
     {
-        // Arrange:
+        // Arrange
         var authContext = this.AddTestAuthorization().SetNotAuthorized();
+        Services.AddScoped<BeaconAuthClient>();
         var navManager = Services.GetRequiredService<FakeNavigationManager>();
 
-        // Act:
-        RenderComponent<AuthorizedLayout>();
+        // Act
+        RenderComponent<BeaconUI.WebApp.App>();
+        navManager.NavigateTo("");
 
         // Assert
-        navManager.History.Should().ContainSingle().Which.Uri.Should().Be("login");
+        navManager.History.Last().Uri.Should().Be("login");
     }
 
     [Fact]
@@ -28,17 +29,20 @@ public class AuthorizedLayoutTests : TestContext
     {
         // Arrange
         var mockHttp = Services.AddMockHttpClient();
-        mockHttp.When("/api/auth/logout").ThenReturnNoContent();
+        mockHttp.When(HttpMethod.Get, "/api/auth/logout").ThenReturnNoContent();
 
-        var authContext = this.AddTestAuthorization().SetAuthorized("test");
+        var authContext = this.AddTestAuthorization().SetAuthorized("Test");
         Services.AddScoped<BeaconAuthClient>();
 
         var navManager = Services.GetRequiredService<FakeNavigationManager>();
 
         // Act
-        var cut = RenderComponent<AuthorizedLayout>();
+        var cut = RenderComponent<BeaconUI.WebApp.App>();
+        navManager.NavigateTo("");
 
         cut.WaitForElement("button#logout").Click();
-        cut.WaitForAssertion(() => navManager.History.Last().Uri.Should().Be("login"));
+        
+        // Assert
+        cut.WaitForAssertion(() => navManager.Uri.Should().Be($"{navManager.BaseUri}login"));
     }
 }
