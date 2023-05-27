@@ -24,6 +24,7 @@ jobs:
         arguments: '--configuration $(buildConfiguration)'
 
 - job: Test
+  dependsOn: Build
   pool:
     vmImage: 'windows-latest'
   steps:
@@ -42,18 +43,18 @@ jobs:
         arguments: 'install --global dotnet-reportgenerator-globaltool'
 
     - bash: |
-        reportFiles=$(find $(Build.SourcesDirectory) -name 'coverage.cobertura.xml' | tr '\n' ';')
-        reportgenerator "-reports:$reportFiles" "-targetdir:$(Build.SourcesDirectory)/MergedCoverageReport" -reporttypes:Cobertura
+        reportFiles=$(find $(System.DefaultWorkingDirectory) -name 'coverage.cobertura.xml' | tr '\n' ';')
+        reportgenerator "-reports:$reportFiles" "-targetdir:$(System.DefaultWorkingDirectory)/MergedCoverageReport" -reporttypes:Cobertura
       displayName: 'Merge coverage reports'
 
     - task: PublishCodeCoverageResults@1
       displayName: 'Publish code coverage'
       inputs:
         codeCoverageTool: 'cobertura'
-        summaryFileLocation: '$(Build.SourcesDirectory)/MergedCoverageReport/Cobertura.xml'
+        summaryFileLocation: '$(System.DefaultWorkingDirectory)/MergedCoverageReport/Cobertura.xml'
 
-- job: Migrations
-  displayName: 'Db Migration Script'
+- job: Publish
+  dependsOn: Test
   pool:
     vmImage: 'windows-latest'
   steps:
@@ -70,11 +71,6 @@ jobs:
         command: 'custom'
         custom: 'ef'
         arguments: migrations script --output $(Build.ArtifactStagingDirectory)/Migrations.sql --project ./src/Server/Beacon.API/Beacon.API.csproj --startup-project ./src/Server/Beacon.WebHost/Beacon.WebHost.csproj
-
-- job: Publish
-  pool:
-    vmImage: 'windows-latest'
-  steps:
     - task: DotNetCoreCLI@2
       displayName: 'Publish web app'
       inputs:
