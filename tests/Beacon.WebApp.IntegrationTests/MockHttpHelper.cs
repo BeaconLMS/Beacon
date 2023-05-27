@@ -25,6 +25,14 @@ public static class MockHttpHelper
         return request.Respond(_ => CreateResponse(HttpStatusCode.OK, content));
     }
 
+    public static MockedRequest ThenReturnNoContent(this MockedRequest request)
+    {
+        var response = new HttpResponseMessage(HttpStatusCode.NoContent);
+        response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+        return request.Respond(_ => response);
+    }
+
     public static MockedRequest ThenRespondValidationProblem(this MockedRequest request, Dictionary<string, string[]> errors)
     {
         return request.Respond(_ => CreateResponse(HttpStatusCode.UnprocessableEntity, new ValidationProblemResponse { Errors = errors }));

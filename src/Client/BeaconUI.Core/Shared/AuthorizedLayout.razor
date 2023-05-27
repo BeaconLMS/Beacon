@@ -1,8 +1,4 @@
-﻿@using BeaconUI.Core.Auth
-
-@inherits LayoutComponentBase
-
-@inject BeaconAuthClient AuthService
+﻿@inherits LayoutComponentBase
 
 <AuthorizeView>
     <Authorized>
@@ -10,8 +6,8 @@
             <main>
                 <div class="top-row px-4">
                     <div class="ml-auto">
-                        <span>Hello, @context.User.Identity!.Name!</span>
-                        <button class="btn btn-link ms-1" @onclick="() => AuthService.Logout()">Logout</button>
+                        <span>Hello, @(context.User.Identity?.Name)!</span>
+                        <LogoutButton class="btn btn-link ms-1">Logout</LogoutButton>
                     </div>
                 </div>
 
