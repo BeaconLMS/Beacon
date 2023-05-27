@@ -33,26 +33,14 @@ jobs:
       inputs:
         command: test
         projects: '$(solution)'
-        arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:ExcludeByFile="**/Migrations/*.cs"'
-
-    - task: DotNetCoreCLI@2
-      displayName: 'Install report generator'
-      inputs:
-        command: 'custom'
-        custom: 'tool'
-        arguments: 'install --global dotnet-reportgenerator-globaltool'
-
-    - bash: |
-        workingDirectory=$(echo $(System.DefaultWorkingDirectory) | sed -e 's/\\/\//g' -e 's/://')
-        reportFiles=$(find $workingDirectory -name 'coverage.cobertura.xml' | tr '\n' ';')
-        reportgenerator "-reports:$reportFiles" "-targetdir:$workingDirectory/MergedCoverageReport" -reporttypes:Cobertura
-      displayName: 'Merge coverage reports'
-    
+        arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura '
+        arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:ExcludeByFile="**/Migrations/*.cs" /p:MergeWith="coverage.json" /p:CoverletOutputFormat=\"cobertura,json\" -m:1'
+        
     - task: PublishCodeCoverageResults@1
       displayName: 'Publish code coverage'
       inputs:
         codeCoverageTool: 'cobertura'
-        summaryFileLocation: '$(System.DefaultWorkingDirectory)/MergedCoverageReport/Cobertura.xml'
+        summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.cobertura.xml'
 
 - job: Publish
   dependsOn: Test
