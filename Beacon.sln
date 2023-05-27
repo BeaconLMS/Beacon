@@ -33,7 +33,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beacon.WebHost", "src\Serve
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beacon.IntegrationTests", "tests\Beacon.IntegrationTests\Beacon.IntegrationTests.csproj", "{8B9DB92A-C2D3-4A83-9E3E-112D940F7509}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beacon.Common.UnitTests", "tests\Beacon.Common.UnitTests\Beacon.Common.UnitTests.csproj", "{3925FA36-BAF4-4CE6-8194-17786B8DF536}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Beacon.Common.UnitTests", "tests\Beacon.Common.UnitTests\Beacon.Common.UnitTests.csproj", "{3925FA36-BAF4-4CE6-8194-17786B8DF536}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
