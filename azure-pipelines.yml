@@ -45,8 +45,7 @@ jobs:
       displayName: 'Publish code coverage'
       inputs:
         codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(Build.SourcesDirectory)/CoverageResults/Cobertura.xml'
-        reportDirectory: '$(Build.SourcesDirectory)/CoverageResults'
+        summaryFileLocation: '$(Build.SourcesDirectory)/CodeCoverage/Cobertura.xml'
 
 - job: Publish
   dependsOn: Test
