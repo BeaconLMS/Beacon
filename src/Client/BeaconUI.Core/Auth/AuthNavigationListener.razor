@@ -5,6 +5,8 @@
 
 @code {
 
+    private bool IsAuthenticated { get; set; }
+
     public void Dispose()
     {
         AuthStateProvider.AuthenticationStateChanged -= HandleAuthStateChanged;
@@ -19,8 +21,14 @@
     private async void HandleAuthStateChanged(Task<AuthenticationState> authStateTask)
     {
         var authState = await authStateTask;
+        var isAuthenticated = authState.User.Identity is { IsAuthenticated: true };
 
-        if (authState.User.Identity is { IsAuthenticated: true })
+        if (IsAuthenticated == isAuthenticated)
+            return;
+
+        IsAuthenticated = isAuthenticated;
+
+        if (IsAuthenticated)
         {
             NavManager.NavigateTo("");
         }

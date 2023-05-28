@@ -3,6 +3,7 @@ using Beacon.API.Behaviors;
 using Beacon.API.Middleware;
 using Beacon.API.Persistence;
 using Beacon.API.Security;
+using Beacon.API.Services;
 using Beacon.Common.Auth.Login;
 using FluentValidation;
 using MediatR;
@@ -12,10 +13,12 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers().AddApplicationPart(typeof(BeaconAPI).Assembly);
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services
+    .AddScoped<ICurrentUserService, CurrentUserService>()
     .AddAuthentication()
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
 

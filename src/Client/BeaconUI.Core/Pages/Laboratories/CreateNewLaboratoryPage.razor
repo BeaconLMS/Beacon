@@ -1,0 +1,60 @@
+﻿@page "/new-lab"
+@using Beacon.Common.Laboratories
+@inject AuthenticationStateProvider AuthStateProvider
+@inject HttpClient HttpClient
+@inject NavigationManager NavManager
+
+<div class="page-container">
+
+    <div class="form-container">
+
+        <header class="text-center mb-3">
+            <span class="text-primary mb-1 fs-2">
+                <i class="fa-regular fa-flask-vial"></i>
+            </span>
+
+            <h3 class="fw-bold">
+                <span>New Laboratory</span>
+            </h3>
+        </header>
+
+        <BeaconForm Model="Model" OnValidSubmit="Submit">
+            <div class="field">
+                <label class="form-label" for="lab-name">Laboratory Name</label>
+                <InputText @bind-Value="Model.Name" class="form-control" id="lab-name" placeholder="e.g., Treasure Labs" />
+                <ValidationMessage For="() => Model.Name" />
+            </div>
+            <div class="field">
+                <label class="form-label" for="lab-name">Laboratory Slug</label>
+                <InputText @bind-Value="Model.Slug" class="form-control" id="lab-name" placeholder="e.g., treasure-labs" />
+                <ValidationMessage For="() => Model.Slug" />
+            </div>
+
+            <div class="field">
+                <button type="submit" class="btn btn-primary w-100">Create Laboratory</button>
+            </div>
+        </BeaconForm>
+
+    </div>
+
+</div>
+
+@code {
+
+    private CreateNewLaboratoryRequest Model { get; set; } = new();
+
+    private async Task<ValidationProblemResponse?> Submit()
+    {
+        var response = await HttpClient.PostAsJsonAsync("api/laboratories", Model);
+
+        if (response.StatusCode is System.Net.HttpStatusCode.UnprocessableEntity)
+        {
+            return await response.Content.ReadFromJsonAsync<ValidationProblemResponse>();
+        }
+
+        AuthStateProvider.NotifyUserChanged();
+        NavManager.NavigateTo(Model.Slug);
+
+        return null;
+    }
+}

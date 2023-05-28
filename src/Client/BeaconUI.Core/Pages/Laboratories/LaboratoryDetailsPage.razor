@@ -1,0 +1,7 @@
+﻿@page "/{Slug}"
+
+<p>Details page for @Slug</p>
+
+@code {
+    [Parameter] public required string Slug { get; set; }
+}

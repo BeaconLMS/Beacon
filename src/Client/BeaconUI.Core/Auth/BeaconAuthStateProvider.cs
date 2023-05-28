@@ -18,6 +18,10 @@ public sealed class BeaconAuthStateProvider : AuthenticationStateProvider
         return new AuthenticationState(user);
     }
 
+    public void NotifyUserChanged()
+    {
+        NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+    }
     public void NotifyUserChanged(AuthenticatedUserInfo? user)
     {
         var authState = new AuthenticationState(user);
@@ -27,6 +31,11 @@ public sealed class BeaconAuthStateProvider : AuthenticationStateProvider
 
 public static class AuthenticationStateProviderExtensions
 {
+    public static void NotifyUserChanged(this AuthenticationStateProvider authStateProvider)
+    {
+        ((BeaconAuthStateProvider)authStateProvider).NotifyUserChanged();
+    }
+
     public static void NotifyUserChanged(this AuthenticationStateProvider authStateProvider, AuthenticatedUserInfo? user)
     {
         ((BeaconAuthStateProvider)authStateProvider).NotifyUserChanged(user);
