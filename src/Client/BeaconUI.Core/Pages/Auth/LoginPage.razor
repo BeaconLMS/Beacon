@@ -53,10 +53,9 @@
     {
         var response = await AuthService.Login(Model);
 
-        if (response.Value is UserDto)
+        if (response.Value is AuthenticatedUserInfo)
         {
             NavManager.NavigateTo("");
-            return null;
         }
 
         return response.Value as ValidationProblemResponse;

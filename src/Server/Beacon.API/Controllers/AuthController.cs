@@ -1,5 +1,4 @@
-﻿using Beacon.Common.Auth;
-using Beacon.Common.Auth.Login;
+﻿using Beacon.Common.Auth.Login;
 using Beacon.Common.Auth.Register;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +13,7 @@ public sealed class AuthController : ApiControllerBase
     {
         var user = await Mediator.Send(request);
 
-        await HttpContext.SignInAsync(user.ToClaimsPrincipal());
+        await HttpContext.SignInAsync(user);
 
         return Ok(user);
     }
@@ -24,7 +23,7 @@ public sealed class AuthController : ApiControllerBase
     {
         var user = await Mediator.Send(request);
 
-        await HttpContext.SignInAsync(user.ToClaimsPrincipal());
+        await HttpContext.SignInAsync(user);
 
         return Ok(user);
     }

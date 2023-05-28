@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Beacon.API.Features.Auth.Login;
 
-public class LoginRequestHandler : IRequestHandler<LoginRequest, UserDto>
+public class LoginRequestHandler : IRequestHandler<LoginRequest, AuthenticatedUserInfo>
 {
     private readonly BeaconDbContext _context;
     private readonly IPasswordHasher _passwordHasher;
@@ -20,10 +20,28 @@ public class LoginRequestHandler : IRequestHandler<LoginRequest, UserDto>
         _passwordHasher = passwordHasher;
     }
 
-    public async Task<UserDto> Handle(LoginRequest request, CancellationToken ct)
+    public async Task<AuthenticatedUserInfo> Handle(LoginRequest request, CancellationToken ct)
     {
         var user = await _context.Users
             .Where(u => u.EmailAddress == request.EmailAddress)
+            .Select(u => new
+            {
+                Dto = new AuthenticatedUserInfo 
+                {
+                    Id = u.Id,
+                    DisplayName = u.DisplayName,
+                    EmailAddress = u.EmailAddress,
+                    Memberships = u.Memberships.Select(m => new AuthenticatedUserInfo.LabMembershipDto
+                    {
+                        LaboratoryId = m.Laboratory.Id,
+                        LaboratoryName = m.Laboratory.Name,
+                        LaboratorySlug = m.Laboratory.Slug,
+                        MembershipType = m.MembershipType.ToString()
+                    }).ToList()
+                },
+                u.HashedPassword,
+                u.HashedPasswordSalt
+            })
             .AsNoTracking()
             .FirstOrDefaultAsync(ct);
 
@@ -33,11 +51,6 @@ public class LoginRequestHandler : IRequestHandler<LoginRequest, UserDto>
             throw new ValidationException(new List<ValidationFailure> { failure });
         }
 
-        return new UserDto
-        {
-            Id = user.Id,
-            DisplayName = user.DisplayName,
-            EmailAddress = user.EmailAddress
-        };
+        return user.Dto;
     }
 }

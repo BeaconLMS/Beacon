@@ -21,12 +21,12 @@ public sealed class BeaconAuthStateProvider : AuthenticationStateProvider, IDisp
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         var user = await _authClient.GetCurrentUser();
-        return new AuthenticationState(user.ToClaimsPrincipal());
+        return new AuthenticationState(user);
     }
 
-    private void HandleLogin(UserDto user)
+    private void HandleLogin(AuthenticatedUserInfo user)
     {
-        var authState = new AuthenticationState(user.ToClaimsPrincipal());
+        var authState = new AuthenticationState(user);
         NotifyAuthenticationStateChanged(Task.FromResult(authState));
     }
 }

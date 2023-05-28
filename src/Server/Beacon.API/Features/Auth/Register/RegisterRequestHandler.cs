@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Beacon.API.Features.Auth.Register;
 
-public class RegisterRequestHandler : IRequestHandler<RegisterRequest, UserDto>
+public class RegisterRequestHandler : IRequestHandler<RegisterRequest, AuthenticatedUserInfo>
 {
     private readonly BeaconDbContext _context;
     private readonly IPasswordHasher _passwordHasher;
@@ -21,7 +21,7 @@ public class RegisterRequestHandler : IRequestHandler<RegisterRequest, UserDto>
         _passwordHasher = passwordHasher;
     }
 
-    public async Task<UserDto> Handle(RegisterRequest request, CancellationToken ct)
+    public async Task<AuthenticatedUserInfo> Handle(RegisterRequest request, CancellationToken ct)
     {
         await EnsureEmailAddressIsUnique(request.EmailAddress, ct); 
         
@@ -37,11 +37,12 @@ public class RegisterRequestHandler : IRequestHandler<RegisterRequest, UserDto>
         _context.Users.Add(user);
         await _context.SaveChangesAsync(ct);
 
-        return new UserDto
+        return new AuthenticatedUserInfo
         {
             Id = user.Id,
             DisplayName = user.DisplayName,
-            EmailAddress = user.EmailAddress
+            EmailAddress = user.EmailAddress,
+            Memberships = new()
         };
     }
 
