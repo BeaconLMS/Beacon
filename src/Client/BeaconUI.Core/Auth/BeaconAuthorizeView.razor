@@ -1,0 +1,20 @@
+﻿@inject ILocalStorageService LocalStorage
+
+@if (CurrentUser is { } currentUser)
+{
+    @ChildContent.Invoke(currentUser);
+}
+
+@code {
+
+    [CascadingParameter] public required Task<AuthenticationState> AuthStateTask { get; set; }
+    [Parameter, EditorRequired] public required RenderFragment<AuthenticatedUserInfo> ChildContent { get; set; }
+
+    private AuthenticatedUserInfo? CurrentUser { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        CurrentUser = await LocalStorage.GetCurrentUserInfo();
+    }
+
+}

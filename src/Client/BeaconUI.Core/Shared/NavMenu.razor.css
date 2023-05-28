@@ -24,14 +24,10 @@
         line-height: 3rem;
     }
 
-        .nav-item ::deep a.active {
+        .nav-item ::deep a.active,
+        .nav-item ::deep a:hover {
             background-color: rgb(249 250 251);
             color: rgb(79 70 229);
-        }
-
-        .nav-item ::deep a:hover {
-            background-color: rgba(255,255,255,0.1);
-            color: white;
         }
 
 @media (min-width: 641px) {

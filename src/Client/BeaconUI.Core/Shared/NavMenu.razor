@@ -1,12 +1,20 @@
 ﻿<div class="nav-scrollable">
     <nav class="d-flex flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="icon" aria-hidden="true">
-                    <i class="fa-regular fa-home"></i>
-                </span>
-                <span>Home</span>
-            </NavLink>
-        </div>
+        <BeaconAuthorizeView>
+            @foreach (var membership in context.Memberships)
+            {
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="@membership.LaboratorySlug" Match="NavLinkMatch.All">
+                        <span class="icon" aria-hidden="true">
+                            <i class="fa-regular fa-home"></i>
+                        </span>
+                        <span>@membership.LaboratoryName</span>
+                    </NavLink>
+                </div>
+            }
+            <div class="nav-item px-3">
+                <a href="#">New laboratory</a>
+            </div>
+        </BeaconAuthorizeView>
     </nav>
 </div>
