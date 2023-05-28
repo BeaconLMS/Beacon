@@ -1,5 +1,5 @@
 ﻿@page "/new-lab"
-@using Beacon.Common.Laboratories
+@using Beacon.Common.Laboratories.Create
 @inject AuthenticationStateProvider AuthStateProvider
 @inject HttpClient HttpClient
 @inject NavigationManager NavManager
@@ -42,7 +42,7 @@
 
 @code {
 
-    private CreateNewLaboratoryRequest Model { get; set; } = new();
+    private CreateLaboratoryRequest Model { get; set; } = new();
 
     private async Task<ValidationProblemResponse?> Submit()
     {

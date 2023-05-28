@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace Beacon.Common.Laboratories;
+namespace Beacon.Common.Laboratories.Create;
 
-public sealed class CreateNewLaboratoryRequestValidator : AbstractValidator<CreateNewLaboratoryRequest>
+public sealed class CreateLaboratoryRequestValidator : AbstractValidator<CreateLaboratoryRequest>
 {
-    public CreateNewLaboratoryRequestValidator()
+    public CreateLaboratoryRequestValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Laboratory name is required.")

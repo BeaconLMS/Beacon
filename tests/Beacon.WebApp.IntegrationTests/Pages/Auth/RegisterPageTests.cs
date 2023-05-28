@@ -13,7 +13,8 @@ public class RegisterPageTests : TestContext
     {
         // Arrange:
         var mockHttp = Services.AddMockHttpClient();
-        mockHttp.When(HttpMethod.Post, "/api/auth/register").ThenRespondOK(AuthHelper.DefaultUser);
+        mockHttp.When(HttpMethod.Post, "/api/auth/register").ThenRespondNoContent();
+        mockHttp.When(HttpMethod.Get, "/api/auth/me").ThenRespondOK(AuthHelper.DefaultUser);
 
         this.AddAuthServices();
         var navManager = Services.GetRequiredService<FakeNavigationManager>();

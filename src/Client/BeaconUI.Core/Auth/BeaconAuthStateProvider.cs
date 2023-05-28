@@ -22,7 +22,7 @@ public sealed class BeaconAuthStateProvider : AuthenticationStateProvider
     {
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
-    public void NotifyUserChanged(AuthenticatedUserInfo? user)
+    public void NotifyUserChanged(UserDto? user)
     {
         var authState = new AuthenticationState(user);
         NotifyAuthenticationStateChanged(Task.FromResult(authState));
@@ -36,7 +36,7 @@ public static class AuthenticationStateProviderExtensions
         ((BeaconAuthStateProvider)authStateProvider).NotifyUserChanged();
     }
 
-    public static void NotifyUserChanged(this AuthenticationStateProvider authStateProvider, AuthenticatedUserInfo? user)
+    public static void NotifyUserChanged(this AuthenticationStateProvider authStateProvider, UserDto? user)
     {
         ((BeaconAuthStateProvider)authStateProvider).NotifyUserChanged(user);
     }

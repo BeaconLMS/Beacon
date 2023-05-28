@@ -13,7 +13,8 @@ public class LoginPageTests : TestContext
     {
         // Arrange:
         var mockHttp = Services.AddMockHttpClient();
-        mockHttp.When(HttpMethod.Post, "/api/auth/login").ThenRespondOK(AuthHelper.DefaultUser);
+        mockHttp.When(HttpMethod.Post, "/api/auth/login").ThenRespondNoContent();
+        mockHttp.When(HttpMethod.Get, "/api/auth/me").ThenRespondOK(AuthHelper.DefaultUser);
 
         this.AddAuthServices();
 

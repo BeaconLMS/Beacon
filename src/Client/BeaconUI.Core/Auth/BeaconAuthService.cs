@@ -22,7 +22,7 @@ public sealed class BeaconAuthService
         _localStorage = localStorage;
     }
 
-    public async Task<AuthenticatedUserInfo?> GetCurrentUserInfo(CancellationToken ct = default)
+    public async Task<UserDto?> GetCurrentUserInfo(CancellationToken ct = default)
     {
         return await _localStorage.GetCurrentUserInfo(ct);
     }
@@ -30,13 +30,27 @@ public sealed class BeaconAuthService
     public async Task<ValidationProblemResponse?> Login(LoginRequest request, CancellationToken ct = default)
     {
         var response = await _http.PostAsJsonAsync("api/auth/login", request, ct);
-        return await Login(response, ct);
+
+        if (response.StatusCode is HttpStatusCode.UnprocessableEntity)
+            return await GetValidationProblemDetails(response, ct);
+
+        response.EnsureSuccessStatusCode();
+
+        await ReloadUserDetails();
+        return null;
     }
 
     public async Task<ValidationProblemResponse?> Register(RegisterRequest request, CancellationToken ct = default)
     {
         var response = await _http.PostAsJsonAsync("api/auth/register", request, ct);
-        return await Login(response, ct);
+
+        if (response.StatusCode is HttpStatusCode.UnprocessableEntity)
+            return await GetValidationProblemDetails(response, ct);
+
+        response.EnsureSuccessStatusCode();
+
+        await ReloadUserDetails();
+        return null;
     }
 
     public async Task Logout(CancellationToken ct = default)
@@ -49,29 +63,13 @@ public sealed class BeaconAuthService
         _authStateProvider.NotifyUserChanged(null);
     }
 
-    private async Task<ValidationProblemResponse?> Login(HttpResponseMessage response, CancellationToken ct)
+    private async Task ReloadUserDetails()
     {
-        if (response.StatusCode is HttpStatusCode.UnprocessableEntity)
+        if (await _http.GetCurrentUser() is { } user)
         {
-            return await GetValidationProblemDetails(response, ct);
-        }
-
-        response.EnsureSuccessStatusCode();
-
-        var user = await GetUserDetails(response, ct);
-
-        if (user != null)
-        {
-            await _localStorage.SetCurrentUserInfo(user, ct);
+            await _localStorage.SetCurrentUserInfo(user);
             _authStateProvider.NotifyUserChanged(user);
         }
-
-        return null;
-    }
-
-    private static async Task<AuthenticatedUserInfo?> GetUserDetails(HttpResponseMessage response, CancellationToken ct)
-    {
-        return await response.Content.ReadFromJsonAsync<AuthenticatedUserInfo>(cancellationToken: ct);
     }
 
     private static async Task<ValidationProblemResponse?> GetValidationProblemDetails(HttpResponseMessage response, CancellationToken ct)

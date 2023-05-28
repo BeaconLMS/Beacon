@@ -47,7 +47,7 @@ public class LoginTests : IClassFixture<BeaconTestApplicationFactory>
         await _factory.SeedDbWithUserData("test@test.com", "test", "pwd12345");
 
         // getting current user should fail if we're not logged in:
-        var currentUser = await _httpClient.GetAsync("api/users/current");
+        var currentUser = await _httpClient.GetAsync("api/auth/me");
         currentUser.IsSuccessStatusCode.Should().BeFalse();
 
         // log in:
@@ -59,13 +59,12 @@ public class LoginTests : IClassFixture<BeaconTestApplicationFactory>
 
         // check that login was successful:
         response.IsSuccessStatusCode.Should().BeTrue();
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         // check that auth cookie was included in the response:
         response.Headers.Contains("Set-Cookie");
 
         // try getting current user again; this time response should be successful:
-        currentUser = await _httpClient.GetAsync("api/users/current");
+        currentUser = await _httpClient.GetAsync("api/auth/me");
         currentUser.IsSuccessStatusCode.Should().BeTrue();
     }
 }

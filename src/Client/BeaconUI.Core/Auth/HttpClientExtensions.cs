@@ -6,13 +6,18 @@ namespace BeaconUI.Core.Auth;
 
 public static class HttpClientExtensions
 {
-    public static async Task<AuthenticatedUserInfo?> GetCurrentUser(this HttpClient httpClient, CancellationToken ct = default)
+    public static async Task<UserDto?> GetCurrentUser(this HttpClient httpClient, CancellationToken ct = default)
     {
-        var response = await httpClient.GetAsync("api/users/current", ct);
+        try
+        {
+            var response = await httpClient.GetAsync("api/auth/me", ct);
+            response.EnsureSuccessStatusCode();
 
-        if (response.StatusCode is HttpStatusCode.NotFound)
+            return await response.Content.ReadFromJsonAsync<UserDto>(cancellationToken: ct);
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode is HttpStatusCode.Unauthorized)
+        {
             return null;
-
-        return await response.Content.ReadFromJsonAsync<AuthenticatedUserInfo>(cancellationToken: ct);
+        }
     }
 }

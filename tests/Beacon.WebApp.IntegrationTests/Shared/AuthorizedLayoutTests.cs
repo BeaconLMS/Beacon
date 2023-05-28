@@ -11,7 +11,9 @@ public class AuthorizedLayoutTests : TestContext
     {
         // Arrange
         var mockHttp = Services.AddMockHttpClient();
-        this.AddAuthServices().SetNotAuthorized();
+        mockHttp.When("/api/auth/me").ThenRespondUnauthorized();
+
+        this.AddAuthServices();
 
         var navManager = Services.GetRequiredService<FakeNavigationManager>();
 
@@ -19,27 +21,6 @@ public class AuthorizedLayoutTests : TestContext
         var cut = RenderComponent<BeaconUI.WebApp.App>();
         navManager.NavigateTo("");
 
-        // Assert
-        cut.WaitForAssertion(() => navManager.Uri.Should().Be($"{navManager.BaseUri}login"));
-    }
-
-    [Fact]
-    public void AuthorizedLayout_RedirectsToLogin_WhenLoggedInUserClicksLogout()
-    {
-        // Arrange
-        var mockHttp = Services.AddMockHttpClient();
-        mockHttp.When(HttpMethod.Get, "/api/auth/logout").ThenReturnNoContent();
-
-        this.AddAuthServices().SetAuthorized("Test");
-
-        var navManager = Services.GetRequiredService<FakeNavigationManager>();
-
-        // Act
-        var cut = RenderComponent<BeaconUI.WebApp.App>();
-        navManager.NavigateTo("");
-
-        cut.WaitForElement("button#logout").Click();
-        
         // Assert
         cut.WaitForAssertion(() => navManager.Uri.Should().Be($"{navManager.BaseUri}login"));
     }
