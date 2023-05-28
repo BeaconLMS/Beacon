@@ -55,9 +55,9 @@
 
     private RegisterRequest Model { get; set; } = new();
 
-    private async Task<ValidationProblemResponse?> Submit()
+    private async Task Submit()
     {
-        return await AuthService.Register(Model);
+        await AuthService.Register(Model);
     }
 
     private void DoAfterUpdateEmail()

@@ -3,6 +3,8 @@ using Beacon.Common.Auth.Login;
 using Beacon.Common.Auth.Register;
 using Beacon.Common.Responses;
 using Blazored.LocalStorage;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Net;
 using System.Net.Http.Json;
@@ -27,30 +29,18 @@ public sealed class BeaconAuthService
         return await _localStorage.GetCurrentUserInfo(ct);
     }
 
-    public async Task<ValidationProblemResponse?> Login(LoginRequest request, CancellationToken ct = default)
+    public async Task Login(LoginRequest request, CancellationToken ct = default)
     {
         var response = await _http.PostAsJsonAsync("api/auth/login", request, ct);
-
-        if (response.StatusCode is HttpStatusCode.UnprocessableEntity)
-            return await GetValidationProblemDetails(response, ct);
-
-        response.EnsureSuccessStatusCode();
-
+        await EnsureRequestWasSuccessful(response, ct);
         await ReloadUserDetails();
-        return null;
     }
 
-    public async Task<ValidationProblemResponse?> Register(RegisterRequest request, CancellationToken ct = default)
+    public async Task Register(RegisterRequest request, CancellationToken ct = default)
     {
         var response = await _http.PostAsJsonAsync("api/auth/register", request, ct);
-
-        if (response.StatusCode is HttpStatusCode.UnprocessableEntity)
-            return await GetValidationProblemDetails(response, ct);
-
-        response.EnsureSuccessStatusCode();
-
+        await EnsureRequestWasSuccessful(response, ct);
         await ReloadUserDetails();
-        return null;
     }
 
     public async Task Logout(CancellationToken ct = default)
@@ -72,8 +62,15 @@ public sealed class BeaconAuthService
         }
     }
 
-    private static async Task<ValidationProblemResponse?> GetValidationProblemDetails(HttpResponseMessage response, CancellationToken ct)
+    private static async Task EnsureRequestWasSuccessful(HttpResponseMessage response, CancellationToken ct)
     {
-        return await response.Content.ReadFromJsonAsync<ValidationProblemResponse>(cancellationToken: ct);
+        if (response.StatusCode is HttpStatusCode.UnprocessableEntity)
+        {
+            var problem = await response.Content.ReadFromJsonAsync<ValidationProblemResponse>(cancellationToken: ct);
+            var failures = problem?.Errors.SelectMany(e => e.Value.Select(v => new ValidationFailure(e.Key, v)));
+            throw new ValidationException(failures);
+        }
+
+        response.EnsureSuccessStatusCode();
     }
 }

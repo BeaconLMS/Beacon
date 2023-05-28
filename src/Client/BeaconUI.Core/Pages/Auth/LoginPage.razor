@@ -48,8 +48,8 @@
 
     private LoginRequest Model { get; set; } = new();
 
-    private async Task<ValidationProblemResponse?> Submit()
+    private async Task Submit()
     {
-        return await AuthService.Login(Model);
+        await AuthService.Login(Model);
     }
 }

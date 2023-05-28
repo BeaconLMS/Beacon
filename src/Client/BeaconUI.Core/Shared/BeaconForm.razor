@@ -11,7 +11,7 @@
     [Parameter] public bool DisableDuringSubmit { get; set; } = true;
 
     [Parameter, EditorRequired] public required object Model { get; set; }
-    [Parameter, EditorRequired] public required Func<Task<ValidationProblemResponse?>> OnValidSubmit { get; set; }
+    [Parameter, EditorRequired] public required EventCallback OnValidSubmit { get; set; }
 
     private EditContext? _editContext;
     private EditContext EditContext => _editContext ??= new(Model);
@@ -45,19 +45,31 @@
 
         IsSubmitting = true;
 
-        if (await OnValidSubmit() is { } validationProblem && validationProblem.Errors is { Count: > 0 } errors)
+        try
         {
-            ValidationMessages.Clear();
+            await OnValidSubmit.InvokeAsync();
+        }
+        catch (FluentValidation.ValidationException ex)
+        {
+            AddValidationErrors(ex);
+        }
+        finally
+        {
+            IsSubmitting = false;
+        }
+    }
 
-            foreach (var error in errors)
-            {
-                var fieldIdentifier = new FieldIdentifier(EditContext.Model, error.Key);
-                ValidationMessages.Add(fieldIdentifier, error.Value);
-            }
+    private void AddValidationErrors(FluentValidation.ValidationException ex)
+    {
+        ValidationMessages.Clear();
 
-            EditContext.NotifyValidationStateChanged();
+        foreach (var error in ex.Errors)
+        {
+            var fieldIdentifier = new FieldIdentifier(EditContext.Model, error.PropertyName);
+            ValidationMessages.Add(fieldIdentifier, error.ErrorMessage);
         }
 
-        IsSubmitting = false;
+        EditContext.NotifyValidationStateChanged();
     }
+
 }
