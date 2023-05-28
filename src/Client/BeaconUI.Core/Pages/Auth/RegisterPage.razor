@@ -2,8 +2,7 @@
 
 @page "/register"
 
-@inject BeaconAuthClient AuthService
-@inject NavigationManager NavManager
+@inject BeaconAuthService AuthService
 
 <div class="page-container">
 
@@ -58,14 +57,7 @@
 
     private async Task<ValidationProblemResponse?> Submit()
     {
-        var response = await AuthService.Register(Model);
-
-        if (response.Value is AuthenticatedUserInfo)
-        {
-            NavManager.NavigateTo("");
-        }
-
-        return response.Value as ValidationProblemResponse;
+        return await AuthService.Register(Model);
     }
 
     private void DoAfterUpdateEmail()

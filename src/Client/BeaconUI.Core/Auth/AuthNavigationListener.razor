@@ -1,0 +1,32 @@
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavManager
+@implements IDisposable
+
+@code {
+
+    public void Dispose()
+    {
+        AuthStateProvider.AuthenticationStateChanged -= HandleAuthStateChanged;
+        GC.SuppressFinalize(this);
+    }
+
+    protected override void OnInitialized()
+    {
+        AuthStateProvider.AuthenticationStateChanged += HandleAuthStateChanged;
+    }
+
+    private async void HandleAuthStateChanged(Task<AuthenticationState> authStateTask)
+    {
+        var authState = await authStateTask;
+
+        if (authState.User.Identity is { IsAuthenticated: true })
+        {
+            NavManager.NavigateTo("");
+        }
+        else
+        {
+            NavManager.NavigateToLogin("login");
+        }
+    }
+}

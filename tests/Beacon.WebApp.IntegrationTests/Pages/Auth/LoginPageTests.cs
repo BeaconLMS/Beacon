@@ -1,5 +1,4 @@
 using Beacon.Common.Auth.Login;
-using BeaconUI.Core.Auth;
 using BeaconUI.Core.Pages.Auth;
 using Bunit.TestDoubles;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,11 +15,12 @@ public class LoginPageTests : TestContext
         var mockHttp = Services.AddMockHttpClient();
         mockHttp.When(HttpMethod.Post, "/api/auth/login").ThenRespondOK(AuthHelper.DefaultUser);
 
-        Services.AddScoped<BeaconAuthClient>();
+        this.AddAuthServices();
+
         var navManager = Services.GetRequiredService<FakeNavigationManager>();
-        var cut = RenderComponent<LoginPage>();
 
         // Act:
+        var cut = RenderComponent<LoginPage>();
         cut.Find("input[type=email]").Change("test@test.com");
         cut.Find("input[type=password]").Change("password123");
         await cut.Find("form").SubmitAsync();
@@ -39,11 +39,12 @@ public class LoginPageTests : TestContext
             { nameof(LoginRequest.EmailAddress), new[] { "Some error message" } }
         });
 
-        Services.AddScoped<BeaconAuthClient>();
+        this.AddAuthServices();
+
         var navManager = Services.GetRequiredService<FakeNavigationManager>();
-        var cut = RenderComponent<LoginPage>();
 
         // Act:
+        var cut = RenderComponent<LoginPage>();
         cut.Find("input[type=email]").Change("test@test.com");
         cut.Find("input[type=password]").Change("password123");
         await cut.Find("form").SubmitAsync();
