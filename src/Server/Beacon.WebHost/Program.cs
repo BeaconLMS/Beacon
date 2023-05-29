@@ -1,9 +1,8 @@
 using Beacon.API;
-using Beacon.API.Behaviors;
-using Beacon.API.Middleware;
 using Beacon.API.Persistence;
 using Beacon.API.Security;
 using Beacon.Common.Auth.Login;
+using Beacon.Common.Behaviors;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -14,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddApplicationPart(typeof(BeaconAPI).Assembly);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services
     .AddAuthentication()
@@ -36,8 +36,6 @@ builder.Services.AddMediatR(config =>
 
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
 
-builder.Services.AddTransient<ApiExceptionHandler>();
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -53,6 +51,5 @@ app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.UseMiddleware<ApiExceptionHandler>();
 app.MapFallbackToFile("index.html");
 app.Run();
