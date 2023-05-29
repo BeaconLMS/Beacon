@@ -1,4 +1,4 @@
-﻿using Beacon.Common.Responses;
+﻿using Beacon.Common;
 using Microsoft.Extensions.DependencyInjection;
 using RichardSzalay.MockHttp;
 using System.Net;
@@ -43,7 +43,7 @@ public static class MockHttpHelper
 
     public static MockedRequest ThenRespondValidationProblem(this MockedRequest request, Dictionary<string, string[]> errors)
     {
-        return request.Respond(_ => CreateResponse(HttpStatusCode.UnprocessableEntity, new ValidationProblemResponse { Errors = errors }));
+        return request.Respond(_ => CreateResponse(HttpStatusCode.UnprocessableEntity, new BeaconValidationProblem { Errors = errors }));
     }
 
     private static HttpResponseMessage CreateResponse<T>(HttpStatusCode statusCode, T content)

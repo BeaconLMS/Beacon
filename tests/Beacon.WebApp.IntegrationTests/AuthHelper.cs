@@ -1,10 +1,8 @@
-﻿using Beacon.Common.Auth;
+﻿using Beacon.Common;
 using BeaconUI.Core.Auth;
-using Blazored.LocalStorage;
 using Bunit.TestDoubles;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
 
 namespace Beacon.WebApp.IntegrationTests;
 
@@ -16,8 +14,7 @@ public static class AuthHelper
 
         testContext.Services
             .AddScoped<BeaconAuthService>()
-            .AddScoped<AuthenticationStateProvider, BeaconAuthStateProvider>()
-            .AddScoped(_ => Mock.Of<ILocalStorageService>());
+            .AddScoped<AuthenticationStateProvider, BeaconAuthStateProvider>();
 
         return authContext;
     }

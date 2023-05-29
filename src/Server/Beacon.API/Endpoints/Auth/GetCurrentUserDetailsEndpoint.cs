@@ -1,4 +1,5 @@
 ﻿using Beacon.API.Persistence;
+using Beacon.Common;
 using Beacon.Common.Auth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;

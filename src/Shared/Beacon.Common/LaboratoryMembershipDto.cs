@@ -1,4 +1,4 @@
-﻿namespace Beacon.Common.Auth;
+﻿namespace Beacon.Common;
 
 public sealed record LaboratoryMembershipDto
 {

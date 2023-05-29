@@ -2,7 +2,6 @@
 using Beacon.API.Persistence;
 using Beacon.Common;
 using Beacon.Common.Auth;
-using Beacon.Common.Laboratories;
 using Beacon.Common.Laboratories.Create;
 using FluentValidation;
 using FluentValidation.Results;
@@ -20,7 +19,7 @@ public class CreateLaboratoryEndpoint : IBeaconEndpoint
 {
     public static void Map(IEndpointRouteBuilder routeBuilder)
     {
-        routeBuilder.MapPost("labs", async (CreateLaboratoryRequest request, IMediator mediator) =>
+        routeBuilder.MapPost("laboratories", async (CreateLaboratoryRequest request, IMediator mediator) =>
         {
             try
             {

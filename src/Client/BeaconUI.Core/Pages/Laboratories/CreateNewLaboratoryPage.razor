@@ -1,7 +1,8 @@
 ﻿@page "/new-lab"
 @using Beacon.Common.Laboratories.Create
-@inject AuthenticationStateProvider AuthStateProvider
-@inject HttpClient HttpClient
+@using FluentValidation.Results;
+
+@inject CurrentUserLabMembershipService MembershipService
 @inject NavigationManager NavManager
 @layout EmptyLayout
 
@@ -44,18 +45,9 @@
 
     private CreateLaboratoryRequest Model { get; set; } = new();
 
-    private async Task<ValidationProblemResponse?> Submit()
+    private async Task Submit()
     {
-        var response = await HttpClient.PostAsJsonAsync("api/laboratories", Model);
-
-        if (response.StatusCode is System.Net.HttpStatusCode.UnprocessableEntity)
-        {
-            return await response.Content.ReadFromJsonAsync<ValidationProblemResponse>();
-        }
-
-        AuthStateProvider.NotifyUserChanged();
+        await MembershipService.CreateNewLaboratory(Model);
         NavManager.NavigateTo(Model.Slug);
-
-        return null;
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Beacon.Common.Laboratories;
+﻿namespace Beacon.Common;
 
 public sealed record LaboratorySummaryDto
 {
