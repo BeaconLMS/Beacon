@@ -2,11 +2,11 @@
 
 namespace Beacon.Common.Laboratories.Requests;
 
-public class CreateNewLaboratoryRequest : IApiRequest<LaboratoryDto>
+public class CreateLaboratoryRequest : IApiRequest<LaboratoryDto>
 {
     public string Name { get; set; } = string.Empty;
 
-    public class Validator : AbstractValidator<CreateNewLaboratoryRequest>
+    public class Validator : AbstractValidator<CreateLaboratoryRequest>
     {
         public Validator()
         {

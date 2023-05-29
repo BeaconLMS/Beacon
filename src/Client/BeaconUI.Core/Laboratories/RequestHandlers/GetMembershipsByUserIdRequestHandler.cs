@@ -6,7 +6,7 @@ using ErrorOr;
 
 namespace BeaconUI.Core.Laboratories.RequestHandlers;
 
-internal class GetMembershipsByUserIdRequestHandler : IApiRequestHandler<GetMembershipsByUserIdRequest, List<LaboratoryMembershipDto>>
+internal class GetMembershipsByUserIdRequestHandler : IApiRequestHandler<GetLaboratoryMembershipsByUserIdRequest, List<LaboratoryMembershipDto>>
 {
     private readonly HttpClient _httpClient;
 
@@ -15,7 +15,7 @@ internal class GetMembershipsByUserIdRequestHandler : IApiRequestHandler<GetMemb
         _httpClient = httpClient;
     }
 
-    public async Task<ErrorOr<List<LaboratoryMembershipDto>>> Handle(GetMembershipsByUserIdRequest request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<List<LaboratoryMembershipDto>>> Handle(GetLaboratoryMembershipsByUserIdRequest request, CancellationToken cancellationToken)
     {
         var response = await _httpClient.GetAsync($"api/laboratories/{request.UserId}", cancellationToken);
         return await response.ToErrorOrResult<List<LaboratoryMembershipDto>>(cancellationToken);

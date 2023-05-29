@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Beacon.API.Laboratories.RequestHandlers;
 
-internal class GetMembershipsByUserIdRequestHandler : IApiRequestHandler<GetMembershipsByUserIdRequest, List<LaboratoryMembershipDto>>
+internal class GetMembershipsByUserIdRequestHandler : IApiRequestHandler<GetLaboratoryMembershipsByUserIdRequest, List<LaboratoryMembershipDto>>
 {
     private readonly BeaconDbContext _dbContext;
 
@@ -16,7 +16,7 @@ internal class GetMembershipsByUserIdRequestHandler : IApiRequestHandler<GetMemb
         _dbContext = dbContext;
     }
 
-    public async Task<ErrorOr<List<LaboratoryMembershipDto>>> Handle(GetMembershipsByUserIdRequest request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<List<LaboratoryMembershipDto>>> Handle(GetLaboratoryMembershipsByUserIdRequest request, CancellationToken cancellationToken)
     {
         return await _dbContext.LaboratoryMemberships
             .Where(m => m.Member.Id == request.UserId)

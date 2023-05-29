@@ -10,7 +10,7 @@ public partial class CreateLaboratoryPage
     [Inject] private NavigationManager NavManager { get; set; } = null!;
     [Inject] private ISender Sender { get; set; } = null!;
 
-    private CreateNewLaboratoryRequest Model { get; } = new();
+    private CreateLaboratoryRequest Model { get; } = new();
 
     private async Task Submit(BeaconForm formContext)
     {

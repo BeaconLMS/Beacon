@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Beacon.API.Laboratories.RequestHandlers;
 
-internal sealed class CreateNewLaboratoryRequestHandler : IApiRequestHandler<CreateNewLaboratoryRequest, LaboratoryDto>
+internal sealed class CreateNewLaboratoryRequestHandler : IApiRequestHandler<CreateLaboratoryRequest, LaboratoryDto>
 {
     private readonly ICurrentUser _currentUser;
     private readonly BeaconDbContext _dbContext;
@@ -20,7 +20,7 @@ internal sealed class CreateNewLaboratoryRequestHandler : IApiRequestHandler<Cre
         _dbContext = dbContext;
     }
 
-    public async Task<ErrorOr<LaboratoryDto>> Handle(CreateNewLaboratoryRequest request, CancellationToken ct)
+    public async Task<ErrorOr<LaboratoryDto>> Handle(CreateLaboratoryRequest request, CancellationToken ct)
     {
         var currentUser = await _dbContext.Users.FirstAsync(u => u.Id == _currentUser.UserId, ct);
 

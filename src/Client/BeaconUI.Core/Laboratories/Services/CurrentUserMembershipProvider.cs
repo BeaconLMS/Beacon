@@ -55,7 +55,7 @@ public sealed class CurrentUserMembershipProvider : IDisposable
         if (currentUserId == null)
             return new();
 
-        var result = await _sender.Send(new GetMembershipsByUserIdRequest
+        var result = await _sender.Send(new GetLaboratoryMembershipsByUserIdRequest
         {
             UserId = currentUserId.Value
         });

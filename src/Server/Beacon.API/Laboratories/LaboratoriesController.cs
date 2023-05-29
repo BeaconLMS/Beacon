@@ -16,7 +16,7 @@ public class LaboratoriesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateLaboratory(CreateNewLaboratoryRequest request, CancellationToken ct)
+    public async Task<IActionResult> CreateLaboratory(CreateLaboratoryRequest request, CancellationToken ct)
     {
         var result = await _mediator.Send(request, ct);
         return result.IsError ? result.Errors.ToValidationProblemResult() : Ok(result.Value);
@@ -25,7 +25,7 @@ public class LaboratoriesController : ControllerBase
     [HttpGet("{userId:Guid}")]
     public async Task<IActionResult> GetMembershipsByUserId(Guid userId, CancellationToken ct)
     {
-        var request = new GetMembershipsByUserIdRequest { UserId = userId };
+        var request = new GetLaboratoryMembershipsByUserIdRequest { UserId = userId };
         var result = await _mediator.Send(request, ct);
         return Ok(result.Value);
     }
