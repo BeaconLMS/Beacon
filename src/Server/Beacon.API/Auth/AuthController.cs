@@ -3,7 +3,6 @@ using Beacon.Common.Auth;
 using Beacon.Common.Auth.Requests;
 using ErrorOr;
 using MediatR;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Beacon.API.Auth;
@@ -29,30 +28,25 @@ public sealed class AuthController : ControllerBase
     public async Task<IActionResult> Register(RegisterRequest request)
     {
         var result = await _mediator.Send(request);
-        return await GetLoginResult(result);
+        return GetLoginResult(result);
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginRequest request)
     {
         var result = await _mediator.Send(request);
-        return await GetLoginResult(result);
+        return GetLoginResult(result);
     }
 
     [HttpGet("logout")]
-    public async Task Logout()
+    public async Task<IActionResult> Logout()
     {
-        await HttpContext.SignOutAsync();
+        var result = await _mediator.Send(new LogoutRequest());
+        return result.IsError ? StatusCode(500) : NoContent();
     }
 
-    private async Task<IActionResult> GetLoginResult(ErrorOr<UserDto> result)
+    private IActionResult GetLoginResult(ErrorOr<UserDto> result)
     {
-        if (result.IsError)
-            return result.Errors.ToValidationProblemResult();
-
-        var user = result.Value;
-        await HttpContext.SignInAsync(user.ToClaimsPrincipal());
-
-        return Ok(user);
+        return result.IsError ? result.Errors.ToValidationProblemResult() : Ok(result.Value);
     }
 }

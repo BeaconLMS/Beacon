@@ -9,15 +9,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Beacon.API.Auth.RequestHandlers;
 
-public class RegisterRequestHandler : IApiRequestHandler<RegisterRequest, UserDto>
+internal class RegisterRequestHandler : IApiRequestHandler<RegisterRequest, UserDto>
 {
     private readonly BeaconDbContext _context;
     private readonly IPasswordHasher _passwordHasher;
+    private readonly ISignInManager _signInManager;
 
-    public RegisterRequestHandler(BeaconDbContext context, IPasswordHasher passwordHasher)
+    public RegisterRequestHandler(BeaconDbContext context, IPasswordHasher passwordHasher, ISignInManager signInManager)
     {
         _context = context;
         _passwordHasher = passwordHasher;
+        _signInManager = signInManager;
     }
 
     public async Task<ErrorOr<UserDto>> Handle(RegisterRequest request, CancellationToken ct)
@@ -37,11 +39,15 @@ public class RegisterRequestHandler : IApiRequestHandler<RegisterRequest, UserDt
         _context.Users.Add(user);
         await _context.SaveChangesAsync(ct);
 
-        return new UserDto
+        var result = new UserDto
         {
             Id = user.Id,
             DisplayName = user.DisplayName,
             EmailAddress = user.EmailAddress
         };
+
+        await _signInManager.SignInAsync(result.ToClaimsPrincipal());
+
+        return result;
     }
 }

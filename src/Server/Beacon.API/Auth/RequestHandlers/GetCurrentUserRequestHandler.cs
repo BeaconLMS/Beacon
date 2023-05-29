@@ -1,18 +1,18 @@
-﻿using Beacon.Common;
+﻿using Beacon.API.Auth.Services;
+using Beacon.Common;
 using Beacon.Common.Auth;
 using Beacon.Common.Auth.Requests;
 using ErrorOr;
-using Microsoft.AspNetCore.Http;
 
 namespace Beacon.API.Auth.RequestHandlers;
 
 public class GetCurrentUserRequestHandler : IApiRequestHandler<GetCurrentUserRequest, UserDto>
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ICurrentUser _currentUser;
 
-    public GetCurrentUserRequestHandler(IHttpContextAccessor httpContextAccessor)
+    public GetCurrentUserRequestHandler(ICurrentUser currentUser)
     {
-        _httpContextAccessor = httpContextAccessor;
+        _currentUser = currentUser;
     }
 
     public Task<ErrorOr<UserDto>> Handle(GetCurrentUserRequest request, CancellationToken cancellationToken)
@@ -23,7 +23,7 @@ public class GetCurrentUserRequestHandler : IApiRequestHandler<GetCurrentUserReq
 
     private ErrorOr<UserDto> GetCurrentUser()
     {
-        var user = _httpContextAccessor.HttpContext?.User.ToUserDto();
+        var user = _currentUser.User.ToUserDto();
         return user is null ? Error.NotFound() : user;
     }
 }

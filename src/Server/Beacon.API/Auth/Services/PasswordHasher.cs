@@ -3,8 +3,14 @@ using System.Text;
 
 namespace Beacon.API.Auth.Services;
 
+public interface IPasswordHasher
+{
+    string Hash(string plainText, out byte[] salt);
+    bool Verify(string plainText, string hash, byte[] salt);
+}
+
 // https://code-maze.com/csharp-hashing-salting-passwords-best-practices/
-public sealed class PasswordHasher : IPasswordHasher
+internal sealed class PasswordHasher : IPasswordHasher
 {
     const int _keySize = 64;
     const int _iterations = 350000;
@@ -19,7 +25,6 @@ public sealed class PasswordHasher : IPasswordHasher
 
     public bool Verify(string plainText, string hash, byte[] salt)
     {
-        //var hashToCompare = Rfc2898DeriveBytes.Pbkdf2(plainText, salt, _iterations, _hashAlgorithm, _keySize);
         var hashToCompare = GenerateHash(Encoding.UTF8.GetBytes(plainText), salt);
         return CryptographicOperations.FixedTimeEquals(hashToCompare, Convert.FromHexString(hash));
     }
