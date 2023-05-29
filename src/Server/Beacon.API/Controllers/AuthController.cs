@@ -14,9 +14,6 @@ public sealed class AuthController : ApiControllerBase
     public async Task<IActionResult> Register(RegisterRequest request)
     {
         var result = await Mediator.Send(request);
-
-        await HttpContext.SignInAsync(result.Value.ToClaimsPrincipal());
-
         return await GetLoginResult(result);
     }
 
@@ -24,9 +21,6 @@ public sealed class AuthController : ApiControllerBase
     public async Task<IActionResult> Login(LoginRequest request)
     {
         var result = await Mediator.Send(request);
-
-        await HttpContext.SignInAsync(result.Value.ToClaimsPrincipal());
-
         return await GetLoginResult(result);
     }
 
