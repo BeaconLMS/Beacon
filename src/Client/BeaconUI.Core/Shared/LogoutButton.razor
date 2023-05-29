@@ -1,8 +1,6 @@
 ﻿@using Beacon.Common.Auth.Logout
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
 @inject ISender Sender
-@inject NavigationManager NavManager
 
 <button id="logout" type="button" @attributes="Attributes" @onclick="Logout">
     @ChildContent
@@ -18,9 +16,6 @@
 
     private async Task Logout()
     {
-        var result = await Sender.Send(new LogoutRequest());
-
-        if (!result.IsError)
-            NavManager.NavigateToLogin("login");
+        await Sender.Send(new LogoutRequest());
     }
 }
