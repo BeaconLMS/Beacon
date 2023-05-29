@@ -1,10 +1,7 @@
 using Beacon.API;
 using Beacon.API.Persistence;
 using Beacon.API.Security;
-using Beacon.Common.Auth.Login;
-using Beacon.Common.Behaviors;
-using FluentValidation;
-using MediatR;
+using Beacon.Common.Validation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,14 +24,12 @@ builder.Services.AddDbContext<BeaconDbContext>(options =>
 
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
-builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
-
 builder.Services.AddMediatR(config =>
 {
     config.RegisterServicesFromAssembly(typeof(BeaconAPI).Assembly);
 });
 
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
+builder.Services.AddValidationPipeline();
 
 var app = builder.Build();
 

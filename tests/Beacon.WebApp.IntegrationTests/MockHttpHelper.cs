@@ -1,4 +1,4 @@
-﻿using Beacon.Common;
+﻿using Beacon.Common.Validation;
 using Microsoft.Extensions.DependencyInjection;
 using RichardSzalay.MockHttp;
 using System.Net;

@@ -3,10 +3,10 @@ using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 
-namespace Beacon.Common.Behaviors;
+namespace Beacon.Common.Validation;
 
 public sealed class ValidationPipelineBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, ErrorOr<TResponse>>
-    where TRequest : class, IApiRequest<TResponse>
+    where TRequest : IApiRequest<TResponse>
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
 
@@ -18,11 +18,7 @@ public sealed class ValidationPipelineBehavior<TRequest, TResponse> : IPipelineB
     public async Task<ErrorOr<TResponse>> Handle(TRequest request, RequestHandlerDelegate<ErrorOr<TResponse>> next, CancellationToken ct)
     {
         var validationErrors = await GetValidationErrorsAsync(request, ct);
-
-        if (validationErrors.Any())
-            return validationErrors;
-
-        return await next();
+        return validationErrors.Any() ? validationErrors : await next();
     }
 
     private async Task<List<Error>> GetValidationErrorsAsync(TRequest request, CancellationToken ct)
