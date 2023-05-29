@@ -1,4 +1,4 @@
-﻿using Beacon.Common.Auth.Login;
+﻿using Beacon.Common.Auth.Requests;
 
 namespace Beacon.IntegrationTests.EndpointTests.Auth;
 

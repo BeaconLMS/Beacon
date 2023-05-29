@@ -1,4 +1,4 @@
-﻿using Beacon.Common.Auth.GetCurrentUser;
+﻿using Beacon.Common.Auth.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Beacon.API.Controllers;
