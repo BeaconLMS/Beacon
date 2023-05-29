@@ -18,8 +18,6 @@ public class BeaconDbContext : DbContext
         modelBuilder.Entity<Laboratory>(builder =>
         {
             builder.Property(x => x.Name).HasMaxLength(50);
-            builder.Property(x => x.Slug).HasMaxLength(20);
-            builder.HasIndex(x => x.Slug).IsUnique();
         });
 
         modelBuilder.Entity<LaboratoryMembership>(builder =>

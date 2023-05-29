@@ -20,13 +20,13 @@ public class CreateNewLaboratoryRequestHandler : IApiRequestHandler<CreateNewLab
         _publisher = publisher;
     }
 
-    public async Task<ErrorOr<LaboratoryDto>> Handle(CreateNewLaboratoryRequest request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<LaboratoryDto>> Handle(CreateNewLaboratoryRequest request, CancellationToken ct)
     {
-        var response = await _httpClient.PostAsJsonAsync("api/laboratories", request, cancellationToken);
-        var result = await response.ToErrorOrResult<LaboratoryDto>(cancellationToken);
+        var response = await _httpClient.PostAsJsonAsync("api/laboratories", request, ct);
+        var result = await response.ToErrorOrResult<LaboratoryDto>(ct);
 
         if (!result.IsError)
-            await _publisher.Publish(new LaboratoryCreatedEvent(result.Value), cancellationToken);
+            await _publisher.Publish(new LaboratoryCreatedEvent(result.Value), ct);
 
         return result;
     }

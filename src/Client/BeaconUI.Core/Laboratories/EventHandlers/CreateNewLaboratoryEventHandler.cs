@@ -13,10 +13,9 @@ internal class CreateNewLaboratoryEventHandler : INotificationHandler<Laboratory
         _membershipProvider = membershipProvider;
     }
 
-    public Task Handle(LaboratoryCreatedEvent notification, CancellationToken cancellationToken)
+    public async Task Handle(LaboratoryCreatedEvent notification, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        _membershipProvider.RefreshState();
-        return Task.CompletedTask;
+        await _membershipProvider.RefreshState();
     }
 }

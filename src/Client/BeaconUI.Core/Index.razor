@@ -1,5 +1,4 @@
 ﻿@page "/"
-@using BeaconUI.Core.Laboratories
 @attribute [Authorize]
 
 <h1>Hello, world!</h1>
@@ -17,7 +16,7 @@ Welcome to your new app.
             @foreach (var membership in memberships)
             {
                 <li>
-                    <a href="@membership.LaboratorySlug">@membership.LaboratoryName</a>
+                    <a href="@NavigationHelper.GetLabDetailsHref(membership.LaboratoryId)">@membership.LaboratoryName</a>
                 </li>
             }
         </ul>

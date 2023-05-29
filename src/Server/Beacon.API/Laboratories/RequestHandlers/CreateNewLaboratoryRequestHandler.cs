@@ -22,16 +22,12 @@ internal sealed class CreateNewLaboratoryRequestHandler : IApiRequestHandler<Cre
 
     public async Task<ErrorOr<LaboratoryDto>> Handle(CreateNewLaboratoryRequest request, CancellationToken ct)
     {
-        if (await _dbContext.Laboratories.AnyAsync(x => x.Slug == request.Slug, ct))
-            return Error.Validation(nameof(CreateNewLaboratoryRequest.Slug), "A laboratory with the specified slug already exists.");
-
         var currentUser = await _dbContext.Users.FirstAsync(u => u.Id == _currentUser.UserId, ct);
 
         var lab = new Laboratory
         {
             Id = Guid.NewGuid(),
-            Name = request.Name,
-            Slug = request.Slug
+            Name = request.Name
         };
 
         lab.AddMember(currentUser, LaboratoryMembershipType.Admin);
@@ -42,8 +38,7 @@ internal sealed class CreateNewLaboratoryRequestHandler : IApiRequestHandler<Cre
         return new LaboratoryDto
         {
             Id = lab.Id,
-            Name = lab.Name,
-            Slug = lab.Slug
+            Name = lab.Name
         };
     }
 }

@@ -24,7 +24,6 @@ internal class GetMembershipsByUserIdRequestHandler : IApiRequestHandler<GetMemb
             {
                 LaboratoryId = m.Laboratory.Id,
                 LaboratoryName = m.Laboratory.Name,
-                LaboratorySlug = m.Laboratory.Slug,
                 MemberId = m.Member.Id,
                 MemberDisplayName = m.Member.DisplayName,
                 MembershipType = m.MembershipType.ToString()
