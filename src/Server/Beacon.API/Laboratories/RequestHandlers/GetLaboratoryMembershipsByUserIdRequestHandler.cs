@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Beacon.API.Laboratories.RequestHandlers;
 
-internal class GetMembershipsByUserIdRequestHandler : IApiRequestHandler<GetLaboratoryMembershipsByUserIdRequest, List<LaboratoryMembershipDto>>
+internal class GetLaboratoryMembershipsByUserIdRequestHandler : IApiRequestHandler<GetLaboratoryMembershipsByUserIdRequest, List<LaboratoryMembershipDto>>
 {
     private readonly BeaconDbContext _dbContext;
 
-    public GetMembershipsByUserIdRequestHandler(BeaconDbContext dbContext)
+    public GetLaboratoryMembershipsByUserIdRequestHandler(BeaconDbContext dbContext)
     {
         _dbContext = dbContext;
     }

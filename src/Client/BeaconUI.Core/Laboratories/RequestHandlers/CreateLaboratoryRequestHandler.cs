@@ -9,12 +9,12 @@ using System.Net.Http.Json;
 
 namespace BeaconUI.Core.Laboratories.RequestHandlers;
 
-public class CreateNewLaboratoryRequestHandler : IApiRequestHandler<CreateLaboratoryRequest, LaboratoryDto>
+public class CreateLaboratoryRequestHandler : IApiRequestHandler<CreateLaboratoryRequest, LaboratoryDto>
 {
     private readonly HttpClient _httpClient;
     private readonly IPublisher _publisher;
 
-    public CreateNewLaboratoryRequestHandler(HttpClient httpClient, IPublisher publisher)
+    public CreateLaboratoryRequestHandler(HttpClient httpClient, IPublisher publisher)
     {
         _httpClient = httpClient;
         _publisher = publisher;

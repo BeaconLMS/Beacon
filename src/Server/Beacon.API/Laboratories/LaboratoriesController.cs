@@ -22,10 +22,18 @@ public class LaboratoriesController : ControllerBase
         return result.IsError ? result.Errors.ToValidationProblemResult() : Ok(result.Value);
     }
 
-    [HttpGet("{userId:Guid}")]
+    [HttpGet("~/api/users/{userId:Guid}/memberships")]
     public async Task<IActionResult> GetMembershipsByUserId(Guid userId, CancellationToken ct)
     {
         var request = new GetLaboratoryMembershipsByUserIdRequest { UserId = userId };
+        var result = await _mediator.Send(request, ct);
+        return Ok(result.Value);
+    }
+
+    [HttpGet("{labId:Guid}/memberships")]
+    public async Task<IActionResult> GetMembershipsByLabId(Guid labId, CancellationToken ct)
+    {
+        var request = new GetLaboratoryMembershipsByLabIdRequest { LaboratoryId = labId };
         var result = await _mediator.Send(request, ct);
         return Ok(result.Value);
     }

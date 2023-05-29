@@ -9,12 +9,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Beacon.API.Laboratories.RequestHandlers;
 
-internal sealed class CreateNewLaboratoryRequestHandler : IApiRequestHandler<CreateLaboratoryRequest, LaboratoryDto>
+internal sealed class CreateLaboratoryRequestHandler : IApiRequestHandler<CreateLaboratoryRequest, LaboratoryDto>
 {
     private readonly ICurrentUser _currentUser;
     private readonly BeaconDbContext _dbContext;
 
-    public CreateNewLaboratoryRequestHandler(ICurrentUser currentUser, BeaconDbContext dbContext)
+    public CreateLaboratoryRequestHandler(ICurrentUser currentUser, BeaconDbContext dbContext)
     {
         _currentUser = currentUser;
         _dbContext = dbContext;
