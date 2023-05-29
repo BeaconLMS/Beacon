@@ -12,7 +12,6 @@ public class Laboratory
     {
         var membership = new LaboratoryMembership
         {
-            Id = Guid.NewGuid(),
             Laboratory = this,
             Member = member,
             MembershipType = membershipType

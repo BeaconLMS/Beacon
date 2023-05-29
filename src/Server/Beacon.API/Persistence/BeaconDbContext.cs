@@ -24,10 +24,10 @@ public class BeaconDbContext : DbContext
 
         modelBuilder.Entity<LaboratoryMembership>(builder =>
         {
+            builder.HasKey("LaboratoryId", "MemberId");
             builder.Property(x => x.MembershipType).HasConversion<string>().HasMaxLength(20);
             builder.HasOne(x => x.Laboratory).WithMany(x => x.Memberships);
             builder.HasOne(x => x.Member).WithMany(x => x.Memberships);
-            builder.HasIndex("LaboratoryId", "MemberId").IsUnique();
         });
 
         modelBuilder.Entity<User>(builder =>
