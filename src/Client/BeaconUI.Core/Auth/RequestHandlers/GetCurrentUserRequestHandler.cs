@@ -17,7 +17,7 @@ public class GetCurrentUserRequestHandler : IApiRequestHandler<GetCurrentUserReq
 
     public async Task<ErrorOr<UserDto>> Handle(GetCurrentUserRequest request, CancellationToken cancellationToken)
     {
-        var response = await _httpClient.GetAsync("api/users/current", cancellationToken);
+        var response = await _httpClient.GetAsync("api/auth/me", cancellationToken);
         return await response.ToErrorOrResult<UserDto>(cancellationToken);
     }
 }

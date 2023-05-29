@@ -16,7 +16,7 @@ public class AppTests : TestContext
         Services.AddBeaconUI();
 
         var mockHttp = Services.AddMockHttpClient();
-        mockHttp.When(HttpMethod.Get, "/api/users/current").ThenRespondNotFound();
+        mockHttp.When(HttpMethod.Get, "/api/auth/me").ThenRespondNotFound();
 
         var navManager = Services.GetRequiredService<FakeNavigationManager>();
 
@@ -36,7 +36,7 @@ public class AppTests : TestContext
         Services.AddBeaconUI();
 
         var mockHttp = Services.AddMockHttpClient();
-        mockHttp.When(HttpMethod.Get, "/api/users/current").ThenRespondOK(AuthHelper.DefaultUser);
+        mockHttp.When(HttpMethod.Get, "/api/auth/me").ThenRespondOK(AuthHelper.DefaultUser);
         mockHttp.When(HttpMethod.Get, "/api/auth/logout").ThenRespondNoContent();
 
         var navManager = Services.GetRequiredService<FakeNavigationManager>();

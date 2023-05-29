@@ -17,7 +17,13 @@ public class GetCurrentUserRequestHandler : IApiRequestHandler<GetCurrentUserReq
 
     public Task<ErrorOr<UserDto>> Handle(GetCurrentUserRequest request, CancellationToken cancellationToken)
     {
-        var result = _httpContextAccessor.HttpContext!.User.ToUserDto();
-        return Task.FromResult(result is null ? Error.NotFound() : ErrorOrFactory.From(result));
+        cancellationToken.ThrowIfCancellationRequested();
+        return Task.FromResult(GetCurrentUser());
+    }
+
+    private ErrorOr<UserDto> GetCurrentUser()
+    {
+        var user = _httpContextAccessor.HttpContext?.User.ToUserDto();
+        return user is null ? Error.NotFound() : user;
     }
 }
