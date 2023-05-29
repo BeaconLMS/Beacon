@@ -16,7 +16,7 @@ public class LogoutTests : IClassFixture<BeaconTestApplicationFactory>
     [Fact]
     public async Task Logout_ShouldSucceed()
     {
-        await _factory.SeedDbWithUserData("test@test.com", "test", "pwd12345");
+        await _factory.SeedDbWithDefaultUser();
 
         // log in:
         await _httpClient.PostAsJsonAsync("api/auth/login", new LoginRequest

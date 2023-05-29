@@ -16,7 +16,7 @@ public class RegisterTests : IClassFixture<BeaconTestApplicationFactory>
     [Fact]
     public async Task Register_ShouldFail_IfEmailIsTaken()
     {
-        await _factory.SeedDbWithUserData("test@test.com", "test", "pwd12345");
+        await _factory.SeedDbWithDefaultUser();
 
         var response = await _httpClient.PostAsJsonAsync("api/auth/register", new RegisterRequest
         {
