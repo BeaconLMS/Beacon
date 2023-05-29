@@ -5,6 +5,9 @@
     @if (Memberships.FirstOrDefault(m => m.LaboratoryId.ToString() == Id) is { } membership)
     {
         <p>Details page for @membership.LaboratoryName</p>
+
+        <p>Current lab members:</p>
+        <LabMemberships LaboratoryId="membership.LaboratoryId" />
     }
     else
     {
