@@ -5,18 +5,34 @@ public class Laboratory
     public required Guid Id { get; init; }
     public required string Name { get; set; }
 
-    public List<LaboratoryMembership> Memberships { get; set; } = new();
+    private readonly List<LaboratoryMembership> _memberships = new();
+    public IReadOnlyList<LaboratoryMembership> Memberships => _memberships;
+
+    private Laboratory() { }
+
+    public static Laboratory CreateNew(string name, User admin)
+    {
+        var laboratory = new Laboratory
+        {
+            Id = Guid.NewGuid(),
+            Name = name
+        };
+
+        laboratory.AddMember(admin, LaboratoryMembershipType.Admin);
+
+        return laboratory;
+    }
 
     public LaboratoryMembership AddMember(User member, LaboratoryMembershipType membershipType)
     {
         var membership = new LaboratoryMembership
         {
-            Laboratory = this,
-            Member = member,
+            LaboratoryId = Id,
+            MemberId = member.Id,
             MembershipType = membershipType
         };
 
-        Memberships.Add(membership);
+        _memberships.Add(membership);
 
         return membership;
     }

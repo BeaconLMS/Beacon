@@ -3,6 +3,10 @@
 public class LaboratoryMembership
 {
     public required LaboratoryMembershipType MembershipType { get; set; }
-    public required Laboratory Laboratory { get; set; }
-    public required User Member { get; set; }
+
+    public required Guid LaboratoryId { get; set; }
+    public Laboratory Laboratory { get; set; } = null!;
+
+    public required Guid MemberId { get; set; }
+    public User Member { get; set; } = null!;
 }

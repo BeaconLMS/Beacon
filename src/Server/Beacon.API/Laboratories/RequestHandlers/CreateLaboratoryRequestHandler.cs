@@ -24,13 +24,7 @@ internal sealed class CreateLaboratoryRequestHandler : IApiRequestHandler<Create
     {
         var currentUser = await _dbContext.Users.FirstAsync(u => u.Id == _currentUser.UserId, ct);
 
-        var lab = new Laboratory
-        {
-            Id = Guid.NewGuid(),
-            Name = request.Name
-        };
-
-        lab.AddMember(currentUser, LaboratoryMembershipType.Admin);
+        var lab = Laboratory.CreateNew(request.Name, currentUser);
 
         _dbContext.Laboratories.Add(lab);
         await _dbContext.SaveChangesAsync(ct);

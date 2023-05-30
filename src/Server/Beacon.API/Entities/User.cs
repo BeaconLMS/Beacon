@@ -8,5 +8,6 @@ public class User
     public required string HashedPassword { get; set; }
     public required byte[] HashedPasswordSalt { get; set; }
 
-    public List<LaboratoryMembership> Memberships { get; set; } = new();
+    private readonly List<LaboratoryMembership> _memberships = new();
+    public IReadOnlyList<LaboratoryMembership> Memberships => _memberships;
 }
