@@ -6,17 +6,17 @@ namespace Beacon.Common.Laboratories.Requests;
 public class AddLaboratoryMemberRequest : IApiRequest<Success>
 {
     public Guid LaboratoryId { get; set; }
-    public Guid UserId { get; set; }
+    public Guid NewMemberUserId { get; set; }
 
     public class Validator : AbstractValidator<AddLaboratoryMemberRequest>
     {
         public Validator()
         {
             RuleFor(x => x.LaboratoryId)
-                .NotEmpty().WithMessage("LaboratoryId is required.");
+                .NotEmpty().WithMessage("Laboratory must be specified.");
 
-            RuleFor(x => x.UserId)
-                .NotEmpty().WithMessage("UserId is required.");
+            RuleFor(x => x.NewMemberUserId)
+                .NotEmpty().WithMessage("New member must be specified.");
         }
     }
 }

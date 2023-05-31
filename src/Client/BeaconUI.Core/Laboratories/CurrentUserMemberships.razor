@@ -8,12 +8,12 @@
 
 @if (ChildContent is not null && Memberships is not null)
 {
-    @ChildContent.Invoke(Memberships)
+    @ChildContent.Invoke(this)
 }
 
 @code {
 
-    [Parameter] public RenderFragment<List<LaboratoryMembershipDto>>? ChildContent { get; set; }
+    [Parameter] public RenderFragment<CurrentUserMemberships>? ChildContent { get; set; }
 
     private List<LaboratoryMembershipDto>? Memberships { get; set; }
 
@@ -26,6 +26,11 @@
     public void Dispose()
     {
         MembershipProvider.MembershipsChanged -= HandleMembershipsChanged;
+    }
+
+    public LaboratoryMembershipDto? GetMembership(string labId)
+    {
+        return Memberships?.FirstOrDefault(m => m.LaboratoryId.ToString() == labId);
     }
 
     private void HandleMembershipsChanged(List<LaboratoryMembershipDto> memberships)
