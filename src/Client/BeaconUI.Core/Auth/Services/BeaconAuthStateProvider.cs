@@ -1,5 +1,6 @@
 ﻿using Beacon.Common.Auth;
 using Beacon.Common.Auth.Requests;
+using Beacon.Common.Users;
 using MediatR;
 using Microsoft.AspNetCore.Components.Authorization;
 

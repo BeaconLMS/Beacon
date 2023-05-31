@@ -6,10 +6,7 @@
 
 @implements IDisposable
 
-@if (ChildContent is not null && Memberships is not null)
-{
-    @ChildContent.Invoke(this)
-}
+@ChildContent?.Invoke(this)
 
 @code {
 
@@ -26,6 +23,11 @@
     public void Dispose()
     {
         MembershipProvider.MembershipsChanged -= HandleMembershipsChanged;
+    }
+
+    public IReadOnlyList<LaboratoryMembershipDto>? GetAll()
+    {
+        return Memberships?.AsReadOnly();
     }
 
     public LaboratoryMembershipDto? GetMembership(string labId)

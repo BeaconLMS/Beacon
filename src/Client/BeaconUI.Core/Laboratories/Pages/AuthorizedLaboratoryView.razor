@@ -1,0 +1,19 @@
+﻿@using Beacon.Common.Laboratories;
+<CurrentUserMemberships>
+    @if (context.GetMembership(LaboratoryId) is { } membership)
+    {
+        @ChildContent?.Invoke(membership)
+    }
+    else
+    {
+        <RedirectTo Uri="" />
+    }
+</CurrentUserMemberships>
+
+
+@code {
+
+    [Parameter, EditorRequired] public required string LaboratoryId { get; set; }
+    [Parameter] public RenderFragment<LaboratoryMembershipDto>? ChildContent { get; set; }
+
+}

@@ -2,23 +2,12 @@
 @using Beacon.Common.Laboratories.Requests
 @inject ISender Sender
 
-@if (Memberships == null)
-{
-    <p>Loading...</p>
-}
-else
-{
-    <ul>
-        @foreach (var membership in Memberships)
-        {
-            <li>@membership.MemberDisplayName (@membership.MembershipType)</li>
-        }
-    </ul>
-}
+@ChildContent?.Invoke(this);
 
 @code {
 
     [Parameter, EditorRequired] public required Guid LaboratoryId { get; set; }
+    [Parameter] public RenderFragment<LabMemberships>? ChildContent { get; set; }
 
     private List<LaboratoryMembershipDto>? Memberships { get; set; }
 
@@ -27,5 +16,10 @@ else
         var request = new GetLaboratoryMembershipsByLabIdRequest { LaboratoryId = LaboratoryId };
         var response = await Sender.Send(request);
         Memberships = response.IsError ? new() : response.Value;
+    }
+
+    public IReadOnlyList<LaboratoryMembershipDto>? GetAll()
+    {
+        return Memberships?.AsReadOnly();
     }
 }

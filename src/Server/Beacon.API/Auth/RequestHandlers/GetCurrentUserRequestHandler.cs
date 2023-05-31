@@ -2,6 +2,7 @@
 using Beacon.Common;
 using Beacon.Common.Auth;
 using Beacon.Common.Auth.Requests;
+using Beacon.Common.Users;
 using ErrorOr;
 
 namespace Beacon.API.Auth.RequestHandlers;

@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Beacon.Common.Users;
 
 namespace Beacon.Common.Auth;
 

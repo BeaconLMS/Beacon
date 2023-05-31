@@ -1,6 +1,6 @@
 ﻿using Beacon.Common;
-using Beacon.Common.Auth;
 using Beacon.Common.Auth.Requests;
+using Beacon.Common.Users;
 using BeaconUI.Core.Helpers;
 using ErrorOr;
 
