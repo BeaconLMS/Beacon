@@ -1,6 +1,5 @@
 ﻿using Beacon.Common.Auth;
 using Beacon.Common.Auth.Requests;
-using Beacon.Common.Users;
 using MediatR;
 using Microsoft.AspNetCore.Components.Authorization;
 
@@ -10,7 +9,7 @@ public sealed class BeaconAuthStateProvider : AuthenticationStateProvider
 {
     private readonly ISender _sender;
 
-    public UserDto? CurrentUser { get; private set; }
+    private AuthUserDto? CurrentUser { get; set; }
 
     public BeaconAuthStateProvider(ISender sender)
     {

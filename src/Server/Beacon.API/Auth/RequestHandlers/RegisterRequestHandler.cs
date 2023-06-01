@@ -4,13 +4,12 @@ using Beacon.API.Persistence;
 using Beacon.Common;
 using Beacon.Common.Auth;
 using Beacon.Common.Auth.Requests;
-using Beacon.Common.Users;
 using ErrorOr;
 using Microsoft.EntityFrameworkCore;
 
 namespace Beacon.API.Auth.RequestHandlers;
 
-internal class RegisterRequestHandler : IApiRequestHandler<RegisterRequest, UserDto>
+internal class RegisterRequestHandler : IApiRequestHandler<RegisterRequest, AuthUserDto>
 {
     private readonly BeaconDbContext _context;
     private readonly IPasswordHasher _passwordHasher;
@@ -23,7 +22,7 @@ internal class RegisterRequestHandler : IApiRequestHandler<RegisterRequest, User
         _signInManager = signInManager;
     }
 
-    public async Task<ErrorOr<UserDto>> Handle(RegisterRequest request, CancellationToken ct)
+    public async Task<ErrorOr<AuthUserDto>> Handle(RegisterRequest request, CancellationToken ct)
     {
         if (await _context.Users.AnyAsync(u => u.EmailAddress == request.EmailAddress, ct))
             return Error.Validation(nameof(RegisterRequest.EmailAddress), "An account with the specified email address already exists.");
@@ -40,7 +39,7 @@ internal class RegisterRequestHandler : IApiRequestHandler<RegisterRequest, User
         _context.Users.Add(user);
         await _context.SaveChangesAsync(ct);
 
-        var result = new UserDto
+        var result = new AuthUserDto
         {
             Id = user.Id,
             DisplayName = user.DisplayName,

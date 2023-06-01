@@ -1,5 +1,4 @@
-﻿using Beacon.Common.Users;
-using MediatR;
+﻿using MediatR;
 
 namespace Beacon.Common.Auth.Events;
-public sealed record LoginEvent(UserDto LoggedInUser) : INotification;
+public sealed record LoginEvent(AuthUserDto LoggedInUser) : INotification;

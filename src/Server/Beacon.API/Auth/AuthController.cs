@@ -1,6 +1,6 @@
 ﻿using Beacon.API.Helpers;
+using Beacon.Common.Auth;
 using Beacon.Common.Auth.Requests;
-using Beacon.Common.Users;
 using ErrorOr;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -45,7 +45,7 @@ public sealed class AuthController : ControllerBase
         return result.IsError ? StatusCode(500) : NoContent();
     }
 
-    private IActionResult GetLoginResult(ErrorOr<UserDto> result)
+    private IActionResult GetLoginResult(ErrorOr<AuthUserDto> result)
     {
         return result.IsError ? result.Errors.ToValidationProblemResult() : Ok(result.Value);
     }

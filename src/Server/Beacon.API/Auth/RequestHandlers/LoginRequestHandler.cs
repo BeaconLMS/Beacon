@@ -3,14 +3,13 @@ using Beacon.API.Persistence;
 using Beacon.Common;
 using Beacon.Common.Auth;
 using Beacon.Common.Auth.Requests;
-using Beacon.Common.Users;
 using ErrorOr;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 namespace Beacon.API.Auth.RequestHandlers;
 
-internal class LoginRequestHandler : IApiRequestHandler<LoginRequest, UserDto>
+internal class LoginRequestHandler : IApiRequestHandler<LoginRequest, AuthUserDto>
 {
     private readonly BeaconDbContext _context;
     private readonly IPasswordHasher _passwordHasher;
@@ -23,7 +22,7 @@ internal class LoginRequestHandler : IApiRequestHandler<LoginRequest, UserDto>
         _signInManager = signInManager;
     }
 
-    public async Task<ErrorOr<UserDto>> Handle(LoginRequest request, CancellationToken ct)
+    public async Task<ErrorOr<AuthUserDto>> Handle(LoginRequest request, CancellationToken ct)
     {
         var user = await _context.Users
             .Where(u => u.EmailAddress == request.EmailAddress)
@@ -35,7 +34,7 @@ internal class LoginRequestHandler : IApiRequestHandler<LoginRequest, UserDto>
             return Error.Validation(nameof(LoginRequest.EmailAddress), "Email address or password was incorrect.");
         }
 
-        var result = new UserDto
+        var result = new AuthUserDto
         {
             Id = user.Id,
             DisplayName = user.DisplayName,

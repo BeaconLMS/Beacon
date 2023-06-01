@@ -4,6 +4,7 @@ using Beacon.Common.Auth.Requests;
 using ErrorOr;
 
 namespace Beacon.API.Auth.RequestHandlers;
+
 internal class LogoutRequestHandler : IApiRequestHandler<LogoutRequest, Success>
 {
     private readonly ISignInManager _signInManager;

@@ -1,12 +1,12 @@
 ﻿using Beacon.Common;
+using Beacon.Common.Auth;
 using Beacon.Common.Auth.Requests;
-using Beacon.Common.Users;
 using BeaconUI.Core.Helpers;
 using ErrorOr;
 
 namespace BeaconUI.Core.Auth.RequestHandlers;
 
-public class GetCurrentUserRequestHandler : IApiRequestHandler<GetCurrentUserRequest, UserDto>
+public class GetCurrentUserRequestHandler : IApiRequestHandler<GetCurrentUserRequest, AuthUserDto>
 {
     private readonly HttpClient _httpClient;
 
@@ -15,9 +15,9 @@ public class GetCurrentUserRequestHandler : IApiRequestHandler<GetCurrentUserReq
         _httpClient = httpClient;
     }
 
-    public async Task<ErrorOr<UserDto>> Handle(GetCurrentUserRequest request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<AuthUserDto>> Handle(GetCurrentUserRequest request, CancellationToken cancellationToken)
     {
         var response = await _httpClient.GetAsync("api/auth/me", cancellationToken);
-        return await response.ToErrorOrResult<UserDto>(cancellationToken);
+        return await response.ToErrorOrResult<AuthUserDto>(cancellationToken);
     }
 }

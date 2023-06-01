@@ -33,7 +33,7 @@ public sealed class CurrentUserMembershipProvider : IDisposable
         if (_memberships == null)
         {
             var authState = await _authStateProvider.GetAuthenticationStateAsync();
-            _memberships = await GetMemberships(authState.User.ToUserDto()?.Id);
+            _memberships = await GetMemberships(authState.User.ToAuthUserDto()?.Id);
         }
 
         return _memberships;

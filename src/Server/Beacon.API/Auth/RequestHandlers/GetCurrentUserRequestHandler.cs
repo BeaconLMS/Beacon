@@ -2,12 +2,11 @@
 using Beacon.Common;
 using Beacon.Common.Auth;
 using Beacon.Common.Auth.Requests;
-using Beacon.Common.Users;
 using ErrorOr;
 
 namespace Beacon.API.Auth.RequestHandlers;
 
-public class GetCurrentUserRequestHandler : IApiRequestHandler<GetCurrentUserRequest, UserDto>
+public class GetCurrentUserRequestHandler : IApiRequestHandler<GetCurrentUserRequest, AuthUserDto>
 {
     private readonly ICurrentUser _currentUser;
 
@@ -16,15 +15,15 @@ public class GetCurrentUserRequestHandler : IApiRequestHandler<GetCurrentUserReq
         _currentUser = currentUser;
     }
 
-    public Task<ErrorOr<UserDto>> Handle(GetCurrentUserRequest request, CancellationToken cancellationToken)
+    public Task<ErrorOr<AuthUserDto>> Handle(GetCurrentUserRequest request, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         return Task.FromResult(GetCurrentUser());
     }
 
-    private ErrorOr<UserDto> GetCurrentUser()
+    private ErrorOr<AuthUserDto> GetCurrentUser()
     {
-        var user = _currentUser.User.ToUserDto();
+        var user = _currentUser.User.ToAuthUserDto();
         return user is null ? Error.NotFound() : user;
     }
 }

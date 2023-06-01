@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Beacon.Common.Auth.Requests;
 
-public class LoginRequest : IApiRequest<UserDto>
+public class LoginRequest : IApiRequest<AuthUserDto>
 {
     public string EmailAddress { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;

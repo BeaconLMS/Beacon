@@ -1,11 +1,10 @@
 ﻿using System.Security.Claims;
-using Beacon.Common.Users;
 
 namespace Beacon.Common.Auth;
 
-public static class UserDtoClaimsPrincipalMapper
+public static class AuthUserDtoClaimsPrincipalMapper
 {
-    public static ClaimsPrincipal ToClaimsPrincipal(this UserDto? user)
+    public static ClaimsPrincipal ToClaimsPrincipal(this AuthUserDto? user)
     {
         if (user is null)
             return new ClaimsPrincipal(new ClaimsIdentity());
@@ -19,12 +18,12 @@ public static class UserDtoClaimsPrincipalMapper
         return new ClaimsPrincipal(identity);
     }
 
-    public static UserDto? ToUserDto(this ClaimsPrincipal claimsPrincipal)
+    public static AuthUserDto? ToAuthUserDto(this ClaimsPrincipal claimsPrincipal)
     {
         if (claimsPrincipal.Identity is not { IsAuthenticated: true })
             return null;
 
-        return new UserDto
+        return new AuthUserDto
         {
             Id = Guid.Parse(claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? ""),
             EmailAddress = claimsPrincipal.FindFirst(ClaimTypes.Email)?.Value ?? "",

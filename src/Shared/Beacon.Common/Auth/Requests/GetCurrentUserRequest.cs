@@ -2,6 +2,6 @@
 
 namespace Beacon.Common.Auth.Requests;
 
-public sealed class GetCurrentUserRequest : IApiRequest<UserDto>
+public sealed class GetCurrentUserRequest : IApiRequest<AuthUserDto>
 {
 }
