@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-namespace BeaconUI.Core.Helpers;
+namespace BeaconUI.Core;
 
 public static class BeaconUISetup
 {
@@ -14,6 +14,7 @@ public static class BeaconUISetup
         services.AddOptions();
         services.AddAuthorizationCore();
         services.AddScoped<AuthenticationStateProvider, BeaconAuthStateProvider>();
+        services.AddScoped(sp => (BeaconAuthStateProvider)sp.GetRequiredService<AuthenticationStateProvider>());
         services.AddScoped<CurrentUserMembershipProvider>();
 
         services.AddMediatR(config =>

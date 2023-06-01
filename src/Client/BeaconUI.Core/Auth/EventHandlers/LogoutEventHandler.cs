@@ -2,17 +2,16 @@
 using BeaconUI.Core.Auth.Services;
 using MediatR;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
 namespace BeaconUI.Core.Auth.EventHandlers;
 
 internal sealed record LogoutEventHandler : INotificationHandler<LogoutEvent>
 {
-    private readonly AuthenticationStateProvider _authStateProvider;
+    private readonly BeaconAuthStateProvider _authStateProvider;
     private readonly NavigationManager _navManager;
 
-    public LogoutEventHandler(AuthenticationStateProvider authStateProvider, NavigationManager navManager)
+    public LogoutEventHandler(BeaconAuthStateProvider authStateProvider, NavigationManager navManager)
     {
         _authStateProvider = authStateProvider;
         _navManager = navManager;
@@ -20,7 +19,7 @@ internal sealed record LogoutEventHandler : INotificationHandler<LogoutEvent>
 
     public Task Handle(LogoutEvent notification, CancellationToken cancellationToken)
     {
-        ((BeaconAuthStateProvider)_authStateProvider).UpdateCurrentUser(null);
+        _authStateProvider.UpdateCurrentUser(null);
 
         _navManager.NavigateToLogin("login");
 
