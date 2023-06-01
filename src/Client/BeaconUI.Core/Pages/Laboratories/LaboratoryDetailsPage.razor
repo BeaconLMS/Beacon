@@ -1,7 +1,8 @@
-﻿@page "/laboratories/{Id}"
+﻿@page "/laboratories/{Id:guid}"
 @attribute [Authorize]
 
 <AuthorizedLaboratoryView Context="lab" LaboratoryId="@Id">
+
     <h3 style="display: flex; align-items: center; gap: 0.5rem;">
         <AvatarSquare Value="@lab.LaboratoryName[0]" />
         <span>@lab.LaboratoryName</span>
@@ -29,5 +30,5 @@
 
 @code {
 
-    [Parameter] public required string Id { get; set; }
+    [Parameter] public required Guid Id { get; set; }
 }

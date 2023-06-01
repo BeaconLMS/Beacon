@@ -30,9 +30,9 @@
         return Memberships?.AsReadOnly();
     }
 
-    public LaboratoryMembershipDto? GetMembership(string labId)
+    public LaboratoryMembershipDto? GetMembership(Guid labId)
     {
-        return Memberships?.FirstOrDefault(m => m.LaboratoryId.ToString() == labId);
+        return Memberships?.FirstOrDefault(m => m.LaboratoryId == labId);
     }
 
     private void HandleMembershipsChanged(List<LaboratoryMembershipDto> memberships)

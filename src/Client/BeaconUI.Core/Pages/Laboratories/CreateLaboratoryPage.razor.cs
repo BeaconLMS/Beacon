@@ -3,7 +3,7 @@ using BeaconUI.Core.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Components;
 
-namespace BeaconUI.Core.Laboratories.Pages;
+namespace BeaconUI.Core.Pages.Laboratories;
 
 public partial class CreateLaboratoryPage
 {

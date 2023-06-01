@@ -1,0 +1,13 @@
+﻿@page "/"
+@attribute [Authorize]
+
+<CurrentUserMemberships>
+    @if (context.GetAll()?.FirstOrDefault() is { } membership)
+    {
+        <RedirectTo Uri="@NavigationHelper.GetLabDetailsHref(membership.LaboratoryId)" />
+    }
+    else
+    {
+        <p>Welcome to Beacon!</p>
+    }
+</CurrentUserMemberships>

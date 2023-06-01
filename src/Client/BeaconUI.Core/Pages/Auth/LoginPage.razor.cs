@@ -3,13 +3,13 @@ using BeaconUI.Core.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Components;
 
-namespace BeaconUI.Core.Auth.Pages;
+namespace BeaconUI.Core.Pages.Auth;
 
-public partial class RegisterPage
+public partial class LoginPage
 {
     [Inject] private ISender Sender { get; set; } = null!;
 
-    private RegisterRequest Model { get; set; } = new();
+    private LoginRequest Model { get; set; } = new();
 
     private async Task Submit(BeaconForm formContext)
     {
@@ -17,11 +17,5 @@ public partial class RegisterPage
 
         if (result.IsError)
             formContext.AddErrors(result.Errors);
-    }
-
-    private void DoAfterUpdateEmail()
-    {
-        if (string.IsNullOrWhiteSpace(Model.DisplayName))
-            Model.DisplayName = Model.EmailAddress[..Model.EmailAddress.IndexOf('@')];
     }
 }
