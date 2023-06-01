@@ -2,6 +2,7 @@
 using Beacon.Common.Auth.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.Security.Claims;
 
 namespace BeaconUI.Core.Auth.Services;
 
@@ -9,7 +10,7 @@ public sealed class BeaconAuthStateProvider : AuthenticationStateProvider
 {
     private readonly ISender _sender;
 
-    private AuthUserDto? CurrentUser { get; set; }
+    private ClaimsPrincipal? CurrentUser { get; set; }
 
     public BeaconAuthStateProvider(ISender sender)
     {
@@ -21,15 +22,17 @@ public sealed class BeaconAuthStateProvider : AuthenticationStateProvider
         if (CurrentUser == null)
         {
             var result = await _sender.Send(new GetCurrentUserRequest());
-            CurrentUser = result.IsError ? null : result.Value;
+            CurrentUser = result.IsError ? AnonymousUser : result.Value.ToClaimsPrincipal();
         }
 
-        return new AuthenticationState(CurrentUser.ToClaimsPrincipal());
+        return new AuthenticationState(CurrentUser);
     }
 
-    public void RefreshState()
+    public void UpdateCurrentUser(AuthUserDto? currentUser)
     {
-        CurrentUser = null;
+        CurrentUser = currentUser.ToClaimsPrincipal();
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
+
+    private static ClaimsPrincipal AnonymousUser { get; } = new ClaimsPrincipal(new ClaimsIdentity());
 }

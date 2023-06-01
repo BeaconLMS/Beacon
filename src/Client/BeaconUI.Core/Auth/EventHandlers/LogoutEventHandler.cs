@@ -20,7 +20,8 @@ internal sealed record LogoutEventHandler : INotificationHandler<LogoutEvent>
 
     public Task Handle(LogoutEvent notification, CancellationToken cancellationToken)
     {
-        ((BeaconAuthStateProvider)_authStateProvider).RefreshState();
+        ((BeaconAuthStateProvider)_authStateProvider).UpdateCurrentUser(null);
+
         _navManager.NavigateToLogin("login");
 
         return Task.CompletedTask;

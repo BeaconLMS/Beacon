@@ -19,7 +19,7 @@ internal class LoginEventHandler : INotificationHandler<LoginEvent>
 
     public Task Handle(LoginEvent notification, CancellationToken cancellationToken)
     {
-        ((BeaconAuthStateProvider)_authStateProvider).RefreshState();
+        ((BeaconAuthStateProvider)_authStateProvider).UpdateCurrentUser(notification.LoggedInUser);
         _navManager.NavigateTo("");
 
         return Task.CompletedTask;
