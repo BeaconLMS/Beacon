@@ -1,5 +1,4 @@
-﻿using Beacon.Common.Users;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace Beacon.Common.Auth.Requests;
 
