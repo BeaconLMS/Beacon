@@ -13,7 +13,7 @@ public class LoginRequest : IApiRequest<AuthUserDto>
         {
 
             RuleFor(r => r.EmailAddress)
-                .EmailAddress().WithMessage("Invalid email address.");
+                .EmailAddress().WithMessage("Valid email address is required.");
 
             RuleFor(r => r.Password)
                 .NotEmpty().WithMessage("Password is required.");

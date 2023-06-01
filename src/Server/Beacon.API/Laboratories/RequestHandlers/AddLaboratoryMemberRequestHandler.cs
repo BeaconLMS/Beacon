@@ -38,20 +38,20 @@ internal sealed class AddLaboratoryMemberRequestHandler : IApiRequestHandler<Add
     {
         var lab = await _dbContext.Laboratories
             .Where(l => l.Id == request.LaboratoryId && l.Memberships.Any(m => m.MemberId == _currentUser.UserId)) // only search labs that the current user is a member of
-            .Include(l => l.Memberships.Where(m => m.MemberId == request.NewMemberUserId))
+            .Include(l => l.Memberships.Where(m => m.Member.EmailAddress == request.NewMemberEmailAddress))
             .AsSplitQuery()
             .FirstOrDefaultAsync(ct);
 
         if (lab is null)
             return Error.Validation(nameof(AddLaboratoryMemberRequest.LaboratoryId), "The specified laboratory was not found.");
 
-        if (lab.HasMember(request.NewMemberUserId))
-            return Error.Validation(nameof(AddLaboratoryMemberRequest.NewMemberUserId), "The specified user is already a member of this lab.");
-
-        var newMember = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == request.NewMemberUserId, ct);
+        var newMember = await _dbContext.Users.FirstOrDefaultAsync(u => u.EmailAddress == request.NewMemberEmailAddress, ct);
 
         if (newMember is null)
             return Error.NotFound(description: "The specified member was not found.");
+
+        if (lab.HasMember(newMember.Id))
+            return Error.Validation(nameof(AddLaboratoryMemberRequest.NewMemberEmailAddress), "The specified user is already a member of this lab.");
 
         return (lab, newMember);
     }

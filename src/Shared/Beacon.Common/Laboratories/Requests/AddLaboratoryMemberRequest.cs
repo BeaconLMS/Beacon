@@ -6,7 +6,7 @@ namespace Beacon.Common.Laboratories.Requests;
 public class AddLaboratoryMemberRequest : IApiRequest<Success>
 {
     public Guid LaboratoryId { get; set; }
-    public Guid NewMemberUserId { get; set; }
+    public string NewMemberEmailAddress { get; set; } = string.Empty;
 
     public class Validator : AbstractValidator<AddLaboratoryMemberRequest>
     {
@@ -15,8 +15,8 @@ public class AddLaboratoryMemberRequest : IApiRequest<Success>
             RuleFor(x => x.LaboratoryId)
                 .NotEmpty().WithMessage("Laboratory must be specified.");
 
-            RuleFor(x => x.NewMemberUserId)
-                .NotEmpty().WithMessage("New member must be specified.");
+            RuleFor(x => x.NewMemberEmailAddress)
+                .EmailAddress().WithMessage("Valid email address is required.");
         }
     }
 }
