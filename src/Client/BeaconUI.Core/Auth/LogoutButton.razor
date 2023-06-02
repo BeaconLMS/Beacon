@@ -1,4 +1,6 @@
-﻿@inject ISender Sender
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inject NavigationManager NavManager
+@inject ISender Sender
 
 <button id="logout" type="button" @attributes="Attributes" @onclick="Logout">
     @ChildContent
@@ -12,9 +14,11 @@
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
-    private async Task Logout()
+    public async Task Logout()
     {
-        await Sender.Send(new LogoutRequest());
-        StateHasChanged();
+        var result = await Sender.Send(new LogoutRequest());
+
+        if (!result.IsError)
+            NavManager.NavigateToLogin("login");
     }
 }

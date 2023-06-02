@@ -22,7 +22,7 @@ public static class BeaconUISetup
         {
             config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
         });
-        services.AddTransient(typeof(INotificationHandler<>), typeof(BeaconNotificationHandler<>));
+        services.AddScoped(typeof(INotificationHandler<>), typeof(BeaconNotificationHandler<>));
         services.AddValidationPipeline();
 
         return services;

@@ -36,7 +36,7 @@ public class AppTests : TestContext
     }
 
     [Fact]
-    public void WebApp_RedirectsToLogin_WhenLoggedInUserClicksLogout()
+    public async Task WebApp_RedirectsToLogin_WhenLoggedInUserClicksLogout()
     {
         // Arrange
         Services.AddBeaconUI();
@@ -52,13 +52,9 @@ public class AppTests : TestContext
         var cut = RenderComponent<BeaconUI.WebApp.App>();
         navManager.NavigateTo("");
 
-        cut.WaitForAssertion(() => cut.FindComponent<MainLayout>());
-
-        var homePage = cut.FindComponent<MainLayout>();
-        cut.Find("button#logout").Click();
+        await cut.WaitForElement("button#logout").ClickAsync(new MouseEventArgs());
 
         // Assert
-        homePage.WaitForState(() => navManager.Uri == $"{navManager.BaseUri}login");
-        //homePage.WaitForAssertion(() => navManager.Uri.Should().Be($"{navManager.BaseUri}login"), TimeSpan.FromSeconds(10));
+        cut.WaitForAssertion(() => navManager.Uri.Should().Be($"{navManager.BaseUri}login"), TimeSpan.FromSeconds(10));
     }
 }

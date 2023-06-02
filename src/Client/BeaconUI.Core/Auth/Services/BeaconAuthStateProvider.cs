@@ -38,12 +38,6 @@ public sealed class BeaconAuthStateProvider : AuthenticationStateProvider, IDisp
         return new AuthenticationState(CurrentUser);
     }
 
-    public void UpdateCurrentUser(AuthUserDto? currentUser)
-    {
-        CurrentUser = currentUser.ToClaimsPrincipal();
-        NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
-    }
-
     private void Handle(LoginEvent notification)
     {
         UpdateCurrentUser(notification.LoggedInUser);
@@ -52,6 +46,12 @@ public sealed class BeaconAuthStateProvider : AuthenticationStateProvider, IDisp
     private void Handle(LogoutEvent notification)
     {
         UpdateCurrentUser(null);
+    }
+
+    private void UpdateCurrentUser(AuthUserDto? currentUser)
+    {
+        CurrentUser = currentUser.ToClaimsPrincipal();
+        NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(CurrentUser)));
     }
 
     private static ClaimsPrincipal AnonymousUser { get; } = new ClaimsPrincipal(new ClaimsIdentity());
