@@ -1,0 +1,11 @@
+button > span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.spinner-border {
+    position: absolute;
+    left: 0;
+}
