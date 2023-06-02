@@ -15,5 +15,6 @@
     private async Task Logout()
     {
         await Sender.Send(new LogoutRequest());
+        StateHasChanged();
     }
 }

@@ -1,5 +1,7 @@
-﻿using MediatR;
+﻿namespace Beacon.Common.Auth.Events;
 
-namespace Beacon.Common.Auth.Events;
+public sealed record LoginEvent(AuthUserDto LoggedInUser) : IBeaconEvent<LoginEvent>
+{
+    public static Action<LoginEvent>? OnTrigger { get; set; }
 
-public sealed record LoginEvent(AuthUserDto LoggedInUser) : INotification;
+}

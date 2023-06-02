@@ -1,6 +1,7 @@
 ﻿using Beacon.Common.Validation;
 using BeaconUI.Core.Auth.Services;
 using BeaconUI.Core.Laboratories.Services;
+using MediatR;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -21,7 +22,7 @@ public static class BeaconUISetup
         {
             config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
         });
-
+        services.AddTransient(typeof(INotificationHandler<>), typeof(BeaconNotificationHandler<>));
         services.AddValidationPipeline();
 
         return services;

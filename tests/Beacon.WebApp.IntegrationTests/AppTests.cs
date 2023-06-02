@@ -1,6 +1,13 @@
-﻿using Beacon.WebApp.IntegrationTests.Auth;
+﻿using Beacon.Common.Auth.Events;
+using Beacon.WebApp.IntegrationTests.Auth;
 using BeaconUI.Core;
+using BeaconUI.Core.Auth;
+using BeaconUI.Core.Auth.Services;
+using BeaconUI.Core.Shared;
 using Bunit.TestDoubles;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using RichardSzalay.MockHttp;
 
@@ -9,7 +16,7 @@ namespace Beacon.WebApp.IntegrationTests;
 public class AppTests : TestContext
 {
     [Fact]
-    public void AuthorizedLayout_RedirectsToLogin_WhenUserIsNotAuthorized()
+    public void WebApp_RedirectsToLogin_WhenUserIsNotAuthorized()
     {
         // Arrange
         this.AddTestAuthorization().SetNotAuthorized();
@@ -29,11 +36,11 @@ public class AppTests : TestContext
     }
 
     [Fact]
-    public void AuthorizedLayout_RedirectsToLogin_WhenLoggedInUserClicksLogout()
+    public void WebApp_RedirectsToLogin_WhenLoggedInUserClicksLogout()
     {
         // Arrange
-        this.AddTestAuthorization().SetAuthorized("Test");
         Services.AddBeaconUI();
+        Services.AddScoped<IAuthorizationService, FakeAuthorizationService>();
 
         var mockHttp = Services.AddMockHttpClient();
         mockHttp.When(HttpMethod.Get, "/api/auth/me").ThenRespondOK(AuthHelper.DefaultUser);
@@ -45,9 +52,13 @@ public class AppTests : TestContext
         var cut = RenderComponent<BeaconUI.WebApp.App>();
         navManager.NavigateTo("");
 
-        cut.WaitForElement("button#logout").Click();
+        cut.WaitForAssertion(() => cut.FindComponent<MainLayout>());
+
+        var homePage = cut.FindComponent<MainLayout>();
+        cut.Find("button#logout").Click();
 
         // Assert
-        cut.WaitForAssertion(() => navManager.Uri.Should().Be($"{navManager.BaseUri}login"));
+        homePage.WaitForState(() => navManager.Uri == $"{navManager.BaseUri}login");
+        //homePage.WaitForAssertion(() => navManager.Uri.Should().Be($"{navManager.BaseUri}login"), TimeSpan.FromSeconds(10));
     }
 }

@@ -7,6 +7,7 @@ namespace BeaconUI.Core.Pages.Auth;
 
 public partial class LoginPage
 {
+    [Inject] private NavigationManager NavManager { get; set; } = null!;
     [Inject] private ISender Sender { get; set; } = null!;
 
     private LoginRequest Model { get; set; } = new();
@@ -14,8 +15,6 @@ public partial class LoginPage
     private async Task Submit(BeaconForm formContext)
     {
         var result = await Sender.Send(Model);
-
-        if (result.IsError)
-            formContext.AddErrors(result.Errors);
+        result.Switch(_ => NavManager.NavigateTo(""), formContext.AddErrors);
     }
 }
