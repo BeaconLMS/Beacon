@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Beacon.Common.Laboratories.Requests;
 
-public class CreateLaboratoryRequest : IApiRequest<LaboratoryDto>
+public class CreateLaboratoryRequest
 {
     public string LaboratoryName { get; set; } = string.Empty;
 

@@ -1,7 +1,6 @@
 ﻿using BeaconUI.Core.Clients;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 namespace BeaconUI.Core;
 
@@ -16,11 +15,6 @@ public static class BeaconUISetup
 
         services.AddScoped<AuthClient>();
         services.AddScoped<LabClient>();
-
-        services.AddMediatR(config =>
-        {
-            config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-        });
 
         return services;
     }
