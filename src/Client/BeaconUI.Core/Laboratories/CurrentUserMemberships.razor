@@ -1,28 +1,53 @@
 ﻿@using Beacon.Common.Laboratories
+@using Beacon.Common.Laboratories.Events
 @using Beacon.Common.Laboratories.Requests
-@using BeaconUI.Core.Laboratories.Services
 
-@inject CurrentUserMembershipProvider MembershipProvider
+@inject ISender Sender
 
 @implements IDisposable
 
-@ChildContent?.Invoke(this)
+@if (CurrentUser is not null)
+{
+    @ChildContent?.Invoke(this)
+}
 
 @code {
 
+    [CascadingParameter] public required Task<AuthenticationState> AuthStateTask { get; set; }
     [Parameter] public RenderFragment<CurrentUserMemberships>? ChildContent { get; set; }
 
+    private AuthUserDto? CurrentUser { get; set; }
     private List<LaboratoryMembershipDto>? Memberships { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        MembershipProvider.MembershipsChanged += HandleMembershipsChanged;
-        Memberships = await MembershipProvider.GetMembershipsAsync();
+        LaboratoryCreatedEvent.OnTrigger += Handle;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var authState = await AuthStateTask;
+        var currentUser = authState.User.ToAuthUserDto();
+
+        if (currentUser?.Id != CurrentUser?.Id)
+        {
+            CurrentUser = currentUser;
+
+            if (CurrentUser is not null)
+            {
+                var getMembershipsResult = await Sender.Send(new GetLaboratoryMembershipsByUserIdRequest { UserId = CurrentUser.Id });
+                Memberships = getMembershipsResult.IsError ? null : getMembershipsResult.Value;                
+            }
+            else
+            {
+                Memberships = null;
+            }
+        }
     }
 
     public void Dispose()
     {
-        MembershipProvider.MembershipsChanged -= HandleMembershipsChanged;
+        LaboratoryCreatedEvent.OnTrigger -= Handle;
     }
 
     public IReadOnlyList<LaboratoryMembershipDto>? GetAll()
@@ -35,9 +60,20 @@
         return Memberships?.FirstOrDefault(m => m.LaboratoryId == labId);
     }
 
-    private void HandleMembershipsChanged(List<LaboratoryMembershipDto> memberships)
+    private void Handle(LaboratoryCreatedEvent notification)
     {
-        Memberships = memberships;
+        Console.WriteLine("Adding membership...");
+        if (CurrentUser is null) return;
+
+        Memberships?.Add(new LaboratoryMembershipDto
+        {
+            LaboratoryId = notification.Laboratory.Id,
+            LaboratoryName = notification.Laboratory.Name,
+            MemberId = CurrentUser.Id,
+            MemberDisplayName = CurrentUser.DisplayName,
+            MembershipType = "Admin"
+        });
+
         StateHasChanged();
     }
 }

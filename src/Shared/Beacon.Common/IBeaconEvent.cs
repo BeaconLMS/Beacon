@@ -8,6 +8,7 @@ public interface IBeaconEvent<T> : INotification where T : IBeaconEvent<T>
     
     public static virtual void Trigger(T notification)
     {
+        Console.WriteLine($"Triggering {notification.GetType().Name}");
         T.OnTrigger?.Invoke(notification);
     }
 }

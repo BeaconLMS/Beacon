@@ -7,6 +7,7 @@ public class BeaconNotificationHandler<T> : INotificationHandler<T> where T : IB
 {
     public Task Handle(T notification, CancellationToken cancellationToken)
     {
+        Console.WriteLine($"Handling notification {notification.GetType().Name}");
         T.Trigger(notification);
         return Task.CompletedTask;
     }
