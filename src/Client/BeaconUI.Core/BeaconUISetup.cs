@@ -1,6 +1,5 @@
 ﻿using Beacon.Common.Validation;
-using BeaconUI.Core.Shared.Auth;
-using BeaconUI.Core.Shared.Laboratories;
+using BeaconUI.Core.Clients;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;

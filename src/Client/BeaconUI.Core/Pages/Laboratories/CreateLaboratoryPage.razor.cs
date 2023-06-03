@@ -1,8 +1,8 @@
 using Beacon.Common.Laboratories;
 using Beacon.Common.Laboratories.Requests;
+using BeaconUI.Core.Clients;
 using BeaconUI.Core.Helpers;
-using BeaconUI.Core.Shared.Common;
-using BeaconUI.Core.Shared.Laboratories;
+using BeaconUI.Core.Shared.Forms;
 using Microsoft.AspNetCore.Components;
 
 namespace BeaconUI.Core.Pages.Laboratories;

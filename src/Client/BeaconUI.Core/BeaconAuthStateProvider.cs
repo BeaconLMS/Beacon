@@ -1,8 +1,9 @@
 ﻿using Beacon.Common.Auth;
+using BeaconUI.Core.Clients;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 
-namespace BeaconUI.Core.Shared.Auth;
+namespace BeaconUI.Core;
 
 public sealed class BeaconAuthStateProvider : AuthenticationStateProvider, IDisposable
 {

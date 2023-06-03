@@ -1,6 +1,6 @@
 using Beacon.Common.Auth.Requests;
-using BeaconUI.Core.Shared.Auth;
-using BeaconUI.Core.Shared.Common;
+using BeaconUI.Core.Clients;
+using BeaconUI.Core.Shared.Forms;
 using Microsoft.AspNetCore.Components;
 
 namespace BeaconUI.Core.Pages.Auth;

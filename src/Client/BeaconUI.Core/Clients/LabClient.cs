@@ -4,7 +4,7 @@ using BeaconUI.Core.Helpers;
 using ErrorOr;
 using System.Net.Http.Json;
 
-namespace BeaconUI.Core.Shared.Laboratories;
+namespace BeaconUI.Core.Clients;
 
 public sealed class LabClient
 {
