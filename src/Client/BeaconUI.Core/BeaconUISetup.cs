@@ -1,5 +1,6 @@
 ﻿using Beacon.Common.Validation;
 using BeaconUI.Core.Shared.Auth;
+using BeaconUI.Core.Shared.Laboratories;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -14,6 +15,9 @@ public static class BeaconUISetup
         services.AddAuthorizationCore();
         services.AddScoped<AuthenticationStateProvider, BeaconAuthStateProvider>();
         services.AddScoped(sp => (BeaconAuthStateProvider)sp.GetRequiredService<AuthenticationStateProvider>());
+
+        services.AddScoped<AuthClient>();
+        services.AddScoped<LabClient>();
 
         services.AddMediatR(config =>
         {

@@ -1,4 +1,6 @@
+using Beacon.Common.Laboratories;
 using Beacon.Common.Laboratories.Requests;
+using BeaconUI.Core.Helpers;
 using BeaconUI.Core.Shared.Common;
 using BeaconUI.Core.Shared.Laboratories;
 using Microsoft.AspNetCore.Components;
@@ -15,10 +17,11 @@ public partial class CreateLaboratoryPage
     private async Task Submit(BeaconForm formContext)
     {
         var result = await LabClient.CreateLaboratoryAsync(Model);
+        result.Switch(NavigateToLabDetailsPage, formContext.AddErrors);
+    }
 
-        if (result.IsError)
-            formContext.AddErrors(result.Errors);
-        else
-            NavManager.NavigateTo($"laboratories/{result.Value.Id}");
+    private void NavigateToLabDetailsPage(LaboratoryDto lab)
+    {
+        NavManager.NavigateTo(NavigationHelper.GetLabDetailsHref(lab.Id));
     }
 }
