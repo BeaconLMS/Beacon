@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Text.Json.Serialization;
 
 namespace Beacon.API;
 
@@ -16,7 +17,10 @@ public static class BeaconAPI
     public static IServiceCollection AddBeaconCore(this IServiceCollection services, Action<DbContextOptionsBuilder> dbOptionsAction)
     {
         // Api
-        services.AddEndpointsApiExplorer();
+        services.AddEndpointsApiExplorer().ConfigureHttpJsonOptions(jsonOptions =>
+        {
+            jsonOptions.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
 
         // Auth
         services.AddAuthentication().AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);

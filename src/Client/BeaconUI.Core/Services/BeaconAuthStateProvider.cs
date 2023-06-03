@@ -3,33 +3,32 @@ using BeaconUI.Core.Clients;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 
-namespace BeaconUI.Core;
+namespace BeaconUI.Core.Services;
 
 public sealed class BeaconAuthStateProvider : AuthenticationStateProvider, IDisposable
 {
-    private readonly AuthClient _authClient;
+    private readonly AuthClient _apiClient;
 
     public ClaimsPrincipal? CurrentUser { get; private set; }
 
     public BeaconAuthStateProvider(AuthClient authClient)
     {
-        _authClient = authClient;
-        _authClient.OnLogin += HandleLogin;
-        _authClient.OnLogout += HandleLogout;
-
+        _apiClient = authClient;
+        _apiClient.OnLogin += HandleLogin;
+        _apiClient.OnLogout += HandleLogout;
     }
 
     public void Dispose()
     {
-        _authClient.OnLogin -= HandleLogin;
-        _authClient.OnLogout -= HandleLogout;
+        _apiClient.OnLogin -= HandleLogin;
+        _apiClient.OnLogout -= HandleLogout;
     }
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         if (CurrentUser == null)
         {
-            var result = await _authClient.GetCurrentUserAsync();
+            var result = await _apiClient.GetCurrentUserAsync();
             CurrentUser = result.IsError ? AnonymousUser : result.Value.ToClaimsPrincipal();
         }
 

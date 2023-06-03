@@ -1,4 +1,6 @@
 ﻿using BeaconUI.Core.Clients;
+using BeaconUI.Core.Services;
+using Blazored.SessionStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,6 +17,8 @@ public static class BeaconUISetup
 
         services.AddScoped<AuthClient>();
         services.AddScoped<LabClient>();
+
+        services.AddBlazoredSessionStorage();
 
         return services;
     }
