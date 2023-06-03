@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Routing;
 
 namespace Beacon.API.Endpoints;
 
-internal sealed class LaboratoryEndpoints : IApiEndpointGroup
+internal sealed class LabEndpoints : IApiEndpointGroup
 {
     public static void MapEndpoints(IEndpointRouteBuilder app)
     {
