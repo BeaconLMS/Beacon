@@ -9,7 +9,6 @@ builder.Services.AddBeaconCore(options =>
     options.UseSqlServer(connectionString);
 });
 
-builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
@@ -26,6 +25,15 @@ app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers();
+
+app.UseExceptionHandler(builder =>
+{
+    builder.Run(async context => await Results.Problem(statusCode: 422).ExecuteAsync(context));
+});
+
+var endpointRoot = app.MapGroup("api");
+endpointRoot.MapBeaconEndpoints();
+endpointRoot.MapGet("ping", () => Results.Ok("pong"));
+
 app.MapFallbackToFile("index.html");
 app.Run();

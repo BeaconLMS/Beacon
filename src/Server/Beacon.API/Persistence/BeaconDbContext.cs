@@ -1,9 +1,10 @@
-﻿using Beacon.API.Entities;
+﻿using Beacon.API.App.Services;
+using Beacon.API.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Beacon.API.Persistence;
 
-public class BeaconDbContext : DbContext
+public class BeaconDbContext : DbContext, IUnitOfWork
 {
     public DbSet<Laboratory> Laboratories => Set<Laboratory>();
     public DbSet<LaboratoryMembership> LaboratoryMemberships => Set<LaboratoryMembership>();
@@ -11,6 +12,11 @@ public class BeaconDbContext : DbContext
 
     public BeaconDbContext(DbContextOptions<BeaconDbContext> options) : base(options)
     {
+    }
+
+    public IRepository<T> Get<T>() where T : class
+    {
+        return new Repository<T>(this);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

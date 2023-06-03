@@ -1,5 +1,5 @@
 using Beacon.Common.Auth.Requests;
-using BeaconUI.Core.Shared;
+using BeaconUI.Core.Shared.Common;
 using MediatR;
 using Microsoft.AspNetCore.Components;
 

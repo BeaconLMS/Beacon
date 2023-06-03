@@ -1,7 +1,9 @@
 ﻿@page "/laboratories/{Id:guid}"
 @attribute [Authorize]
 
-<AuthorizedLaboratoryView Context="lab" LaboratoryId="@Id">
+<p>This is the laboratory details page.</p>
+
+@*<AuthorizedLaboratoryView Context="lab" LaboratoryId="@Id">
 
     <h3 style="display: flex; align-items: center; gap: 0.5rem;">
         <AvatarSquare Value="@lab.LaboratoryName[0]" />
@@ -26,7 +28,7 @@
             </ul>
         }
     </LabMemberships>
-</AuthorizedLaboratoryView>
+</AuthorizedLaboratoryView>*@
 
 @code {
 

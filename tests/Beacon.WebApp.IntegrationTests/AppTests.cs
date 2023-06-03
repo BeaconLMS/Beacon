@@ -1,12 +1,7 @@
-﻿using Beacon.Common.Auth.Events;
-using Beacon.WebApp.IntegrationTests.Auth;
+﻿using Beacon.WebApp.IntegrationTests.Auth;
 using BeaconUI.Core;
-using BeaconUI.Core.Auth;
-using BeaconUI.Core.Auth.Services;
-using BeaconUI.Core.Shared;
 using Bunit.TestDoubles;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using RichardSzalay.MockHttp;

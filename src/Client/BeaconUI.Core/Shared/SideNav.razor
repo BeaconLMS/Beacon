@@ -2,7 +2,7 @@
 
 <div class="nav-scrollable">
     <nav class="d-flex flex-column">
-        <CurrentUserMemberships Context="Memberships">
+        @*<CurrentUserMemberships Context="Memberships">
             @foreach (var membership in Memberships.GetAll() ?? new List<LaboratoryMembershipDto>())
             {
                 <div class="nav-item px-3">
@@ -12,7 +12,7 @@
                     </NavLink>
                 </div>
             }
-        </CurrentUserMemberships>
+        </CurrentUserMemberships>*@
         <div class="nav-item px-3">
             <a class="nav-link" href="new-lab">New laboratory</a>
         </div>
