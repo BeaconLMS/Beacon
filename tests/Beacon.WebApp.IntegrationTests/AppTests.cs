@@ -41,6 +41,7 @@ public class AppTests : TestContext
         mockHttp.When(HttpMethod.Get, "/api/auth/me").ThenRespondOK(AuthHelper.DefaultUser);
         mockHttp.When(HttpMethod.Get, "/api/auth/logout").ThenRespondNoContent();
 
+        var authProvider = Services.GetRequiredService<BeaconAuthStateProvider>();
         var navManager = Services.GetRequiredService<FakeNavigationManager>();
 
         // Act
@@ -50,6 +51,6 @@ public class AppTests : TestContext
         await cut.WaitForElement("button#logout").ClickAsync(new MouseEventArgs());
 
         // Assert
-        cut.WaitForAssertion(() => navManager.Uri.Should().Be($"{navManager.BaseUri}login"), TimeSpan.FromSeconds(10));
+        cut.WaitForAssertion(() => navManager.Uri.Should().Be($"{navManager.BaseUri}login"));
     }
 }

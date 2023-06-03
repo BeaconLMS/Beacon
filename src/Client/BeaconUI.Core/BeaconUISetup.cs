@@ -1,5 +1,4 @@
-﻿using Beacon.Common.Validation;
-using BeaconUI.Core.Clients;
+﻿using BeaconUI.Core.Clients;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -22,7 +21,6 @@ public static class BeaconUISetup
         {
             config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
         });
-        services.AddValidationPipeline();
 
         return services;
     }
