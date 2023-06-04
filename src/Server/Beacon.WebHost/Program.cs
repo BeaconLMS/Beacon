@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddBeaconCore(options =>
+builder.Services.AddBeaconCore(builder.Configuration, options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("SqlServerDb");
     options.UseSqlServer(connectionString);

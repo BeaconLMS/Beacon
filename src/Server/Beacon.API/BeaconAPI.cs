@@ -1,4 +1,6 @@
 ﻿using Beacon.API.App.Services;
+using Beacon.API.App.Settings;
+using Beacon.API.Infrastructure.Email;
 using Beacon.API.Persistence;
 using Beacon.API.Presentation.Endpoints;
 using Beacon.API.Presentation.Services;
@@ -7,6 +9,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json.Serialization;
 
@@ -14,7 +17,7 @@ namespace Beacon.API;
 
 public static class BeaconAPI
 { 
-    public static IServiceCollection AddBeaconCore(this IServiceCollection services, Action<DbContextOptionsBuilder> dbOptionsAction)
+    public static IServiceCollection AddBeaconCore(this IServiceCollection services, IConfiguration config, Action<DbContextOptionsBuilder> dbOptionsAction)
     {
         // Api
         services.AddEndpointsApiExplorer().ConfigureHttpJsonOptions(jsonOptions =>
@@ -32,6 +35,10 @@ public static class BeaconAPI
         // Data
         services.AddDbContext<BeaconDbContext>(dbOptionsAction);
         services.AddScoped<IUnitOfWork, BeaconDbContext>();
+
+        // Email
+        services.AddScoped<IEmailService, EmailService>();
+        services.Configure<EmailSettings>(config.GetRequiredSection("EmailSettings"));
 
         // Framework
         services.AddMediatR(config =>
@@ -53,6 +60,7 @@ public static class BeaconAPI
         // TODO: register via reflection
         AuthEndpoints.Map(app);
         LabEndpoints.Map(app);
+
         return app;
     }
 }
