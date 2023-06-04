@@ -40,12 +40,9 @@ public sealed class LabClient
         return await response.ToErrorOrResult<LaboratoryDetailDto>(ct);
     }
 
-    public async Task InviteMemberAsync(Guid labId, CancellationToken ct = default)
+    public async Task<ErrorOr<Success>> InviteMemberAsync(Guid labId, InviteLabMemberRequest request, CancellationToken ct = default)
     {
-        await _httpClient.PostAsJsonAsync($"api/laboratories/{labId}/invitations", new InviteLabMemberRequest
-        {
-            MembershipType = "Member",
-            NewMemberEmailAddress = "erinmclaughlin219@gmail.com"
-        }, ct);
+        var response = await _httpClient.PostAsJsonAsync($"api/laboratories/{labId}/invitations", request, ct);
+        return await response.ToErrorOrResult(ct);
     }
 }

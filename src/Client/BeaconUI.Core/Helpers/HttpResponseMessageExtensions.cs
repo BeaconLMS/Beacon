@@ -7,7 +7,26 @@ namespace BeaconUI.Core.Helpers;
 
 public static class HttpResponseMessageExtensions
 {
+    public static async Task<ErrorOr<Success>> ToErrorOrResult(this HttpResponseMessage response, CancellationToken ct = default)
+    {
+        if (response.IsSuccessStatusCode)
+            return Result.Success;
+
+        return await response.ToErrorOrResult<Success>(ct);
+    }
+
     public static async Task<ErrorOr<T>> ToErrorOrResult<T>(this HttpResponseMessage response, CancellationToken ct = default)
+    {
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<T>(cancellationToken: ct);
+            return result is null ? Error.Unexpected() : result;
+        }
+
+        return await GetErrorResult<T>(response, ct);        
+    }
+
+    private static async Task<ErrorOr<T>> GetErrorResult<T>(this HttpResponseMessage response, CancellationToken ct = default)
     {
         if (response.StatusCode is HttpStatusCode.NotFound)
             return Error.NotFound();
@@ -19,11 +38,6 @@ public static class HttpResponseMessageExtensions
             return errors is null ? Error.Unexpected() : errors;
         }
 
-        if (response.IsSuccessStatusCode)
-        {
-            var result = await response.Content.ReadFromJsonAsync<T>(cancellationToken: ct);
-            return result is null ? Error.Unexpected() : result;
-        }
 
         return Error.Failure();
     }

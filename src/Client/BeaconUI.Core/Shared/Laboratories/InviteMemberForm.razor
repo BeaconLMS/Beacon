@@ -1,0 +1,42 @@
+﻿@using Beacon.Common.Laboratories.Requests
+
+<div>
+    <BeaconForm Model="Model" OnValidSubmit="Submit">
+
+        <div class="field">
+            <label class="form-label" for="email">Email</label>
+            <InputText @bind-Value="Model.NewMemberEmailAddress" class="form-control" id="email" type="email" placeholder="eg, jsparrow@blackpearl.arg" />
+            <ValidationMessage For="() => Model.NewMemberEmailAddress" />
+        </div>
+
+        <SubmitButton class="btn btn-primary">Send Invite</SubmitButton>
+        <button class="btn btn-secondary" type="button" @onclick="Cancel">Cancel</button>
+
+    </BeaconForm>
+</div>
+
+@code {
+
+    [Inject] private LabClient LabClient { get; set; } = null!;
+
+    [CascadingParameter] private BlazoredModalInstance Modal { get; set; } = null!;
+
+    [Parameter] public Guid LaboratoryId { get; set; }
+
+    private InviteLabMemberRequest Model { get; } = new();
+
+    private async Task Submit(BeaconForm form)
+    {
+        var result = await LabClient.InviteMemberAsync(LaboratoryId, Model);
+
+        if (result.IsError)
+        {
+            form.AddErrors(result.Errors);
+            return;
+        }
+
+        await Modal.CloseAsync(ModalResult.Ok());
+    }
+
+    private async Task Cancel() => await Modal.CancelAsync();
+}
