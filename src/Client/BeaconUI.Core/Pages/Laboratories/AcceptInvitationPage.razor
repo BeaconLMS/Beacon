@@ -1,7 +1,11 @@
-﻿@page "/laboratories/{LabId:guid}/invitations/{InvitationId:guid}/accept"
+﻿@page "/laboratories/{LabId:guid}/invitations/{InviteId:guid}/accept"
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @layout EmptyLayout
 
 @code {
+
+    [Inject]
+    private AuthenticationStateProvider AuthStateProvider { get; set; } = null!;
 
     [Inject]
     private HttpClient HttpClient { get; set; } = null!;
@@ -13,14 +17,23 @@
     public Guid LabId { get; set; }
 
     [Parameter] 
-    public Guid InvitationId { get; set; }
+    public Guid InviteId { get; set; }
 
     [Parameter, SupplyParameterFromQuery(Name = "emailId")]
     public Guid EmailId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await HttpClient.GetAsync($"api/invitations/{InvitationId}/accept?emailId={EmailId}");
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+
+        if (authState.User.Identity is not { IsAuthenticated: true })
+        {
+            var redirectUri = $"laboratories/{LabId}/invitations/{InviteId}/accept?emailId={EmailId}";
+            NavManager.NavigateToLogin($"login?redirectUri={redirectUri}");
+            return;
+        }
+
+        var response = await HttpClient.GetAsync($"api/invitations/{InviteId}/accept?emailId={EmailId}");
 
         if (response.IsSuccessStatusCode)
             NavManager.NavigateTo(NavigationHelper.GetLabDetailsHref(LabId));

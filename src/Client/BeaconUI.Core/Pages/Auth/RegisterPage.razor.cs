@@ -10,12 +10,15 @@ public partial class RegisterPage
     [Inject] private AuthClient AuthClient { get; set; } = null!;
     [Inject] private NavigationManager NavManager { get; set; } = null!;
 
+    [Parameter, SupplyParameterFromQuery(Name = "redirectUri")]
+    public string? RedirectUri { get; set; }
+
     private RegisterRequest Model { get; set; } = new();
 
     private async Task Submit(BeaconForm formContext)
     {
         var result = await AuthClient.RegisterAsync(Model);
-        result.Switch(_ => NavManager.NavigateTo(""), formContext.AddErrors);
+        result.Switch(_ => NavManager.NavigateTo(RedirectUri ?? ""), formContext.AddErrors);
     }
 
     private void DoAfterUpdateEmail()
