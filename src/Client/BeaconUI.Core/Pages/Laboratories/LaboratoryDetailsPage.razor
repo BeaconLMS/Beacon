@@ -2,6 +2,13 @@
 @attribute [Authorize]
 @layout LaboratoryLayout
 
+<MyLaboratories Context="memberships">
+    @if (memberships.FirstOrDefault(m => m.Laboratory.Id == Id) is { } membership)
+    {
+        <h3>@membership.Laboratory.Name</h3>
+    }
+</MyLaboratories>
+
 <p>This is the laboratory details page.</p>
 
 @*<AuthorizedLaboratoryView Context="lab" LaboratoryId="@Id">
