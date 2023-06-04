@@ -1,0 +1,16 @@
+﻿<SideNav>
+    <MyLaboratories Context="memberships">
+        @foreach (var membership in memberships)
+        {
+            <div class="nav-item">
+                <NavLink class="nav-link" href="@NavigationHelper.GetLabDetailsHref(membership.Laboratory.Id)" Match="NavLinkMatch.All">
+                    <AvatarSquare Value="@membership.Laboratory.Name[0]" FontSize="1rem" Size="1.5rem" />
+                    <span class="nav-text">@membership.Laboratory.Name</span>
+                </NavLink>
+            </div>
+        }
+    </MyLaboratories>
+    <div class="nav-item">
+        <a class="nav-link" href="new-lab">New laboratory</a>
+    </div>
+</SideNav>

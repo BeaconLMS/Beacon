@@ -20,7 +20,7 @@ public partial class CreateLaboratoryPage
         result.Switch(NavigateToLabDetailsPage, formContext.AddErrors);
     }
 
-    private void NavigateToLabDetailsPage(LaboratoryDto lab)
+    private void NavigateToLabDetailsPage(LaboratorySummaryDto lab)
     {
         NavManager.NavigateTo(NavigationHelper.GetLabDetailsHref(lab.Id));
     }

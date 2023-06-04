@@ -2,11 +2,13 @@
 using BeaconUI.Core.Clients;
 using Microsoft.AspNetCore.Components;
 
-namespace BeaconUI.Core.Shared.Layout;
+namespace BeaconUI.Core.Shared.Laboratories;
 
-public sealed partial class SideNav : IDisposable
+public sealed partial class MyLaboratories : IDisposable
 {
     [Inject] private LabClient LabClient { get; set; } = null!;
+
+    [Parameter] public RenderFragment<List<LaboratoryMembershipDto>>? ChildContent { get; set; }
 
     private List<LaboratoryMembershipDto> Memberships { get; set; } = new();
 

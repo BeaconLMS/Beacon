@@ -1,0 +1,32 @@
+nav {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background: white;
+    height: var(--sidebar-height);
+    position: relative;
+    transition: width 1s ease;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+@media (min-width: 992px) {
+    nav {
+        width: var(--sidebar-width);
+        transition: width .2s ease;
+        border-right: 1px solid #dbdbdb;
+    }
+
+        nav.collapse:not(.show) {
+            display: flex;
+        }
+
+        nav.narrow {
+            --sidebar-width: 4rem;
+            align-items: center;
+        }
+
+        nav.narrow ::deep .nav-text {
+            display: none;
+        }
+}

@@ -1,0 +1,8 @@
+﻿<AuthorizeView>
+    <header id="topnav" class="d-flex flex-row flex-shrink-0 shadow-sm w-100">
+        <div class="ms-auto">
+            <span>Hello, @(context.User.ToAuthUserDto()?.DisplayName)!</span>
+            <LogoutButton class="btn btn-link ms-1">Logout</LogoutButton>
+        </div>
+    </header>
+</AuthorizeView>

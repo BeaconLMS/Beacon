@@ -1,0 +1,22 @@
+﻿@using Beacon.Common.Laboratories
+
+<AuthorizeView>
+    <nav class="navbar collapse collapse-horizontal @(ShowNav ? "show" : "hide") @(IsNarrow ? "narrow" : "")">
+        <div class="navbar-nav flex-column flex-grow-1">
+            
+            @ChildContent
+
+            <div class="nav-item mt-auto">
+                <a class="nav-link" @onclick="() => IsNarrow = !IsNarrow">Collapse</a>
+            </div>
+        </div>
+    </nav>
+</AuthorizeView>
+
+@code {
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private bool IsNarrow { get; set; }
+    private bool ShowNav { get; set; }
+}

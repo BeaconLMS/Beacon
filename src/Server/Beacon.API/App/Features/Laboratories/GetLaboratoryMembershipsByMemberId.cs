@@ -16,7 +16,15 @@ public static class GetLaboratoryMembershipsByMemberId
     {
         public required Guid LaboratoryId { get; init; }
         public required string LaboratoryName { get; init; }
+        public required UserDto LaboratoryAdmin { get; init; }
         public required LaboratoryMembershipType MembershipType { get; init; }
+    }
+
+    public sealed record UserDto
+    {
+        public required Guid Id { get; init; }
+        public required string DisplayName { get; init; }
+        public required string EmailAddress { get; init; }
     }
 
     internal sealed class QueryHandler : IRequestHandler<Query, Response>
@@ -38,9 +46,19 @@ public static class GetLaboratoryMembershipsByMemberId
                 {
                     LaboratoryId = m.LaboratoryId,
                     LaboratoryName = m.Laboratory.Name,
+                    LaboratoryAdmin = m.Laboratory.Memberships
+                        .Where(lm => lm.MembershipType == LaboratoryMembershipType.Admin)
+                        .Select(lm => new UserDto
+                        {
+                            Id = lm.MemberId,
+                            DisplayName = lm.Member.DisplayName,
+                            EmailAddress = lm.Member.EmailAddress
+                        })
+                        .First(),
                     MembershipType = m.MembershipType
                 })
                 .AsNoTracking()
+                .AsSplitQuery()
                 .ToListAsync(cancellationToken);
 
             if (!memberships.Any())

@@ -1,4 +1,6 @@
-﻿namespace BeaconUI.Core.Helpers;
+﻿using Beacon.Common.Laboratories;
+
+namespace BeaconUI.Core.Helpers;
 
 public static class NavigationHelper
 {

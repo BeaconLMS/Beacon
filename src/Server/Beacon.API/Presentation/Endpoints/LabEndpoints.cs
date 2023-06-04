@@ -28,7 +28,7 @@ internal sealed class LabEndpoints : IApiEndpointMapper
 
         await sender.Send(command, ct);
 
-        return Results.Created($"laboratories/{command.LaboratoryId}", new LaboratoryDto
+        return Results.Created($"laboratories/{command.LaboratoryId}", new LaboratorySummaryDto
         {
             Id = command.LaboratoryId,
             Name = request.LaboratoryName
@@ -45,6 +45,25 @@ internal sealed class LabEndpoints : IApiEndpointMapper
     {
         var query = new GetLaboratoryMembershipsByMemberId.Query(memberId);
         var result = await sender.Send(query, ct);
-        return Results.Ok(result.Memberships);
+
+        var memberships = result.Memberships
+            .Select(m => new LaboratoryMembershipDto
+            {
+                Laboratory = new LaboratoryDto
+                {
+                    Id = m.LaboratoryId,
+                    Name = m.LaboratoryName,
+                    Admin = new Common.UserDto
+                    {
+                        Id = m.LaboratoryAdmin.Id,
+                        DisplayName = m.LaboratoryAdmin.DisplayName,
+                        EmailAddress = m.LaboratoryAdmin.EmailAddress
+                    }
+                },
+                MembershipType = m.MembershipType.ToString()
+            })
+            .ToList();
+
+        return Results.Ok(memberships);
     }
 }

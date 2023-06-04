@@ -2,7 +2,6 @@
 
 public record LaboratoryMembershipDto
 {
-    public required Guid LaboratoryId { get; init; }
-    public required string LaboratoryName { get; init; }
+    public required LaboratoryDto Laboratory { get; init; }
     public required string MembershipType { get; init; }
 }

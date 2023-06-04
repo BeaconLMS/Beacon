@@ -17,10 +17,10 @@ public sealed class LabClient
         _httpClient = httpClient;
     }
 
-    public async Task<ErrorOr<LaboratoryDto>> CreateLaboratoryAsync(CreateLaboratoryRequest request, CancellationToken ct = default)
+    public async Task<ErrorOr<LaboratorySummaryDto>> CreateLaboratoryAsync(CreateLaboratoryRequest request, CancellationToken ct = default)
     {
         var response = await _httpClient.PostAsJsonAsync("api/laboratories", request, ct);
-        var result = await response.ToErrorOrResult<LaboratoryDto>(ct);
+        var result = await response.ToErrorOrResult<LaboratorySummaryDto>(ct);
 
         if (!result.IsError)
             OnCurrentUserMembershipsChanged?.Invoke();
