@@ -47,7 +47,8 @@ public sealed class LabInvitationEmailService
     }
     private static string GetAcceptUrl(string baseUrl, LaboratoryInvitationEmail invitation)
     {
-        return $"{baseUrl}/invitations/accept?inviteId={invitation.LaboratoryInvitationId}&emailId={invitation.Id}";
+        var labId = invitation.LaboratoryInvitation.LaboratoryId;
+        return $"{baseUrl}/laboratories/{labId}/invitations/{invitation.LaboratoryInvitationId}/accept?emailId={invitation.Id}";
     }
 
     private static string GetBody(string baseUrl, LaboratoryInvitationEmail emailInvitation)

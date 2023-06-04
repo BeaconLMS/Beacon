@@ -1,0 +1,28 @@
+﻿@page "/laboratories/{LabId:guid}/invitations/{InvitationId:guid}/accept"
+@layout EmptyLayout
+
+@code {
+
+    [Inject]
+    private HttpClient HttpClient { get; set; } = null!;
+
+    [Inject]
+    private NavigationManager NavManager { get; set; } = null!;
+
+    [Parameter]
+    public Guid LabId { get; set; }
+
+    [Parameter] 
+    public Guid InvitationId { get; set; }
+
+    [Parameter, SupplyParameterFromQuery(Name = "emailId")]
+    public Guid EmailId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await HttpClient.GetAsync($"api/invitations/{InvitationId}/accept?emailId={EmailId}");
+
+        if (response.IsSuccessStatusCode)
+            NavManager.NavigateTo(NavigationHelper.GetLabDetailsHref(LabId));
+    }
+}

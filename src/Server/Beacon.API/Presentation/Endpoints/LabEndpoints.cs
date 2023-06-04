@@ -21,7 +21,7 @@ internal sealed class LabEndpoints : IApiEndpointMapper
         app.MapPost("laboratories/{labId:Guid}/invitations", InviteMember);
         app.MapGet("users/me/memberships", GetCurrentUserMemberships);
         app.MapGet("users/{memberId:Guid}/memberships", GetMembershipsByMemberId);
-        app.MapGet("~/invitations/accept", AcceptInvitation);
+        app.MapGet("invitations/{inviteId:Guid}/accept", AcceptInvitation);
     }
 
     private static async Task<IResult> Create(CreateLaboratoryRequest request, ISender sender, CancellationToken ct)
