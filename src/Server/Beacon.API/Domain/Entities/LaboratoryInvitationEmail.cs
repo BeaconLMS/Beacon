@@ -3,19 +3,24 @@
 public class LaboratoryInvitationEmail
 {
     public required Guid Id { get; init; }
+    public required DateTimeOffset SentOn { get; init; }
+    public required DateTimeOffset ExpiresOn { get; init; }
 
-    public LaboratoryInvitationEmailDeliveryStatus? DeliveryStatus { get; private set; }
+    public string? OperationId { get; set; }
 
     public required Guid LaboratoryInvitationId { get; init; }
     public LaboratoryInvitation LaboratoryInvitation { get; init; } = null!;
 
-    public void MarkAsSent(string operationId, DateTimeOffset sentOn)
+    public void Accept(User acceptingUser)
     {
-        DeliveryStatus = new LaboratoryInvitationEmailDeliveryStatus
-        {
-            OperationId = operationId,
-            SentOn = sentOn,
-            ExpiresOn = sentOn.AddDays(LaboratoryInvitation.ExpireAfterDays)
-        };
+        if (IsExpired(DateTime.UtcNow))
+            throw new Exception("This email invitation is expired.");
+
+        LaboratoryInvitation.Accept(acceptingUser);
+    }
+
+    public bool IsExpired(DateTimeOffset now)
+    {
+        return now > ExpiresOn;
     }
 }

@@ -35,7 +35,8 @@ public sealed class LabInvitationEmailService
             emailInvitation.LaboratoryInvitation.NewMemberEmailAddress)
             ?? throw new Exception("There was an error sending the invitation email."); // TODO: throw better exception
 
-        emailInvitation.MarkAsSent(emailSendOperation.OperationId, emailSendOperation.Timestamp);
+        emailInvitation.OperationId = emailSendOperation.OperationId;
+
         await _unitOfWork.SaveChangesAsync(ct);
     }
 
@@ -46,8 +47,7 @@ public sealed class LabInvitationEmailService
     }
     private static string GetAcceptUrl(string baseUrl, LaboratoryInvitationEmail invitation)
     {
-        var labId = invitation.LaboratoryInvitation.LaboratoryId;
-        return $"{baseUrl}/laboratories/{labId}/acceptInvite?key={invitation.Id}";
+        return $"{baseUrl}/invitations/accept?inviteId={invitation.LaboratoryInvitationId}&emailId={invitation.Id}";
     }
 
     private static string GetBody(string baseUrl, LaboratoryInvitationEmail emailInvitation)

@@ -39,6 +39,7 @@ public static class BeaconAPI
         // Data
         services.AddDbContext<BeaconDbContext>(dbOptionsAction);
         services.AddScoped<IUnitOfWork, BeaconDbContext>();
+        services.AddScoped<IQueryService, BeaconDbContext>();
 
         // Email
         services.AddScoped<IEmailService, EmailService>();
@@ -65,6 +66,7 @@ public static class BeaconAPI
         // TODO: register via reflection
         AuthEndpoints.Map(app);
         LabEndpoints.Map(app);
+        UsersEndpoints.Map(app);
 
         return app;
     }

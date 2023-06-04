@@ -21,6 +21,7 @@ internal sealed class LabEndpoints : IApiEndpointMapper
         app.MapPost("laboratories/{labId:Guid}/invitations", InviteMember);
         app.MapGet("users/me/memberships", GetCurrentUserMemberships);
         app.MapGet("users/{memberId:Guid}/memberships", GetMembershipsByMemberId);
+        app.MapGet("~/invitations/accept", AcceptInvitation);
     }
 
     private static async Task<IResult> Create(CreateLaboratoryRequest request, ISender sender, CancellationToken ct)
@@ -106,6 +107,13 @@ internal sealed class LabEndpoints : IApiEndpointMapper
             LaboratoryId = labId
         };
 
+        await sender.Send(command, ct);
+        return Results.NoContent();
+    }
+
+    private static async Task<IResult> AcceptInvitation(Guid inviteId, Guid emailId, ISender sender, CancellationToken ct)
+    {
+        var command = new AcceptEmailInvitation.Command(inviteId, emailId);
         await sender.Send(command, ct);
         return Results.NoContent();
     }

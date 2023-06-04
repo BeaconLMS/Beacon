@@ -48,7 +48,6 @@ public class BeaconDbContext : DbContext, IUnitOfWork, IQueryService
 
         modelBuilder.Entity<LaboratoryInvitationEmail>(builder =>
         {
-            builder.OwnsOne(x => x.DeliveryStatus);
             builder.HasOne(x => x.LaboratoryInvitation).WithMany(x => x.EmailInvitations).OnDelete(DeleteBehavior.Cascade);
         });
 
