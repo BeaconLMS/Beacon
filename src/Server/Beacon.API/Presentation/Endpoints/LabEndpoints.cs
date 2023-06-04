@@ -4,6 +4,7 @@ using Beacon.API.Domain.Entities;
 using Beacon.Common;
 using Beacon.Common.Laboratories;
 using Beacon.Common.Laboratories.Requests;
+using Beacon.Common.Validation;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -95,9 +96,12 @@ internal sealed class LabEndpoints : IApiEndpointMapper
     private static async Task<IResult> InviteMember(Guid labId, InviteLabMemberRequest request, ISender sender, CancellationToken ct)
     {
         if (!Enum.TryParse<LaboratoryMembershipType>(request.MembershipType, out var membershipType))
-            return Results.ValidationProblem(new Dictionary<string, string[]>
+            return Results.UnprocessableEntity(new BeaconValidationProblem
             {
-                { nameof(InviteLabMemberRequest.MembershipType), new[] { "Membership type not recognized." } } 
+                Errors = new()
+                {
+                    { nameof(InviteLabMemberRequest.MembershipType), new[] { "Membership type not recognized." } }
+                }
             });
 
         var command = new InviteNewMember.Command
