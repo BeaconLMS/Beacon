@@ -33,7 +33,7 @@ public static class BeaconAPI
         services.AddAuthentication().AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
         services.AddAuthorization();
         services.AddHttpContextAccessor();
-        services.AddSingleton<ICurrentUser, CurrentUser>();
+        services.AddScoped<ICurrentUser, CurrentUser>();
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
         // Data
@@ -42,6 +42,7 @@ public static class BeaconAPI
 
         // Email
         services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<LabInvitationEmailService>();
         services.Configure<EmailSettings>(config.GetRequiredSection("EmailSettings"));
 
         // Framework

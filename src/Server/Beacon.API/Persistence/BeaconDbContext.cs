@@ -7,6 +7,8 @@ namespace Beacon.API.Persistence;
 public class BeaconDbContext : DbContext, IUnitOfWork, IQueryService
 {
     public DbSet<Laboratory> Laboratories => Set<Laboratory>();
+    public DbSet<LaboratoryInvitation> LaboratoryInvitations => Set<LaboratoryInvitation>();
+    public DbSet<LaboratoryInvitationEmail> LaboratoryInvitationEmails => Set<LaboratoryInvitationEmail>();
     public DbSet<LaboratoryMembership> LaboratoryMemberships => Set<LaboratoryMembership>();
     public DbSet<User> Users => Set<User>();
 
@@ -34,6 +36,20 @@ public class BeaconDbContext : DbContext, IUnitOfWork, IQueryService
         modelBuilder.Entity<Laboratory>(builder =>
         {
             builder.Property(x => x.Name).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<LaboratoryInvitation>(builder =>
+        {
+            builder.Property(x => x.NewMemberEmailAddress).HasMaxLength(255);
+            builder.Property(x => x.MembershipType).HasConversion<string>().HasMaxLength(20);
+            builder.HasOne(x => x.Laboratory).WithMany().OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(x => x.CreatedBy).WithMany().OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<LaboratoryInvitationEmail>(builder =>
+        {
+            builder.OwnsOne(x => x.DeliveryStatus);
+            builder.HasOne(x => x.LaboratoryInvitation).WithMany(x => x.EmailInvitations).OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<LaboratoryMembership>(builder =>

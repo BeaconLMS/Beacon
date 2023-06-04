@@ -13,11 +13,9 @@ public class LaboratoryInvitationEmail
     {
         DeliveryStatus = new LaboratoryInvitationEmailDeliveryStatus
         {
-            Id = Guid.NewGuid(),
             OperationId = operationId,
             SentOn = sentOn,
-            ExpiresOn = sentOn.Add(LaboratoryInvitation.ExpirationTimeSpan),
-            LaboratoryInvitationEmailId = Id
+            ExpiresOn = sentOn.Add(LaboratoryInvitation.ExpirationTimeSpan)
         };
     }
 }

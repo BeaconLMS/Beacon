@@ -26,7 +26,6 @@ public sealed class LabInvitationEmailService
                 .ThenInclude(i => i.CreatedBy)
             .Include(l => l.LaboratoryInvitation)
                 .ThenInclude(i => i.Laboratory)
-            .Include(l => l.DeliveryStatus)
             .FirstOrDefaultAsync(l => l.Id == emailInvitationId, ct)
             ?? throw new Exception("Email invitation not found."); // TODO: throw better exception
 
