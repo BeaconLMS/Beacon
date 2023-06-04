@@ -15,7 +15,7 @@ public class LaboratoryInvitationEmail
         {
             OperationId = operationId,
             SentOn = sentOn,
-            ExpiresOn = sentOn.Add(LaboratoryInvitation.ExpirationTimeSpan)
+            ExpiresOn = sentOn.AddDays(LaboratoryInvitation.ExpireAfterDays)
         };
     }
 }

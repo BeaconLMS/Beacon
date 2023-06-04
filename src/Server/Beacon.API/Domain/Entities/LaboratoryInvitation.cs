@@ -4,7 +4,7 @@ public class LaboratoryInvitation
 {
     public required Guid Id { get; init; }
     public required DateTimeOffset CreatedOn { get; init; }
-    public required TimeSpan ExpirationTimeSpan { get; init; }
+    public required double ExpireAfterDays { get; init; }
 
     public required string NewMemberEmailAddress { get; init; }
     public required LaboratoryMembershipType MembershipType { get; init; }

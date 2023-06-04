@@ -57,7 +57,7 @@ public static class InviteNewMember
             {
                 Id = Guid.NewGuid(),
                 CreatedOn = now,
-                ExpirationTimeSpan = TimeSpan.FromDays(10),
+                ExpireAfterDays = 10, //TODO: make this configurable
                 NewMemberEmailAddress = request.NewMemberEmailAddress,
                 MembershipType = request.MembershipType,
                 LaboratoryId = request.LaboratoryId,

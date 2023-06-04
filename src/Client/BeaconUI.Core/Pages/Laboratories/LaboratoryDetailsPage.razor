@@ -22,7 +22,14 @@ else
 }
 else
 {
-    <p>This is the laboratory details page.</p>
+    <div class="flex">
+        <div class="flex-grow-1">
+            <p>This is the laboratory details page.</p>
+        </div>
+        <div>
+            <button type="button" class="btn btn-primary" @onclick="() => LabClient.InviteMemberAsync(Id)">Invite Member</button>
+        </div>
+    </div>
 
     <dl>
         @foreach(var memberGroup in Details.Members)

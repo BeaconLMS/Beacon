@@ -1,5 +1,6 @@
 ﻿using Beacon.API.App.Features.Laboratories;
 using Beacon.API.App.Helpers;
+using Beacon.API.Domain.Entities;
 using Beacon.Common;
 using Beacon.Common.Laboratories;
 using Beacon.Common.Laboratories.Requests;
@@ -17,6 +18,7 @@ internal sealed class LabEndpoints : IApiEndpointMapper
     {
         app.MapPost("laboratories", Create);
         app.MapGet("laboratories/{labId:Guid}", GetDetails);
+        app.MapPost("laboratories/{labId:Guid}/invitations", InviteMember);
         app.MapGet("users/me/memberships", GetCurrentUserMemberships);
         app.MapGet("users/{memberId:Guid}/memberships", GetMembershipsByMemberId);
     }
@@ -87,5 +89,24 @@ internal sealed class LabEndpoints : IApiEndpointMapper
             .ToList();
 
         return Results.Ok(memberships);
+    }
+
+    private static async Task<IResult> InviteMember(Guid labId, InviteLabMemberRequest request, ISender sender, CancellationToken ct)
+    {
+        if (!Enum.TryParse<LaboratoryMembershipType>(request.MembershipType, out var membershipType))
+            return Results.ValidationProblem(new Dictionary<string, string[]>
+            {
+                { nameof(InviteLabMemberRequest.MembershipType), new[] { "Membership type not recognized." } } 
+            });
+
+        var command = new InviteNewMember.Command
+        {
+            NewMemberEmailAddress = request.NewMemberEmailAddress,
+            MembershipType = membershipType,
+            LaboratoryId = labId
+        };
+
+        await sender.Send(command, ct);
+        return Results.NoContent();
     }
 }

@@ -39,4 +39,13 @@ public sealed class LabClient
         var response = await _httpClient.GetAsync($"api/laboratories/{id}", ct);
         return await response.ToErrorOrResult<LaboratoryDetailDto>(ct);
     }
+
+    public async Task InviteMemberAsync(Guid labId, CancellationToken ct = default)
+    {
+        await _httpClient.PostAsJsonAsync($"api/laboratories/{labId}/invitations", new InviteLabMemberRequest
+        {
+            MembershipType = "Member",
+            NewMemberEmailAddress = "erinmclaughlin219@gmail.com"
+        }, ct);
+    }
 }

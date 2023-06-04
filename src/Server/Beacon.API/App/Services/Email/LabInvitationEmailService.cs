@@ -53,16 +53,14 @@ public sealed class LabInvitationEmailService
     private static string GetBody(string baseUrl, LaboratoryInvitationEmail emailInvitation)
     {
         var invitation = emailInvitation.LaboratoryInvitation;
-        var labName = invitation.Laboratory.Name;
-        var expirationDays = invitation.ExpirationTimeSpan.Days;
 
         return $"""
             <p>
-                <h3>You're invited to join {labName}!</h3>
+                <h3>You're invited to join {invitation.Laboratory.Name}!</h3>
                 <p>
                     <a href="{GetAcceptUrl(baseUrl, emailInvitation)}">Click here to accept.</a>
                     <br />
-                    <small>This invitation will expire in {expirationDays} days.</small>
+                    <small>This invitation will expire in {invitation.ExpireAfterDays} days.</small>
                 </p>
             </p>
             """;
