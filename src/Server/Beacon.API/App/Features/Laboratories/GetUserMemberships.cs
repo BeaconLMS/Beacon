@@ -39,7 +39,7 @@ public static class GetUserMemberships
         public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
         {
             var memberships = await _unitOfWork
-                .Get<LaboratoryMembership>()
+                .GetRepository<LaboratoryMembership>()
                 .AsQueryable()
                 .Where(m => m.MemberId == request.MemberId)
                 .Select(m => new LaboratoryMembershipDto
@@ -71,7 +71,7 @@ public static class GetUserMemberships
 
         private async Task VerifyThatUserExists(Guid userId, CancellationToken ct)
         {
-            var userExists = await _unitOfWork.Get<User>().AsQueryable().AnyAsync(u => u.Id == userId, ct);
+            var userExists = await _unitOfWork.GetRepository<User>().AsQueryable().AnyAsync(u => u.Id == userId, ct);
 
             if (!userExists)
                 throw new UserNotFoundException(userId);

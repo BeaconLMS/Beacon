@@ -40,7 +40,7 @@ public static class GetLaboratoryDetails
         public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
         {
             var lab = await _unitOfWork
-                .Get<Laboratory>()
+                .GetRepository<Laboratory>()
                 .AsQueryable()
                 .Where(l => l.Id == request.LaboratoryId)
                 .Select(l => new { l.Id, l.Name })
@@ -50,7 +50,7 @@ public static class GetLaboratoryDetails
                 return new Response(null);
 
             var labMembers = await _unitOfWork
-                .Get<LaboratoryMembership>()
+                .GetRepository<LaboratoryMembership>()
                 .AsQueryable()
                 .Where(m => m.LaboratoryId == lab.Id)
                 .Select(m => new

@@ -1,4 +1,4 @@
-﻿using Beacon.API.App.Services;
+﻿using Beacon.API.App.Services.Security;
 using Beacon.API.Domain.Entities;
 using Beacon.API.Persistence;
 using Beacon.WebHost;

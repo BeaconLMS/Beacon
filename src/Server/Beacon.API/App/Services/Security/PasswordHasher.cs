@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace Beacon.API.App.Services;
+namespace Beacon.API.App.Services.Security;
 
 // https://code-maze.com/csharp-hashing-salting-passwords-best-practices/
 internal sealed class PasswordHasher : IPasswordHasher

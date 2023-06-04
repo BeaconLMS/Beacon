@@ -1,9 +1,11 @@
-﻿using System.Security.Claims;
+﻿using Beacon.API.Domain.Entities;
+using System.Security.Claims;
 
 namespace Beacon.API.App.Services;
 
 public interface ICurrentUser
 {
     Guid UserId { get; }
-    ClaimsPrincipal User { get; }
+
+    Task<User> GetCurrentUserAsync(CancellationToken ct = default);
 }

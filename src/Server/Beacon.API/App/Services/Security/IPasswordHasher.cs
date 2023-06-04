@@ -1,4 +1,4 @@
-﻿namespace Beacon.API.App.Services;
+﻿namespace Beacon.API.App.Services.Security;
 
 public interface IPasswordHasher
 {

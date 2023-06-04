@@ -1,4 +1,5 @@
 ﻿using Beacon.API.App.Services;
+using Beacon.API.App.Services.Security;
 using Beacon.API.Domain.Entities;
 using FluentValidation;
 using MediatR;
@@ -37,7 +38,7 @@ public static class Register
 
         private async Task<bool> BeAUniqueEmailAddress(string emailAddress, CancellationToken ct)
         {
-            var emailExists = await _unitOfWork.Get<User>().AsQueryable().AnyAsync(u => u.EmailAddress == emailAddress, ct);
+            var emailExists = await _unitOfWork.GetRepository<User>().AsQueryable().AnyAsync(u => u.EmailAddress == emailAddress, ct);
             return !emailExists;
         }
     }
@@ -55,7 +56,7 @@ public static class Register
 
         public async Task Handle(Command request, CancellationToken cancellationToken)
         {
-            _unitOfWork.Get<User>().Add(new User
+            _unitOfWork.GetRepository<User>().Add(new User
             {
                 Id = request.UserId,
                 DisplayName = request.DisplayName,

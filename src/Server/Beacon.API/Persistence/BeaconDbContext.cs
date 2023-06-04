@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Beacon.API.Persistence;
 
-public class BeaconDbContext : DbContext, IUnitOfWork
+public class BeaconDbContext : DbContext, IUnitOfWork, IQueryService
 {
     public DbSet<Laboratory> Laboratories => Set<Laboratory>();
     public DbSet<LaboratoryMembership> LaboratoryMemberships => Set<LaboratoryMembership>();
@@ -14,9 +14,19 @@ public class BeaconDbContext : DbContext, IUnitOfWork
     {
     }
 
-    public IRepository<T> Get<T>() where T : class
+    public IRepository<T> GetRepository<T>() where T : class
     {
         return new Repository<T>(this);
+    }
+
+    public IQueryable<T> QueryFor<T>() where T : class
+    {
+        return QueryFor<T>(enableChangeTracking: false);
+    }
+
+    public IQueryable<T> QueryFor<T>(bool enableChangeTracking) where T : class
+    {
+        return enableChangeTracking ? Set<T>() : Set<T>().AsNoTracking();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

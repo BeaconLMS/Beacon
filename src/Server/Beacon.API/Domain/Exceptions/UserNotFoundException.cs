@@ -2,7 +2,7 @@
 
 public sealed class UserNotFoundException : Exception
 {
-    public UserNotFoundException(Guid memberId) : base($"User with id {memberId} was not found.")
+    public UserNotFoundException(Guid userId) : base($"User with id {userId} was not found.")
     {
     }
 }

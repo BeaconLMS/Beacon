@@ -2,6 +2,7 @@
 
 public interface IUnitOfWork
 {
-    IRepository<T> Get<T>() where T : class;
+    IRepository<T> GetRepository<T>() where T : class;
+    IQueryable<T> QueryFor<T>(bool enableChangeTracking = false) where T : class;
     Task<int> SaveChangesAsync(CancellationToken ct);
 }

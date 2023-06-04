@@ -1,6 +1,8 @@
 ﻿using Beacon.API.App.Services;
+using Beacon.API.App.Services.Email;
+using Beacon.API.App.Services.Security;
 using Beacon.API.App.Settings;
-using Beacon.API.Infrastructure.Email;
+using Beacon.API.Infrastructure;
 using Beacon.API.Persistence;
 using Beacon.API.Presentation.Endpoints;
 using Beacon.API.Presentation.Services;
@@ -24,6 +26,8 @@ public static class BeaconAPI
         {
             jsonOptions.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
+
+        services.Configure<ApplicationSettings>(config.GetRequiredSection("ApplicationSettings"));
 
         // Auth
         services.AddAuthentication().AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);

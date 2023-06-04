@@ -1,4 +1,5 @@
 ﻿using Beacon.API.App.Services;
+using Beacon.API.App.Services.Security;
 using Beacon.API.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +31,7 @@ public static class GetUserByCredentials
 
         public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
         {
-            var user = await _unitOfWork.Get<User>()
+            var user = await _unitOfWork.GetRepository<User>()
                 .AsQueryable()
                 .Where(u => u.EmailAddress == request.EmailAddress)
                 .AsNoTracking()

@@ -28,7 +28,7 @@ public static class GetUserById
 
         public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
         {
-            var user = await _unitOfWork.Get<User>()
+            var user = await _unitOfWork.GetRepository<User>()
                 .AsQueryable()
                 .Where(u => u.Id == request.UserId)
                 .Select(u => new UserDto

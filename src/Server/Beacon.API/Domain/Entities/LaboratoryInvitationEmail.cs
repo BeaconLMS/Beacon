@@ -3,20 +3,21 @@
 public class LaboratoryInvitationEmail
 {
     public required Guid Id { get; init; }
-    public required Guid ConfirmationNumber { get; init; }
-    public required DateTimeOffset DateSent { get; init; }
-    public required DateTimeOffset ExpiresOn { get; init; }
-    public required string OperationId { get; init; }
 
-    public LaboratoryInvitationDeliveryStatus Status { get; set; }
+    public LaboratoryInvitationEmailDeliveryStatus? DeliveryStatus { get; private set; }
 
-    public required Guid InvitationId { get; init; }
-    public LaboratoryInvitation Invitation { get; init; } = null!;
-}
+    public required Guid LaboratoryInvitationId { get; init; }
+    public LaboratoryInvitation LaboratoryInvitation { get; init; } = null!;
 
-public enum LaboratoryInvitationDeliveryStatus
-{
-    Initiated,
-    Delivered,
-    Failed
+    public void MarkAsSent(string operationId, DateTimeOffset sentOn)
+    {
+        DeliveryStatus = new LaboratoryInvitationEmailDeliveryStatus
+        {
+            Id = Guid.NewGuid(),
+            OperationId = operationId,
+            SentOn = sentOn,
+            ExpiresOn = sentOn.Add(LaboratoryInvitation.ExpirationTimeSpan),
+            LaboratoryInvitationEmailId = Id
+        };
+    }
 }
