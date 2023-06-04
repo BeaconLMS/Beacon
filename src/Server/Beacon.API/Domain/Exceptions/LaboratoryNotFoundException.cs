@@ -1,8 +1,12 @@
 ﻿namespace Beacon.API.Domain.Exceptions;
 
-public class LaboratoryNotFoundException : Exception
+public class LaboratoryNotFoundException : BeaconException
 {
-    public LaboratoryNotFoundException(Guid labId) : base($"Laboratory with id {labId} was not found.")
+    public Guid LaboratoryId { get; }
+
+    public LaboratoryNotFoundException(Guid labId) 
+        : base(BeaconExceptionType.NotFound, $"Laboratory with id {labId} was not found.")
     {
+        LaboratoryId = labId;
     }
 }

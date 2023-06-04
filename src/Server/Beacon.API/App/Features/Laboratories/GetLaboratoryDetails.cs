@@ -67,7 +67,7 @@ public static class GetLaboratoryDetails
                 .ToListAsync(cancellationToken);
 
             if (!labMembers.Any(m => m.Member.Id == _currentUser.UserId))
-                throw new MustBeLabMemberException(lab.Id);
+                throw new LaboratoryMembershipRequiredException(lab.Id);
 
             return new Response(new LaboratoryDto
             {

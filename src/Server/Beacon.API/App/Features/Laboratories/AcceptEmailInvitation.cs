@@ -1,5 +1,6 @@
 ﻿using Beacon.API.App.Services;
 using Beacon.API.Domain.Entities;
+using Beacon.API.Domain.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,12 +40,10 @@ public static class AcceptEmailInvitation
                 .QueryFor<LaboratoryInvitation>(enableChangeTracking: true)
                 .Include(i => i.EmailInvitations)
                 .AsSingleQuery()
-                .FirstOrDefaultAsync(i => i.Id == request.InviteId, ct)
-                ?? throw new Exception("Invitation not found."); // TODO: throw better exception
+                .FirstOrDefaultAsync(i => i.Id == request.InviteId, ct);
 
-            var emailInvitation = invitation.EmailInvitations
-                .FirstOrDefault(i => i.Id == request.EmailId)
-                ?? throw new Exception("Email invitation not found."); // TODO: throw better exception
+            if (invitation?.EmailInvitations.FirstOrDefault(i => i.Id == request.EmailId) is null)
+                throw new EmailInvitationNotFoundException(request.EmailId, request.InviteId);
 
             return invitation;
         }

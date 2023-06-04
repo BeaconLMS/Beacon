@@ -26,14 +26,8 @@ app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseExceptionHandler(builder =>
-{
-    builder.Run(async context => await Results.Problem(statusCode: 422).ExecuteAsync(context));
-});
-
-var endpointRoot = app.MapGroup("api");
-endpointRoot.MapBeaconEndpoints();
-endpointRoot.MapGet("ping", () => Results.Ok("pong"));
+app.MapBeaconEndpoints();
+app.MapGet("api/ping", () => Results.Ok("pong"));
 
 app.MapFallbackToFile("index.html");
 app.Run();

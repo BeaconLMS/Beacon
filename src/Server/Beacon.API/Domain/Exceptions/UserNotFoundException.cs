@@ -1,8 +1,12 @@
 ﻿namespace Beacon.API.Domain.Exceptions;
 
-public sealed class UserNotFoundException : Exception
+public sealed class UserNotFoundException : BeaconException
 {
-    public UserNotFoundException(Guid userId) : base($"User with id {userId} was not found.")
+    public Guid UserId { get; }
+
+    public UserNotFoundException(Guid userId)
+        : base(BeaconExceptionType.NotFound, $"User with id {userId} was not found.")
     {
+        UserId = userId;
     }
 }

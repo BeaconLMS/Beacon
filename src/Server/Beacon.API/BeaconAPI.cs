@@ -5,10 +5,13 @@ using Beacon.API.App.Settings;
 using Beacon.API.Infrastructure;
 using Beacon.API.Persistence;
 using Beacon.API.Presentation.Endpoints;
+using Beacon.API.Presentation.Middleware;
 using Beacon.API.Presentation.Services;
 using Beacon.Common.Auth.Requests;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -61,12 +64,19 @@ public static class BeaconAPI
         return services;
     }
 
-    public static IEndpointRouteBuilder MapBeaconEndpoints(this IEndpointRouteBuilder app)
+    public static IEndpointRouteBuilder MapBeaconEndpoints<T>(this T app) where T : IApplicationBuilder, IEndpointRouteBuilder
     {
+        app.UseExceptionHandler(new ExceptionHandlerOptions
+        {
+            ExceptionHandler = ExceptionHandler.HandleException
+        });
+
+        var endpointRoot = app.MapGroup("api");
+
         // TODO: register via reflection
-        AuthEndpoints.Map(app);
-        LabEndpoints.Map(app);
-        UsersEndpoints.Map(app);
+        AuthEndpoints.Map(endpointRoot);
+        LabEndpoints.Map(endpointRoot);
+        UsersEndpoints.Map(endpointRoot);
 
         return app;
     }

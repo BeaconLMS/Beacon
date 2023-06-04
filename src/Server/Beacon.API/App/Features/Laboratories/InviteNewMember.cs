@@ -3,6 +3,7 @@ using Beacon.API.App.Services.Email;
 using Beacon.API.Domain.Entities;
 using Beacon.API.Domain.Exceptions;
 using FluentValidation;
+using FluentValidation.Results;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -89,7 +90,10 @@ public static class InviteNewMember
                 .AnyAsync(m => m.LaboratoryId == labId && m.Member.EmailAddress == newMemberEmailAddress, ct);
 
             if (isMember)
-                throw new Exception($"User with email {newMemberEmailAddress} is already a member of the specified lab.");
+            {
+                var failure = new ValidationFailure(nameof(Command.NewMemberEmailAddress), $"User with email {newMemberEmailAddress} is already a member of the specified lab.");
+                throw new ValidationException(new[] { failure });
+            }
         }
 
         private async Task EnsureCurrentUserCanSendInvites(Guid labId)
@@ -99,7 +103,7 @@ public static class InviteNewMember
             var membership = await _unitOfWork
                 .QueryFor<LaboratoryMembership>()
                 .FirstOrDefaultAsync(m => m.MemberId == currentUserId && m.LaboratoryId == labId)
-                ?? throw new MustBeLabMemberException(labId);
+                ?? throw new LaboratoryMembershipRequiredException(labId);
             
             if (membership.MembershipType is not LaboratoryMembershipType.Admin and not LaboratoryMembershipType.Manager)
                 throw new UserNotAllowedException("Only laboratory admins or managers are allowed to invite new members.");

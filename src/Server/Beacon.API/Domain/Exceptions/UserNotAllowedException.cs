@@ -1,8 +1,9 @@
 ﻿namespace Beacon.API.Domain.Exceptions;
 
-public class UserNotAllowedException : Exception
+public class UserNotAllowedException : BeaconException
 {
-    public UserNotAllowedException(string message) : base(message)
+    public UserNotAllowedException(string message) 
+        : base(BeaconExceptionType.NotAuthorized, message)
     {
     }
 }

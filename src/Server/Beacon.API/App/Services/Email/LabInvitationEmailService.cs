@@ -1,5 +1,6 @@
 ﻿using Beacon.API.App.Settings;
 using Beacon.API.Domain.Entities;
+using Beacon.API.Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -27,7 +28,7 @@ public sealed class LabInvitationEmailService
             .Include(l => l.LaboratoryInvitation)
                 .ThenInclude(i => i.Laboratory)
             .FirstOrDefaultAsync(l => l.Id == emailInvitationId, ct)
-            ?? throw new Exception("Email invitation not found."); // TODO: throw better exception
+            ?? throw new EmailInvitationNotFoundException(emailInvitationId);
 
         var emailSendOperation = await _emailService.SendAsync(
             GetSubject(emailInvitation.LaboratoryInvitation),

@@ -1,4 +1,6 @@
-﻿namespace Beacon.API.Domain.Entities;
+﻿using Beacon.API.Domain.Exceptions;
+
+namespace Beacon.API.Domain.Entities;
 
 public class LaboratoryInvitation
 {
@@ -25,7 +27,7 @@ public class LaboratoryInvitation
     {
         // TODO: throw a better exception
         if (acceptingUser.EmailAddress != NewMemberEmailAddress)
-            throw new Exception("Accepting user's email adderess does not match the email address in the invitation.");
+            throw new UserNotAllowedException("Current user's email address does not match the email address in the invitation.");
 
         AcceptedById = acceptingUser.Id;
     }
