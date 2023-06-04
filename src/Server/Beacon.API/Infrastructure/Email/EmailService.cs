@@ -24,7 +24,7 @@ internal sealed class EmailService : IEmailService
         {
             var emailClient = new EmailClient(_settings.ConnectionString);
 
-            await emailClient.SendAsync(
+            var operation = await emailClient.SendAsync(
                 WaitUntil.Started,
                 _settings.MailFrom,
                 toAddress,
