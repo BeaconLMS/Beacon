@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Beacon.API.App.Features.Laboratories;
 
-public static class GetLaboratoryMembershipsByMemberId
+public static class GetUserMemberships
 {
     public sealed record Query(Guid MemberId) : IRequest<Response>;
 

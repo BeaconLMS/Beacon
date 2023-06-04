@@ -33,4 +33,10 @@ public sealed class LabClient
         var response = await _httpClient.GetAsync("api/users/me/memberships", ct);
         return await response.ToErrorOrResult<List<LaboratoryMembershipDto>>(ct);
     }
+
+    public async Task<ErrorOr<LaboratoryDetailDto>> GetLaboratoryDetailsAsync(Guid id, CancellationToken ct = default)
+    {
+        var response = await _httpClient.GetAsync($"api/laboratories/{id}", ct);
+        return await response.ToErrorOrResult<LaboratoryDetailDto>(ct);
+    }
 }

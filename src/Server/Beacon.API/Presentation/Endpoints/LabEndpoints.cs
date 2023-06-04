@@ -1,5 +1,6 @@
 ﻿using Beacon.API.App.Features.Laboratories;
 using Beacon.API.App.Helpers;
+using Beacon.Common;
 using Beacon.Common.Laboratories;
 using Beacon.Common.Laboratories.Requests;
 using MediatR;
@@ -15,6 +16,7 @@ internal sealed class LabEndpoints : IApiEndpointMapper
     public static void Map(IEndpointRouteBuilder app)
     {
         app.MapPost("laboratories", Create);
+        app.MapGet("laboratories/{labId:Guid}", GetDetails);
         app.MapGet("users/me/memberships", GetCurrentUserMemberships);
         app.MapGet("users/{memberId:Guid}/memberships", GetMembershipsByMemberId);
     }
@@ -35,6 +37,26 @@ internal sealed class LabEndpoints : IApiEndpointMapper
         });
     }
 
+    public static async Task<IResult> GetDetails(Guid labId, ISender sender, CancellationToken ct)
+    {
+        var query = new GetLaboratoryDetails.Query(labId);
+        var response = await sender.Send(query, ct);
+
+        return response.Laboratory is not { } lab ? Results.NotFound() : Results.Ok(new LaboratoryDetailDto
+        {
+            Id = lab.Id,
+            Name = lab.Name,
+            Members = lab.Members.ToDictionary(
+                kvp => kvp.Key,
+                kvp => kvp.Value.Select(u => new UserDto
+                {
+                    Id = u.Id,
+                    DisplayName = u.DisplayName,
+                    EmailAddress = u.EmailAddress
+                }).ToArray())
+        });
+    }
+
     private static async Task<IResult> GetCurrentUserMemberships(ClaimsPrincipal user, ISender sender, CancellationToken ct)
     {
         var currentUserId = user.GetUserId();
@@ -43,7 +65,7 @@ internal sealed class LabEndpoints : IApiEndpointMapper
 
     private static async Task<IResult> GetMembershipsByMemberId(Guid memberId, ISender sender, CancellationToken ct)
     {
-        var query = new GetLaboratoryMembershipsByMemberId.Query(memberId);
+        var query = new GetUserMemberships.Query(memberId);
         var result = await sender.Send(query, ct);
 
         var memberships = result.Memberships
@@ -53,7 +75,7 @@ internal sealed class LabEndpoints : IApiEndpointMapper
                 {
                     Id = m.LaboratoryId,
                     Name = m.LaboratoryName,
-                    Admin = new Common.UserDto
+                    Admin = new UserDto
                     {
                         Id = m.LaboratoryAdmin.Id,
                         DisplayName = m.LaboratoryAdmin.DisplayName,

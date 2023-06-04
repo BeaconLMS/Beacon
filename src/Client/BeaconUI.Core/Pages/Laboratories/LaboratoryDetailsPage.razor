@@ -2,43 +2,33 @@
 @attribute [Authorize]
 @layout LaboratoryLayout
 
-<MyLaboratories Context="memberships">
-    @if (memberships.FirstOrDefault(m => m.Laboratory.Id == Id) is { } membership)
-    {
-        <h3>@membership.Laboratory.Name</h3>
-    }
-</MyLaboratories>
-
-<p>This is the laboratory details page.</p>
-
-@*<AuthorizedLaboratoryView Context="lab" LaboratoryId="@Id">
-
-    <h3 style="display: flex; align-items: center; gap: 0.5rem;">
-        <AvatarSquare Value="@lab.LaboratoryName[0]" />
-        <span>@lab.LaboratoryName</span>
-    </h3>
-
-    <hr />
-
-    <p>Current lab members:</p>
-    <LabMemberships Context="Memberships" LaboratoryId="lab.LaboratoryId">
-        @if (Memberships.GetAll() is not { } memberships)
+@if (Details is not null)
+{
+    <h3>@Details.Name</h3>
+}
+else
+{
+    <MyLaboratories Context="memberships">
+        @if (memberships.FirstOrDefault(m => m.Laboratory.Id == Id) is { } membership)
         {
-            <p>Loading...</p>
+            <h3>@membership.Laboratory.Name</h3>
         }
-        else
+    </MyLaboratories>
+}
+
+@if (Details is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <p>This is the laboratory details page.</p>
+
+    <dl>
+        @foreach(var memberGroup in Details.Members)
         {
-            <ul>
-                @foreach (var membership in memberships)
-                {
-                    <li>@membership.MemberDisplayName (@membership.MembershipType)</li>
-                }
-            </ul>
+            <dt>@memberGroup.Key</dt>
+            <dd>@memberGroup.Value.Length</dd>
         }
-    </LabMemberships>
-</AuthorizedLaboratoryView>*@
-
-@code {
-
-    [Parameter] public required Guid Id { get; set; }
+    </dl>
 }
