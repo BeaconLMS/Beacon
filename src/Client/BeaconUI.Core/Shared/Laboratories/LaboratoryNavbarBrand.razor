@@ -1,0 +1,67 @@
+﻿@inject NavigationManager NavManager
+@implements IDisposable
+
+@if (LabId is null)
+{
+    <a href="" class="navbar-brand">Beacon LMS</a>
+}
+else
+{
+    <MyLaboratories>
+        @{
+            if (context.FirstOrDefault(m => m.Laboratory.Id == LabId) is not { } membership)
+            {
+                <a href="" class="navbar-brand">Beacon LMS</a>
+            }
+            else
+            {
+                <a href="laboratories/@LabId" class="navbar-brand">@membership.Laboratory.Name</a>
+            }
+        }
+    </MyLaboratories>
+}
+
+@code {
+    private Guid? LabId { get; set; }
+
+    public void Dispose()
+    {
+        NavManager.LocationChanged -= HandleLocationChanged;        
+    }
+
+    protected override void OnInitialized()
+    {
+        NavManager.LocationChanged += HandleLocationChanged;
+        TrySetLabId();
+    }
+
+    private void HandleLocationChanged(object? o ,LocationChangedEventArgs e)
+    {
+        TrySetLabId();
+        StateHasChanged();
+    }
+
+    private void TrySetLabId()
+    {
+        var labPageBase = $"{NavManager.BaseUri}laboratories/";
+
+        if (!NavManager.Uri.StartsWith(labPageBase))
+        {
+            LabId = null;
+            return;
+        }
+
+        var uriWithoutBase = NavManager.Uri.Replace(labPageBase, "");
+
+        if (uriWithoutBase.Contains("/"))
+            uriWithoutBase = uriWithoutBase.Substring(0, uriWithoutBase.IndexOf('/'));
+
+        if (Guid.TryParse(uriWithoutBase, out var id))
+        {
+            LabId = id;
+            return;
+        }
+
+        LabId = null;
+    }
+}
