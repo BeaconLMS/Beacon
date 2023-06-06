@@ -1,19 +1,20 @@
 ﻿@using Beacon.Common.Laboratories.Requests
 
-<div>
-    <BeaconForm Model="Model" OnValidSubmit="Submit">
-
-        <div class="field">
-            <label class="form-label" for="email">Email</label>
-            <InputText @bind-Value="Model.NewMemberEmailAddress" class="form-control" id="email" type="email" placeholder="eg, jsparrow@blackpearl.arg" />
-            <ValidationMessage For="() => Model.NewMemberEmailAddress" />
+<BeaconForm Model="Model" OnValidSubmit="Submit">
+    <Modal>
+        <div class="modal-body">
+            <div class="field">
+                <label class="form-label" for="email">Email</label>
+                <InputText @bind-Value="Model.NewMemberEmailAddress" class="form-control" id="email" type="email" placeholder="eg, jsparrow@blackpearl.arg" />
+                <ValidationMessage For="() => Model.NewMemberEmailAddress" />
+            </div>
         </div>
-
-        <SubmitButton class="btn btn-primary">Send Invite</SubmitButton>
-        <button class="btn btn-secondary" type="button" @onclick="Cancel">Cancel</button>
-
-    </BeaconForm>
-</div>
+        <footer class="modal-footer">
+            <SubmitButton class="btn btn-primary">Send Invite</SubmitButton>
+            <button class="btn btn-secondary" type="button" @onclick="Cancel">Cancel</button>
+        </footer>
+    </Modal>
+</BeaconForm>
 
 @code {
 
