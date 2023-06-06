@@ -1,0 +1,10 @@
+﻿@page "/laboratories/{Id:guid}/members"
+@attribute [Authorize]
+@layout LaboratoryLayout
+
+<p>this is the laboratory membership page</p>
+
+@code {
+
+    [Parameter] public Guid Id { get; set; }
+}

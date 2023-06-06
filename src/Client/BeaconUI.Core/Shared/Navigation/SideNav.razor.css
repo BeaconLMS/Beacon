@@ -2,7 +2,7 @@ nav {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: white;
+    background: #f1f5f9;
     position: relative;
     overflow-x: hidden;
     overflow-y: auto;
@@ -18,7 +18,11 @@ nav {
     }
 
         nav ::deep .nav-link.active {
-            background-color: #eef2ff;
+            background-color: #e2e8f0;
+        }
+
+        nav ::deep .nav-link:not(.active):hover {
+            background-color: #e2e8f0;
         }
 
         nav ::deep .nav-icon {
