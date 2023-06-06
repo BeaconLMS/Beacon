@@ -13,7 +13,7 @@
     </ButtonsContent>
 </LaboratoryPageHeader>
 <LaboratoryPageContent>
-    <div class="table-responsive">
+    <div class="table-responsive h-100">
         <table class="table align-middle">
             <thead>
                 <tr>
@@ -35,11 +35,35 @@
                             </td>
                             <td>@memberGroup.Key</td>
                             <td>
-                                <button class="btn btn-small">
-                                    <span class="icon">
-                                        <i class="fa-solid fa-ellipsis-vertical"></i>
-                                    </span>
-                                </button>
+                                <div class="dropdown">
+                                    <button class="btn btn-small" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="icon">
+                                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                                        </span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            @if (CanManagePermissions && member.Id != CurrentUser?.Id)
+                                            {
+                                                <button class="dropdown-item">
+                                                    <span class="icon">
+                                                        <i class="fa-regular fa-pencil"></i>
+                                                    </span>
+                                                    <span>Manage Permissions</span>
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <a class="dropdown-item disabled">
+                                                    <span class="icon">
+                                                        <i class="fa-regular fa-pencil"></i>
+                                                    </span>
+                                                    <span>Manage Permissions</span>
+                                                </a>
+                                            }
+                                        </li>
+                                    </ul>
+                                </div>
                             </td>
                         </tr>
                     }
@@ -52,8 +76,21 @@
 @code {
 
     [Parameter] public Guid Id { get; set; }
+    [CascadingParameter] public required Task<AuthenticationState> AuthStateTask { get; set; }
     [CascadingParameter] public required LaboratoryDetailDto Details { get; set; }
     [CascadingParameter] private IModalService ModalService { get; set; } = null!;
+
+    private AuthUserDto? CurrentUser { get; set; }
+    private string CurrentUserMembershipType { get; set; } = string.Empty;
+
+    private bool CanManagePermissions => CurrentUserMembershipType is "Admin" or "Manager";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateTask;
+        CurrentUser = authState.User.ToAuthUserDto();
+        CurrentUserMembershipType = Details.Members.First(g => g.Value.Any(m => m.Id == CurrentUser?.Id)).Key;
+    }
 
     private async Task ShowInviteMemberModal()
     {
