@@ -19,6 +19,14 @@ nav {
             background-color: #eef2ff;
         }
 
+        nav ::deep .nav-link .nav-icon {
+            padding-top: 0.625rem;
+            padding-bottom: 0.625rem;
+            width: 2.75rem;
+            display: flex;
+            justify-content: center;
+        }
+
 @media (min-width: 992px) {
     nav {
         width: var(--sidebar-width);
@@ -34,7 +42,7 @@ nav {
             align-items: center;
         }
 
-        nav.narrow ::deep .nav-text {
-            display: none;
-        }
+            nav.narrow ::deep .nav-text {
+                display: none;
+            }
 }
