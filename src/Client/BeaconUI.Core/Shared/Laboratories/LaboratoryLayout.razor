@@ -14,14 +14,13 @@
         {
             <CascadingValue Value="ActiveLaboratory.Value.Value">
                 <LaboratorySideNav />
-                <div class="flex-grow-1">
+                <div class="d-flex flex-column flex-grow-1">
                     <header>
                         <h3 class="px-4 py-3 mb-0 border-bottom">
                             <span>@ActiveLaboratory.Value.Value.Name</span>
                         </h3>
                     </header>
-                    <div class="content h-100" style="background-color: #f8fafc">
-
+                    <div class="content flex-grow-1" style="background-color: #f8fafc">
                         <div class="px-4">@Body</div>
                     </div>
                 </div>
