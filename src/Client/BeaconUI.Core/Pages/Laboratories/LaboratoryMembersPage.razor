@@ -2,9 +2,64 @@
 @attribute [Authorize]
 @layout LaboratoryLayout
 
-<p>this is the laboratory membership page</p>
+<LaboratoryPageHeader>
+    <ButtonsContent>
+        <button type="button" class="btn btn-primary" @onclick="ShowInviteMemberModal">
+            <span class="icon">
+                <i class="fa-solid fa-user-plus"></i>
+            </span>
+            <span>Invite member</span>
+        </button>
+    </ButtonsContent>
+</LaboratoryPageHeader>
+<LaboratoryPageContent>
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Display Name</th>
+                    <th>Email Address</th>
+                    <th>Role</th>
+                    <th style="width: 0%;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var memberGroup in Details.Members)
+                {
+                    foreach (var member in memberGroup.Value)
+                    {
+                        <tr>
+                            <td>@member.DisplayName</td>
+                            <td>
+                                <a href="mailto:@member.EmailAddress">@member.EmailAddress</a>
+                            </td>
+                            <td>@memberGroup.Key</td>
+                            <td>
+                                <button class="btn btn-small">
+                                    <span class="icon">
+                                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                                    </span>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</LaboratoryPageContent>
 
 @code {
 
     [Parameter] public Guid Id { get; set; }
+    [CascadingParameter] public required LaboratoryDetailDto Details { get; set; }
+    [CascadingParameter] private IModalService ModalService { get; set; } = null!;
+
+    private async Task ShowInviteMemberModal()
+    {
+        var modalParameters = new ModalParameters()
+            .Add(nameof(InviteMemberForm.LaboratoryId), Id);
+
+        await ModalService.Show<InviteMemberForm>("Invite Lab Member", modalParameters).Result;
+    }
 }
