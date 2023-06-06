@@ -21,6 +21,10 @@ nav {
             background-color: #e2e8f0;
         }
 
+        nav ::deep .nav-link:not(.active) {
+            color: #1e293b;
+        }
+
         nav ::deep .nav-link:not(.active):hover {
             background-color: #e2e8f0;
         }
