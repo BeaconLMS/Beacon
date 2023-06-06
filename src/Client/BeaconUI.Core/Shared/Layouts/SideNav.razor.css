@@ -8,13 +8,21 @@ nav {
     transition: width 1s ease;
     overflow-x: hidden;
     overflow-y: auto;
+    border-right: 1px solid #dbdbdb;
 }
+
+    nav ::deep .nav-link {
+        text-decoration: none;
+    }
+
+        nav ::deep .nav-link.active {
+            background-color: #eef2ff;
+        }
 
 @media (min-width: 992px) {
     nav {
         width: var(--sidebar-width);
         transition: width .2s ease;
-        border-right: 1px solid #dbdbdb;
     }
 
         nav.collapse:not(.show) {

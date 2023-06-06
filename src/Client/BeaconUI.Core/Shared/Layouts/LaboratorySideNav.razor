@@ -1,10 +1,23 @@
 ﻿<SideNav>
-    <CurrentLaboratory Context="lab">
-        <div class="navbar-item">
-            <NavLink class="nav-link" href="@NavigationHelper.GetLabDetailsHref(lab.Id)" Match="NavLinkMatch.All">
-                <AvatarSquare Value="@lab.Name.ToUpper()[0]" FontSize="1rem" Size="1.5rem" />
-                <span class="nav-text">@lab.Name</span>
-            </NavLink>
-        </div>
-    </CurrentLaboratory>
+    <ul class="navbar-nav flex-column" id="navbarVerticalNav">
+        <CurrentLaboratory Context="lab">
+            <li class="nav-item">
+                <div class="d-flex align-items-center">
+                   <span style="padding-top: 0.625rem; padding-bottom: 0.625rem; width: 2.75rem; display: flex; justify-content: center;">
+                        <AvatarSquare Value="@lab.Name.ToUpper()[0]" FontSize="1rem" Size="1.5rem" />
+                   </span>
+                    <span class="nav-text flex-grow-1 fw-bolder">@lab.Name</span>
+                </div>
+            </li>
+            <li class="nav-item">
+                <NavLink href="@NavigationHelper.GetLabDetailsHref(lab.Id)" class="nav-link px-0 d-flex align-items-center">
+                    <span style="padding-top: 0.625rem; padding-bottom: 0.625rem; width: 2.75rem; display: flex; justify-content: center;">
+                        <i class="fa-regular fa-chart-line"></i>
+                    </span>
+                    <span class="nav-text flex-grow-1">Overview</span>
+                </NavLink>
+            </li>
+        </CurrentLaboratory>
+    </ul>
+    
 </SideNav>

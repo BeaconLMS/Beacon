@@ -1,13 +1,10 @@
 ﻿@using Beacon.Common.Laboratories
 
 <AuthorizeView>
-    <nav class="navbar collapse collapse-horizontal @(ShowNav ? "show" : "hide") @(IsNarrow ? "narrow" : "")">
-        <div class="navbar-nav flex-column flex-grow-1">
-            
-            @ChildContent
-
-            <div class="nav-item mt-auto">
-                <a class="nav-link" @onclick="() => IsNarrow = !IsNarrow">Collapse</a>
+    <nav class="navbar navbar-vertical navbar-expand-lg">
+        <div id="navbarVerticalCollapse" style="width: 100%;">
+            <div class="navbar-vertical-content">
+                @ChildContent
             </div>
         </div>
     </nav>
