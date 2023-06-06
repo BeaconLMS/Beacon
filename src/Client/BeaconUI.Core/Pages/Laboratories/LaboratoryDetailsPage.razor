@@ -2,40 +2,21 @@
 @attribute [Authorize]
 @layout LaboratoryLayout
 
-@if (Details is not null)
-{
-    <h3>@Details.Name</h3>
-}
-else
-{
-    <MyLaboratories Context="memberships">
-        @if (memberships.FirstOrDefault(m => m.Laboratory.Id == Id) is { } membership)
-        {
-            <h3>@membership.Laboratory.Name</h3>
-        }
-    </MyLaboratories>
-}
+<h3>@Details.Name</h3>
 
-@if (Details is null)
-{
-    <p>Loading...</p>
-}
-else
-{
-    <div class="flex">
-        <div class="flex-grow-1">
-            <p>This is the laboratory details page.</p>
-        </div>
-        <div>
-            <button type="button" class="btn btn-primary" @onclick="ShowInviteMemberModal">Invite Member</button>
-        </div>
+<div class="flex">
+    <div class="flex-grow-1">
+        <p>This is the laboratory details page.</p>
     </div>
+    <div>
+        <button type="button" class="btn btn-primary" @onclick="ShowInviteMemberModal">Invite Member</button>
+    </div>
+</div>
 
-    <dl>
-        @foreach(var memberGroup in Details.Members)
-        {
-            <dt>@memberGroup.Key</dt>
-            <dd>@memberGroup.Value.Length</dd>
-        }
-    </dl>
-}
+<dl>
+    @foreach (var memberGroup in Details.Members)
+    {
+        <dt>@memberGroup.Key</dt>
+        <dd>@memberGroup.Value.Length</dd>
+    }
+</dl>

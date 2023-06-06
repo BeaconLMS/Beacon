@@ -1,4 +1,7 @@
 ﻿@inherits LayoutComponentBase
+@inject LabClient LabClient
+@inject NavigationManager NavManager
+@implements IDisposable
 
 <div class="page d-flex flex-column h-100">
     <TopNav>
@@ -7,9 +10,78 @@
         </NavbarBrand>
     </TopNav>
     <main class="d-flex flex-row flex-grow-1">
-        <LaboratorySideNav />
-        <div class="content px-4 flex-grow-1">
-            @Body
-        </div>
+        @if (ActiveLaboratory is { IsError: false })
+        {
+            <CascadingValue Value="ActiveLaboratory.Value.Value">
+                <LaboratorySideNav />
+                <div class="content px-4 flex-grow-1">
+                    @Body
+                </div>
+            </CascadingValue>
+        }
+        else if (ActiveLaboratory is { })
+        {
+            <div class="alert alert-danger" role="alert">
+                <h5>There was a problem loading lab details.</h5>
+
+                @if (!string.IsNullOrWhiteSpace(ActiveLaboratory.Value.FirstError.Description))
+                {
+                    <hr />
+                    <p class="mb-0">@ActiveLaboratory.Value.FirstError.Description</p>
+                }
+                
+            </div>
+        }
     </main>
 </div>
+
+@code {
+
+    private ErrorOr<LaboratoryDetailDto>? ActiveLaboratory { get; set; }
+
+    public void Dispose()
+    {
+        NavManager.LocationChanged -= HandleLocationChanged;
+    }
+
+    protected override void OnInitialized()
+    {
+        NavManager.LocationChanged += HandleLocationChanged;
+        TrySetLabId();
+    }
+
+    private void HandleLocationChanged(object? o, LocationChangedEventArgs e)
+    {
+        TrySetLabId();
+        StateHasChanged();
+    }
+
+    private async void TrySetLabId()
+    {
+        if (TryGetLabIdFromUrl() is not { } labId)
+        {
+            ActiveLaboratory = null;
+        }
+        else
+        {
+            ActiveLaboratory = await LabClient.GetLaboratoryDetailsAsync(labId);
+        }
+
+        StateHasChanged();
+    }
+
+    private Guid? TryGetLabIdFromUrl()
+    {
+        var labPageBase = $"{NavManager.BaseUri}laboratories/";
+
+        if (!NavManager.Uri.StartsWith(labPageBase))
+            return null;
+
+        var uriWithoutBase = NavManager.Uri.Replace(labPageBase, "");
+
+        if (uriWithoutBase.Contains("/"))
+            uriWithoutBase = uriWithoutBase.Substring(0, uriWithoutBase.IndexOf('/'));
+
+        return Guid.TryParse(uriWithoutBase, out var labId) ? labId : null;
+    }
+}
