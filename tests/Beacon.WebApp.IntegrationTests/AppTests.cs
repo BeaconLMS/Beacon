@@ -17,6 +17,7 @@ public class AppTests : TestContext
         // Arrange
         this.AddTestAuthorization().SetNotAuthorized();
         Services.AddBeaconUI();
+        JSInterop.SetupModule("./_content/Blazored.Modal/BlazoredModal.razor.js");
 
         var mockHttp = Services.AddMockHttpClient();
         mockHttp.When(HttpMethod.Get, "/api/auth/me").ThenRespondNotFound();
@@ -32,11 +33,12 @@ public class AppTests : TestContext
     }
 
     [Fact]
-    public async Task WebApp_RedirectsToLogin_WhenLoggedInUserClicksLogout()
+    public void WebApp_RedirectsToLogin_WhenLoggedInUserClicksLogout()
     {
         // Arrange
         Services.AddBeaconUI();
         Services.AddScoped<IAuthorizationService, FakeAuthorizationService>();
+        JSInterop.SetupModule("./_content/Blazored.Modal/BlazoredModal.razor.js");
 
         var mockHttp = Services.AddMockHttpClient();
         mockHttp.When(HttpMethod.Get, "/api/auth/me").ThenRespondOK(AuthHelper.DefaultUser);
@@ -49,7 +51,8 @@ public class AppTests : TestContext
         var cut = RenderComponent<BeaconUI.WebApp.App>();
         navManager.NavigateTo("");
 
-        await cut.WaitForElement("button#logout").ClickAsync(new MouseEventArgs());
+        cut.WaitForElement("[data-test-id=\"profileDropdown\"]").Click();
+        cut.WaitForElement("[data-test-id=\"logoutButton\"]").Click();
 
         // Assert
         cut.WaitForAssertion(() => navManager.Uri.Should().Be($"{navManager.BaseUri}login"));
