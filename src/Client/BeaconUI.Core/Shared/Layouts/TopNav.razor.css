@@ -1,9 +1,0 @@
-header#topnav {
-    position: sticky;
-    background-color: white;
-    top: 0;
-    min-height: var(--topnav-height);
-    z-index: 99;
-    color: var(--gray-500);
-    align-items: center;
-}
