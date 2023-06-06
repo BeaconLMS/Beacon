@@ -1,32 +1,26 @@
 ﻿@inject NavigationManager NavManager
 @implements IDisposable
 
-@if (LabId is null)
-{
-    <a href="" class="navbar-brand">Beacon LMS</a>
-}
-else
+@if (LabId != null)
 {
     <MyLaboratories>
-        @{
-            if (context.FirstOrDefault(m => m.Laboratory.Id == LabId) is not { } membership)
-            {
-                <a href="" class="navbar-brand">Beacon LMS</a>
-            }
-            else
-            {
-                <a href="laboratories/@LabId" class="navbar-brand">@membership.Laboratory.Name</a>
-            }
+        @if (context.FirstOrDefault(m => m.Laboratory.Id == LabId)?.Laboratory is { } lab)
+        {
+            @ChildContent?.Invoke(lab)
         }
     </MyLaboratories>
 }
 
+
 @code {
+
     private Guid? LabId { get; set; }
+
+    [Parameter] public RenderFragment<LaboratoryDto>? ChildContent { get; set; }
 
     public void Dispose()
     {
-        NavManager.LocationChanged -= HandleLocationChanged;        
+        NavManager.LocationChanged -= HandleLocationChanged;
     }
 
     protected override void OnInitialized()
@@ -35,7 +29,7 @@ else
         TrySetLabId();
     }
 
-    private void HandleLocationChanged(object? o ,LocationChangedEventArgs e)
+    private void HandleLocationChanged(object? o, LocationChangedEventArgs e)
     {
         TrySetLabId();
         StateHasChanged();
