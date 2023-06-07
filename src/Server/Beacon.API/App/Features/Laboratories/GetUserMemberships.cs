@@ -1,6 +1,7 @@
 ﻿using Beacon.API.App.Services;
 using Beacon.API.Domain.Entities;
 using Beacon.API.Domain.Exceptions;
+using Beacon.Common.Laboratories.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

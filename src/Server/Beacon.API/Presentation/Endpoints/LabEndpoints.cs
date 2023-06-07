@@ -1,10 +1,8 @@
 ﻿using Beacon.API.App.Features.Laboratories;
 using Beacon.API.App.Helpers;
-using Beacon.API.Domain.Entities;
 using Beacon.Common;
 using Beacon.Common.Laboratories;
 using Beacon.Common.Laboratories.Requests;
-using Beacon.Common.Validation;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -86,7 +84,7 @@ internal sealed class LabEndpoints : IApiEndpointMapper
                         EmailAddress = m.LaboratoryAdmin.EmailAddress
                     }
                 },
-                MembershipType = m.MembershipType.ToString()
+                MembershipType = m.MembershipType
             })
             .ToList();
 
@@ -95,19 +93,10 @@ internal sealed class LabEndpoints : IApiEndpointMapper
 
     private static async Task<IResult> InviteMember(Guid labId, InviteLabMemberRequest request, ISender sender, CancellationToken ct)
     {
-        if (!Enum.TryParse<LaboratoryMembershipType>(request.MembershipType, out var membershipType))
-            return Results.UnprocessableEntity(new BeaconValidationProblem
-            {
-                Errors = new()
-                {
-                    { nameof(InviteLabMemberRequest.MembershipType), new[] { "Membership type not recognized." } }
-                }
-            });
-
         var command = new InviteNewMember.Command
         {
             NewMemberEmailAddress = request.NewMemberEmailAddress,
-            MembershipType = membershipType,
+            MembershipType = request.MembershipType,
             LaboratoryId = labId
         };
 

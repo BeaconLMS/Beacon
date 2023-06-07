@@ -1,4 +1,6 @@
-﻿namespace Beacon.API.Domain.Entities;
+﻿using Beacon.Common.Laboratories.Enums;
+
+namespace Beacon.API.Domain.Entities;
 
 public class Laboratory
 {
@@ -35,10 +37,5 @@ public class Laboratory
         _memberships.Add(membership);
 
         return membership;
-    }
-
-    public bool HasMember(Guid userId)
-    {
-        return Memberships.Any(m => m.MemberId == userId);
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Beacon.API.Domain.Entities;
+﻿namespace Beacon.Common.Laboratories.Enums;
 
 public enum LaboratoryMembershipType
 {

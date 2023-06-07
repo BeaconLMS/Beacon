@@ -1,4 +1,5 @@
 ﻿using Beacon.API.Domain.Exceptions;
+using Beacon.Common.Laboratories.Enums;
 
 namespace Beacon.API.Domain.Entities;
 

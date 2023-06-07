@@ -2,6 +2,7 @@
 using Beacon.API.App.Services.Email;
 using Beacon.API.Domain.Entities;
 using Beacon.API.Domain.Exceptions;
+using Beacon.Common.Laboratories.Enums;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
