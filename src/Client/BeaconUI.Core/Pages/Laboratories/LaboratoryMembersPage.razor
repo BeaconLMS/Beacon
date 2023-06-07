@@ -45,7 +45,7 @@
                                         <li>
                                             @if (CanManagePermissions && member.Id != CurrentUser?.Id)
                                             {
-                                                <button class="dropdown-item">
+                                                <button class="dropdown-item" type="button">
                                                     <span class="icon">
                                                         <i class="fa-regular fa-pencil"></i>
                                                     </span>
@@ -54,12 +54,12 @@
                                             }
                                             else
                                             {
-                                                <a class="dropdown-item disabled">
+                                                <div class="dropdown-item disabled">
                                                     <span class="icon">
                                                         <i class="fa-regular fa-pencil"></i>
                                                     </span>
                                                     <span>Manage Permissions</span>
-                                                </a>
+                                                </div>
                                             }
                                         </li>
                                     </ul>
