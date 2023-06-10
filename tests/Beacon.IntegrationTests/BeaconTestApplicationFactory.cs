@@ -10,7 +10,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Data.Common;
+using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Beacon.IntegrationTests;
 
@@ -55,24 +58,31 @@ public class BeaconTestApplicationFactory : WebApplicationFactory<BeaconWebHost>
         builder.UseEnvironment("Development");
     }
 
-    public BeaconTestApplicationFactory AddMockAuthentication()
+    public HttpClient CreateClientWithMockAuthentication()
     {
-        WithWebHostBuilder(builder =>
+        var client = WithWebHostBuilder(builder =>
         {
             builder.ConfigureTestServices(services =>
             {
                 services.AddAuthentication(defaultScheme: "TestScheme")
                     .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("TestScheme", options => { });
             });
-        });
+        })
+        .CreateClient();
 
-        return this;
-    }
-
-    public HttpClient CreateClientWithMockAuthentication()
-    {
-        var client = CreateClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "TestScheme");
         return client;
+    }
+
+    public static JsonSerializerOptions GetDefaultJsonSerializerOptions()
+    {
+        var options = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+
+        options.Converters.Add(new JsonStringEnumConverter());
+
+        return options;
     }
 }
