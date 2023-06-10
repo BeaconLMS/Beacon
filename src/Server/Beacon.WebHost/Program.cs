@@ -32,9 +32,4 @@ app.MapGet("api/ping", () => Results.Ok("pong"));
 
 app.MapFallbackToFile("index.html");
 
-using (var scope = app.Services.CreateScope())
-{
-    await scope.ServiceProvider.GetRequiredService<BeaconDbContext>().Database.MigrateAsync();
-}
-
 app.Run();
