@@ -1,26 +1,25 @@
-﻿using Beacon.Common.Auth.Requests;
+using Beacon.Common.Auth.Requests;
 using Beacon.WebApp.IntegrationTests.Http;
-using BeaconUI.Core;
 using BeaconUI.Core.Pages.Auth;
 using Bunit.TestDoubles;
 using Microsoft.Extensions.DependencyInjection;
 using RichardSzalay.MockHttp;
 
-namespace Beacon.WebApp.IntegrationTests.Auth.Pages;
+namespace Beacon.WebApp.IntegrationTests.Pages.Auth;
 
-public class RegisterPageTests : BeaconTestContext
+public class LoginPageTests : BeaconTestContext
 {
     [Fact]
-    public async Task WhenRegistrationIsSuccessful_LogInAndNavigateToHome()
+    public async Task GivenValidCredentials_WhenLoginIsClicked_ThenRedirectToHome()
     {
         // Arrange:
         SetupCoreServices();
 
         var mockHttp = Services.AddMockHttpClient();
-        mockHttp.When(HttpMethod.Post, "/api/auth/register").ThenRespondOK(AuthHelper.DefaultUser);
+        mockHttp.When(HttpMethod.Post, "/api/auth/login").ThenRespondOK(AuthHelper.DefaultUser);
 
         var navManager = Services.GetRequiredService<FakeNavigationManager>();
-        var cut = RenderComponent<RegisterPage>();
+        var cut = RenderComponent<LoginPage>();
 
         // Act:
         cut.Find("input[type=email]").Change("test@test.com");
@@ -32,19 +31,19 @@ public class RegisterPageTests : BeaconTestContext
     }
 
     [Fact]
-    public async Task WhenRegistrationIsUnsuccessful_ShowError()
+    public async Task GivenInvalidCredentials_WhenLoginIsClicked_ThenDisplayError()
     {
         // Arrange:
         SetupCoreServices();
 
         var mockHttp = Services.AddMockHttpClient();
-        mockHttp.When(HttpMethod.Post, "/api/auth/register").ThenRespondValidationProblem(new()
+        mockHttp.When(HttpMethod.Post, "/api/auth/login").ThenRespondValidationProblem(new()
         {
-            { nameof(RegisterRequest.EmailAddress), new[] { "Some error message" } }
+            { nameof(LoginRequest.EmailAddress), new[] { "Some error message" } }
         });
 
         var navManager = Services.GetRequiredService<FakeNavigationManager>();
-        var cut = RenderComponent<RegisterPage>();
+        var cut = RenderComponent<LoginPage>();
 
         // Act:
         cut.Find("input[type=email]").Change("test@test.com");
@@ -52,6 +51,7 @@ public class RegisterPageTests : BeaconTestContext
         await cut.Find("form").SubmitAsync();
 
         // Assert:
+        navManager.History.Should().BeEmpty();
         cut.WaitForAssertion(() => cut.Find(".validation-message").TextContent.Should().Be("Some error message"));
     }
 }
