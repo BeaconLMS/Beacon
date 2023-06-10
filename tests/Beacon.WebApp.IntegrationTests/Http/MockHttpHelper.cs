@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Text.Json;
 
-namespace Beacon.WebApp.IntegrationTests;
+namespace Beacon.WebApp.IntegrationTests.Http;
 
 public static class MockHttpHelper
 {
@@ -13,11 +13,14 @@ public static class MockHttpHelper
     {
         var mockHttpHandler = new MockHttpMessageHandler();
 
-        var httpClient = mockHttpHandler.ToHttpClient();
-        httpClient.BaseAddress = new Uri("http://localhost");
-        services.AddSingleton(httpClient);
+        services.AddSingleton(mockHttpHandler.ToHttpClientFactory());
 
         return mockHttpHandler;
+    }
+
+    public static IHttpClientFactory ToHttpClientFactory(this MockHttpMessageHandler mockHttpMessageHandler)
+    {
+        return new MockHttpClientFactory(mockHttpMessageHandler);
     }
 
     public static MockedRequest ThenRespondOK<T>(this MockedRequest request, T content)

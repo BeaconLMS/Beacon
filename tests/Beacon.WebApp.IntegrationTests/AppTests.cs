@@ -1,26 +1,26 @@
 ﻿using Beacon.WebApp.IntegrationTests.Auth;
+using Beacon.WebApp.IntegrationTests.Http;
 using BeaconUI.Core;
 using BeaconUI.Core.Services;
 using Bunit.TestDoubles;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using RichardSzalay.MockHttp;
 
 namespace Beacon.WebApp.IntegrationTests;
 
-public class AppTests : TestContext
+public class AppTests : BeaconTestContext
 {
     [Fact]
     public void WebApp_RedirectsToLogin_WhenUserIsNotAuthorized()
     {
         // Arrange
         this.AddTestAuthorization().SetNotAuthorized();
-        Services.AddBeaconUI();
-        JSInterop.SetupModule("./_content/Blazored.Modal/BlazoredModal.razor.js");
+        SetupCoreServices();
 
-        var mockHttp = Services.AddMockHttpClient();
-        mockHttp.When(HttpMethod.Get, "/api/auth/me").ThenRespondNotFound();
+        Services.AddMockHttpClient()
+            .When(HttpMethod.Get, "/api/auth/me")
+            .ThenRespondNotFound();
 
         var navManager = Services.GetRequiredService<FakeNavigationManager>();
 
@@ -36,9 +36,8 @@ public class AppTests : TestContext
     public void WebApp_RedirectsToLogin_WhenLoggedInUserClicksLogout()
     {
         // Arrange
-        Services.AddBeaconUI();
+        SetupCoreServices();
         Services.AddScoped<IAuthorizationService, FakeAuthorizationService>();
-        JSInterop.SetupModule("./_content/Blazored.Modal/BlazoredModal.razor.js");
 
         var mockHttp = Services.AddMockHttpClient();
         mockHttp.When(HttpMethod.Get, "/api/auth/me").ThenRespondOK(AuthHelper.DefaultUser);
