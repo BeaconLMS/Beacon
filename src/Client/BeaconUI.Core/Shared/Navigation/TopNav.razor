@@ -12,7 +12,7 @@
                     @NavbarItems
                 </ul>
                 <div class="dropdown text-end-lg">
-                    <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-test-id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-test-id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false" @onclick="() => { }">
                         <span>@context.User?.ToAuthUserDto()?.DisplayName</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end text-small">
