@@ -48,14 +48,13 @@ internal sealed class LabEndpoints : IApiEndpointMapper
         {
             Id = lab.Id,
             Name = lab.Name,
-            Members = lab.Members.ToDictionary(
-                kvp => kvp.Key,
-                kvp => kvp.Value.Select(u => new UserDto
-                {
-                    Id = u.Id,
-                    DisplayName = u.DisplayName,
-                    EmailAddress = u.EmailAddress
-                }).ToArray())
+            Members = lab.Members.Select(m => new LaboratoryMemberDto
+            {
+                Id = m.Id,
+                DisplayName = m.DisplayName,
+                EmailAddress = m.EmailAddress,
+                MembershipType = m.MembershipType
+            }).ToList()
         });
     }
 
@@ -75,14 +74,14 @@ internal sealed class LabEndpoints : IApiEndpointMapper
             {
                 Laboratory = new LaboratoryDto
                 {
-                    Id = m.LaboratoryId,
-                    Name = m.LaboratoryName,
-                    Admin = new UserDto
-                    {
-                        Id = m.LaboratoryAdmin.Id,
-                        DisplayName = m.LaboratoryAdmin.DisplayName,
-                        EmailAddress = m.LaboratoryAdmin.EmailAddress
-                    }
+                    Id = m.Laboratory.Id,
+                    Name = m.Laboratory.Name
+                },
+                Member = new UserDto
+                {
+                    Id = m.Member.Id,
+                    DisplayName = m.Member.DisplayName,
+                    EmailAddress = m.Member.EmailAddress
                 },
                 MembershipType = m.MembershipType
             })

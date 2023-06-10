@@ -8,7 +8,7 @@
     private AuthenticationStateProvider AuthStateProvider { get; set; } = null!;
 
     [Inject]
-    private HttpClient HttpClient { get; set; } = null!;
+    private IHttpClientFactory HttpClientFactory { get; set; } = null!;
 
     [Inject]
     private NavigationManager NavManager { get; set; } = null!;
@@ -33,7 +33,9 @@
             return;
         }
 
-        var response = await HttpClient.GetAsync($"api/invitations/{InviteId}/accept?emailId={EmailId}");
+        using var httpClient = HttpClientFactory.CreateBeaconClient();
+
+        var response = await httpClient.GetAsync($"api/invitations/{InviteId}/accept?emailId={EmailId}");
 
         if (response.IsSuccessStatusCode)
             NavManager.NavigateTo(NavigationHelper.GetLabDetailsHref(LabId));

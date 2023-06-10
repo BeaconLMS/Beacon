@@ -1,0 +1,69 @@
+﻿@using Beacon.Common.Laboratories.Requests;
+
+<BeaconForm Model="Model" OnValidSubmit="Submit">
+    <Modal>
+        <div class="modal-body">
+            <MyLaboratories Context="myLabs">
+                @{
+                    var myMembership = myLabs.FirstOrDefault(m => m.Laboratory.Id == MemberToUpdate.Laboratory.Id);
+                }
+                <div class="field">
+                    <label class="form-label" for="email">Email</label>
+                    <InputSelect @bind-Value="Model.MembershipType">
+                        @foreach (var type in Enum.GetValues<LaboratoryMembershipType>())
+                        {
+                            <option value="@type" disabled="@IsDisabled(myMembership, type)">@type</option>    
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="() => Model.MembershipType" />
+                </div>
+            </MyLaboratories>
+        </div>
+        <footer class="modal-footer">
+            <SubmitButton class="btn btn-primary">Send Invite</SubmitButton>
+            <button class="btn btn-secondary" type="button" @onclick="() => Modal.CancelAsync()">Cancel</button>
+        </footer>
+    </Modal>
+</BeaconForm>
+
+@code {
+    [Inject] private LabClient LabClient { get; set; } = null!;
+
+    [CascadingParameter] private BlazoredModalInstance Modal { get; set; } = null!;
+
+    [Parameter] public required LaboratoryMembershipDto MemberToUpdate { get; set; }
+
+    private UpdateMembershipTypeRequest Model { get; set; } = new();
+
+    protected override void OnParametersSet()
+    {
+        Model.MembershipType = MemberToUpdate.MembershipType;
+    }
+
+    private async Task Submit(BeaconForm form)
+    {
+        var result = await LabClient.UpdateMembershipType(MemberToUpdate.Laboratory.Id, MemberToUpdate.Member.Id, Model);
+
+        if (result.IsError)
+        {
+            form.AddErrors(result.Errors);
+            return;
+        }
+
+        await Modal.CloseAsync(ModalResult.Ok());
+    }
+
+    private bool IsDisabled(LaboratoryMembershipDto? myMembership, LaboratoryMembershipType targetType)
+    {
+        if (myMembership is null || myMembership.Member.Id == MemberToUpdate.Member.Id)
+            return true;
+
+        if (myMembership?.MembershipType is LaboratoryMembershipType.Admin)
+            return false;
+
+        if (myMembership?.MembershipType is not LaboratoryMembershipType.Manager)
+            return true;
+
+        return MemberToUpdate.MembershipType is LaboratoryMembershipType.Admin || targetType is LaboratoryMembershipType.Admin;
+    }
+}

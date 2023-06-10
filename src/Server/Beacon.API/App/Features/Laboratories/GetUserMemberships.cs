@@ -15,10 +15,15 @@ public static class GetUserMemberships
 
     public sealed record LaboratoryMembershipDto
     {
-        public required Guid LaboratoryId { get; init; }
-        public required string LaboratoryName { get; init; }
-        public required UserDto LaboratoryAdmin { get; init; }
+        public required LaboratoryDto Laboratory { get; init; }
+        public required UserDto Member { get; init; }
         public required LaboratoryMembershipType MembershipType { get; init; }
+    }
+
+    public sealed record LaboratoryDto
+    {
+        public required Guid Id { get; init; }
+        public required string Name { get; init; }
     }
 
     public sealed record UserDto
@@ -45,17 +50,17 @@ public static class GetUserMemberships
                 .Where(m => m.MemberId == request.MemberId)
                 .Select(m => new LaboratoryMembershipDto
                 {
-                    LaboratoryId = m.LaboratoryId,
-                    LaboratoryName = m.Laboratory.Name,
-                    LaboratoryAdmin = m.Laboratory.Memberships
-                        .Where(lm => lm.MembershipType == LaboratoryMembershipType.Admin)
-                        .Select(lm => new UserDto
-                        {
-                            Id = lm.MemberId,
-                            DisplayName = lm.Member.DisplayName,
-                            EmailAddress = lm.Member.EmailAddress
-                        })
-                        .First(),
+                    Laboratory = new LaboratoryDto
+                    {
+                        Id = m.Laboratory.Id,
+                        Name = m.Laboratory.Name
+                    },
+                    Member = new UserDto
+                    {
+                        Id = m.Member.Id,
+                        DisplayName = m.Member.DisplayName,
+                        EmailAddress = m.Member.EmailAddress
+                    },
                     MembershipType = m.MembershipType
                 })
                 .AsNoTracking()

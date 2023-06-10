@@ -1,6 +1,6 @@
 ﻿using Beacon.API.App.Services;
 using Beacon.API.Domain.Entities;
-using Beacon.API.Domain.Exceptions;
+using Beacon.Common.Laboratories.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,14 +16,15 @@ public static class GetLaboratoryDetails
     {
         public required Guid Id { get; init; }
         public required string Name { get; init; }
-        public required Dictionary<string, UserDto[]> Members { get; init; }
+        public required List<MemberDto> Members { get; init; }
     }
 
-    public sealed record UserDto
+    public sealed record MemberDto
     {
         public required Guid Id { get; init; }
         public required string DisplayName { get; init; }
         public required string EmailAddress { get; init; }
+        public required LaboratoryMembershipType MembershipType { get; init; }
     }
 
     public sealed class QueryHandler : IRequestHandler<Query, Response>
@@ -43,40 +44,25 @@ public static class GetLaboratoryDetails
                 .GetRepository<Laboratory>()
                 .AsQueryable()
                 .Where(l => l.Id == request.LaboratoryId)
-                .Select(l => new { l.Id, l.Name })
-                .FirstOrDefaultAsync(cancellationToken);
-
-            if (lab is null)
-                return new Response(null);
-
-            var labMembers = await _unitOfWork
-                .GetRepository<LaboratoryMembership>()
-                .AsQueryable()
-                .Where(m => m.LaboratoryId == lab.Id)
-                .Select(m => new
+                .Select(l => new LaboratoryDto
                 {
-                    MembershipType = m.MembershipType.ToString(),
-                    Member = new UserDto
+                    Id = l.Id,
+                    Name = l.Name,
+                    Members = l.Memberships.Select(m => new MemberDto
                     {
                         Id = m.Member.Id,
                         DisplayName = m.Member.DisplayName,
-                        EmailAddress = m.Member.EmailAddress
-                    }
+                        EmailAddress = m.Member.EmailAddress,
+                        MembershipType = m.MembershipType
+                    }).ToList()
                 })
-                .AsNoTracking()
-                .ToListAsync(cancellationToken);
+                .AsSplitQuery()
+                .FirstOrDefaultAsync(cancellationToken);
 
-            if (!labMembers.Any(m => m.Member.Id == _currentUser.UserId))
-                throw new LaboratoryMembershipRequiredException(lab.Id);
+            if (lab is not null && !lab.Members.Any(m => m.Id == _currentUser.UserId))
+                return new Response(null);
 
-            return new Response(new LaboratoryDto
-            {
-                Id = lab.Id,
-                Name = lab.Name,
-                Members = labMembers
-                    .GroupBy(m => m.MembershipType)
-                    .ToDictionary(g => g.Key, g => g.Select(m => m.Member).ToArray())
-            });
+            return new Response(lab);
         }
     }
 }

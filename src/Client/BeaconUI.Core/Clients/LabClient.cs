@@ -6,21 +6,17 @@ using System.Net.Http.Json;
 
 namespace BeaconUI.Core.Clients;
 
-public sealed class LabClient
+public sealed class LabClient : ApiClientBase
 {
-    private readonly HttpClient _httpClient;
-
     public Action? OnCurrentUserMembershipsChanged;
 
-    public LabClient(HttpClient httpClient)
+    public LabClient(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
     {
-        _httpClient = httpClient;
     }
 
     public async Task<ErrorOr<LaboratorySummaryDto>> CreateLaboratoryAsync(CreateLaboratoryRequest request, CancellationToken ct = default)
     {
-        var response = await _httpClient.PostAsJsonAsync("api/laboratories", request, ct);
-        var result = await response.ToErrorOrResult<LaboratorySummaryDto>(ct);
+        var result = await PostAsync<LaboratorySummaryDto>("api/laboratories", request, ct);
 
         if (!result.IsError)
             OnCurrentUserMembershipsChanged?.Invoke();
@@ -28,21 +24,23 @@ public sealed class LabClient
         return result;
     }
 
-    public async Task<ErrorOr<List<LaboratoryMembershipDto>>> GetCurrentUserMembershipsAsync(CancellationToken ct = default)
+    public Task<ErrorOr<List<LaboratoryMembershipDto>>> GetCurrentUserMembershipsAsync(CancellationToken ct = default)
     {
-        var response = await _httpClient.GetAsync("api/users/me/memberships", ct);
-        return await response.ToErrorOrResult<List<LaboratoryMembershipDto>>(ct);
+        return GetAsync<List<LaboratoryMembershipDto>>("api/users/me/memberships", ct);
     }
 
     public async Task<ErrorOr<LaboratoryDetailDto>> GetLaboratoryDetailsAsync(Guid id, CancellationToken ct = default)
     {
-        var response = await _httpClient.GetAsync($"api/laboratories/{id}", ct);
-        return await response.ToErrorOrResult<LaboratoryDetailDto>(ct);
+        return await GetAsync<LaboratoryDetailDto>($"api/laboratories/{id}", ct);
     }
 
-    public async Task<ErrorOr<Success>> InviteMemberAsync(Guid labId, InviteLabMemberRequest request, CancellationToken ct = default)
+    public Task<ErrorOr<Success>> InviteMemberAsync(Guid labId, InviteLabMemberRequest request, CancellationToken ct = default)
     {
-        var response = await _httpClient.PostAsJsonAsync($"api/laboratories/{labId}/invitations", request, ct);
-        return await response.ToErrorOrResult(ct);
+        return PostAsync($"api/laboratories/{labId}/invitations", request, ct);
+    }
+
+    public Task<ErrorOr<Success>> UpdateMembershipType(Guid labId, Guid memberId, UpdateMembershipTypeRequest request, CancellationToken ct = default)
+    {
+        return PutAsync($"api/laboratories/{labId}/memberships/{memberId}/membershipType", request, ct);
     }
 }

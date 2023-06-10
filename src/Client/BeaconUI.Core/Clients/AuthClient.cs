@@ -1,33 +1,26 @@
 ﻿using Beacon.Common.Auth;
 using Beacon.Common.Auth.Requests;
-using BeaconUI.Core.Helpers;
 using ErrorOr;
-using System.Net.Http.Json;
 
 namespace BeaconUI.Core.Clients;
 
-public sealed class AuthClient
+public sealed class AuthClient : ApiClientBase
 {
-    private readonly HttpClient _httpClient;
-
     public Action<AuthUserDto>? OnLogin;
     public Action? OnLogout;
 
-    public AuthClient(HttpClient httpClient)
+    public AuthClient(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
     {
-        _httpClient = httpClient;
     }
 
-    public async Task<ErrorOr<AuthUserDto>> GetCurrentUserAsync(CancellationToken ct = default)
+    public Task<ErrorOr<AuthUserDto>> GetCurrentUserAsync(CancellationToken ct = default)
     {
-        var response = await _httpClient.GetAsync("api/auth/me", ct);
-        return await response.ToErrorOrResult<AuthUserDto>(ct);
+        return GetAsync<AuthUserDto>("api/auth/me", ct);
     }
 
     public async Task<ErrorOr<AuthUserDto>> LoginAsync(LoginRequest request, CancellationToken ct = default)
     {
-        var response = await _httpClient.PostAsJsonAsync("api/auth/login", request, ct);
-        var result = await response.ToErrorOrResult<AuthUserDto>(ct);
+        var result = await PostAsync<AuthUserDto>("api/auth/login", request, ct);
 
         if (!result.IsError)
             OnLogin?.Invoke(result.Value);
@@ -37,8 +30,7 @@ public sealed class AuthClient
 
     public async Task<ErrorOr<AuthUserDto>> RegisterAsync(RegisterRequest request, CancellationToken ct = default)
     {
-        var response = await _httpClient.PostAsJsonAsync("api/auth/register", request, ct);
-        var result = await response.ToErrorOrResult<AuthUserDto>(ct);
+        var result = await PostAsync<AuthUserDto>("api/auth/register", request, ct);
 
         if (!result.IsError)
             OnLogin?.Invoke(result.Value);
@@ -48,14 +40,11 @@ public sealed class AuthClient
 
     public async Task<ErrorOr<Success>> LogoutAsync(CancellationToken ct = default)
     {
-        var response = await _httpClient.GetAsync("api/auth/logout", cancellationToken: ct);
+        var result = await GetAsync("api/auth/logout", ct);
 
-        if (response.IsSuccessStatusCode)
-        {
+        if (!result.IsError)
             OnLogout?.Invoke();
-            return Result.Success;
-        }
 
-        return await response.ToErrorOrResult<Success>(ct);
+        return result;
     }
 }
