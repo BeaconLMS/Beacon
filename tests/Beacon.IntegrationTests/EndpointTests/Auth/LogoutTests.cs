@@ -17,8 +17,8 @@ public class LogoutTests : EndpointTestBase
         // log in:
         await _httpClient.PostAsJsonAsync("api/auth/login", new LoginRequest
         {
-            EmailAddress = CurrentUserDefaults.EmailAddress,
-            Password = CurrentUserDefaults.Password
+            EmailAddress = TestData.DefaultUser.EmailAddress,
+            Password = TestData.DefaultPassword
         });
 
         // current user should be available after logging in:

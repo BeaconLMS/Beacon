@@ -79,7 +79,7 @@ public class RegisterTests : EndpointTestBase
 
         var response = await client.PostAsJsonAsync("api/auth/register", new RegisterRequest
         {
-            EmailAddress = CurrentUserDefaults.EmailAddress,
+            EmailAddress = TestData.DefaultUser.EmailAddress,
             DisplayName = "someValidName",
             Password = "someValidPassword"
         });

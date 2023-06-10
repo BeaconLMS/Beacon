@@ -9,9 +9,6 @@ public static class Utilities
         db.Database.EnsureCreated();
 
         if (!db.Users.Any())
-        {
-            db.Users.Add(CurrentUserDefaults.UserEntity);
-            db.SaveChanges();
-        }       
+            db.SeedWithTestData();
     }
 }

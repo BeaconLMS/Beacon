@@ -34,7 +34,7 @@ public class AcceptLaboratoryInviteTests : EndpointTestBase
 
         var labDetails = await client.GetFromJsonAsync<LaboratoryDetailDto>($"api/laboratories/{labId}", BeaconTestApplicationFactory.GetDefaultJsonSerializerOptions());
         var labMembers = labDetails?.Members;
-        labMembers.Should().Contain(m => m.Id == CurrentUserDefaults.Id);
+        labMembers.Should().Contain(m => m.Id == TestData.DefaultUser.Id);
     }
 
     private static (Guid InviteId, Guid EmailId, Guid LabId) SeedDbWithEmailInvitation(BeaconDbContext dbContext)
@@ -78,7 +78,7 @@ public class AcceptLaboratoryInviteTests : EndpointTestBase
         {
             Id = Guid.NewGuid(),
             ExpireAfterDays = 10,
-            NewMemberEmailAddress = CurrentUserDefaults.EmailAddress,
+            NewMemberEmailAddress = TestData.DefaultUser.EmailAddress,
             CreatedById = adminId,
             CreatedOn = DateTime.UtcNow.AddDays(-5),
             LaboratoryId = labId,

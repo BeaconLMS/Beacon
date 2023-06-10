@@ -38,6 +38,6 @@ public class CreateLaboratoryTests : EndpointTestBase
         var labSummary = await response.Content.ReadFromJsonAsync<LaboratorySummaryDto>();
         var labDetails = await _httpClient.GetFromJsonAsync<LaboratoryDetailDto>($"api/laboratories/{labSummary?.Id}", BeaconTestApplicationFactory.GetDefaultJsonSerializerOptions());
 
-        (labDetails?.Members).Should().ContainSingle().Which.Id.Should().Be(CurrentUserDefaults.Id);
+        (labDetails?.Members).Should().ContainSingle().Which.Id.Should().Be(TestData.DefaultUser.Id);
     }
 }

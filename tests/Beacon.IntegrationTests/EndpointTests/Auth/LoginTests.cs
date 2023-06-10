@@ -29,8 +29,8 @@ public class LoginTests : EndpointTestBase
     {
         var response = await _httpClient.PostAsJsonAsync("api/auth/login", new LoginRequest
         {
-            EmailAddress = CurrentUserDefaults.EmailAddress,
-            Password = "not" + CurrentUserDefaults.Password // an invalid password
+            EmailAddress = TestData.DefaultUser.EmailAddress,
+            Password = "not" + TestData.DefaultPassword // an invalid password
         });
 
         response.IsSuccessStatusCode.Should().BeFalse();
@@ -47,8 +47,8 @@ public class LoginTests : EndpointTestBase
         // log in:
         var response = await _httpClient.PostAsJsonAsync("api/auth/login", new LoginRequest
         {
-            EmailAddress = CurrentUserDefaults.EmailAddress,
-            Password = CurrentUserDefaults.Password
+            EmailAddress = TestData.DefaultUser.EmailAddress,
+            Password = TestData.DefaultPassword
         });
 
         // check that login was successful:
