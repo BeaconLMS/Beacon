@@ -20,23 +20,19 @@ public static class GetUserByCredentials
     public sealed class QueryHandler : IRequestHandler<Query, Response>
     {
         private readonly IPasswordHasher _passwordHasher;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IQueryService _queryService;
 
-        public QueryHandler(IPasswordHasher passwordHasher, IUnitOfWork unitOfWork)
+        public QueryHandler(IPasswordHasher passwordHasher, IQueryService queryService)
         {
             _passwordHasher = passwordHasher;
-            _unitOfWork = unitOfWork;
+            _queryService = queryService;
         }
 
         public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
         {
-            var allUsers = await _unitOfWork.QueryFor<User>().ToListAsync(cancellationToken);
-
-            var user = await _unitOfWork.GetRepository<User>()
-                .AsQueryable()
-                .Where(u => u.EmailAddress == request.EmailAddress)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(cancellationToken);
+            var user = await _queryService
+                .QueryFor<User>()
+                .FirstOrDefaultAsync(u => u.EmailAddress == request.EmailAddress, cancellationToken);
 
             if (user is null || !_passwordHasher.Verify(request.PlainTextPassword, user.HashedPassword, user.HashedPasswordSalt))
                 return new Response(null);

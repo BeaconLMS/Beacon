@@ -51,21 +51,21 @@ public static class AcceptEmailInvitation
 
         private async Task AddLabMember(Guid acceptingUserId, Guid labId, LaboratoryMembershipType membershipType, CancellationToken ct)
         {
-            var membershipsRepository = _unitOfWork.GetRepository<LaboratoryMembership>();
-
-            var alreadyAMember = await membershipsRepository
-                .AsQueryable()
+            var alreadyAMember = await _unitOfWork
+                .QueryFor<LaboratoryMembership>()
                 .AnyAsync(m => m.LaboratoryId == labId && m.MemberId == acceptingUserId, ct);
 
             if (alreadyAMember)
                 return;
 
-            membershipsRepository.Add(new LaboratoryMembership
-            {
-                LaboratoryId = labId,
-                MemberId = acceptingUserId,
-                MembershipType = membershipType
-            });
+            _unitOfWork
+                .GetRepository<LaboratoryMembership>()
+                .Add(new LaboratoryMembership
+                {
+                    LaboratoryId = labId,
+                    MemberId = acceptingUserId,
+                    MembershipType = membershipType
+                });
         }
     }
 

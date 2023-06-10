@@ -19,17 +19,17 @@ public static class GetUserById
 
     public sealed class QueryHandler : IRequestHandler<Query, Response>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IQueryService _queryService;
 
-        public QueryHandler(IUnitOfWork unitOfWork)
+        public QueryHandler(IQueryService queryService)
         {
-            _unitOfWork = unitOfWork;
+            _queryService = queryService;
         }
 
         public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
         {
-            var user = await _unitOfWork.GetRepository<User>()
-                .AsQueryable()
+            var user = await _queryService
+                .QueryFor<User>()
                 .Where(u => u.Id == request.UserId)
                 .Select(u => new UserDto
                 {
@@ -37,7 +37,6 @@ public static class GetUserById
                     DisplayName = u.DisplayName,
                     EmailAddress = u.EmailAddress
                 })
-                .AsNoTracking()
                 .FirstOrDefaultAsync(cancellationToken);
 
             return new Response(user);

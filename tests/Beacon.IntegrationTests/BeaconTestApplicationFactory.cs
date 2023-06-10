@@ -1,4 +1,5 @@
 ﻿using Beacon.API.Persistence;
+using Beacon.App.Services;
 using Beacon.WebHost;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
@@ -8,6 +9,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Moq;
 using System.Data.Common;
 using System.Net.Http.Headers;
 using System.Text.Json;
@@ -23,6 +25,9 @@ public class BeaconTestApplicationFactory : WebApplicationFactory<BeaconWebHost>
         {
             services.RemoveAll<DbContextOptions<BeaconDbContext>>();
             services.RemoveAll<DbConnection>();
+
+            services.RemoveAll<IEmailService>();
+            services.AddScoped(_ => Mock.Of<IEmailService>());
 
             // Create open SqliteConnection so EF won't automatically close it.
             services.AddSingleton<DbConnection>(container =>

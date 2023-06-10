@@ -35,18 +35,17 @@ public static class GetUserMemberships
 
     internal sealed class QueryHandler : IRequestHandler<Query, Response>
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IQueryService _queryService;
 
-        public QueryHandler(IUnitOfWork unitOfWork)
+        public QueryHandler(IQueryService queryService)
         {
-            _unitOfWork = unitOfWork;
+            _queryService = queryService;
         }
 
         public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
         {
-            var memberships = await _unitOfWork
-                .GetRepository<LaboratoryMembership>()
-                .AsQueryable()
+            var memberships = await _queryService
+                .QueryFor<LaboratoryMembership>()
                 .Where(m => m.MemberId == request.MemberId)
                 .Select(m => new LaboratoryMembershipDto
                 {
@@ -63,7 +62,6 @@ public static class GetUserMemberships
                     },
                     MembershipType = m.MembershipType
                 })
-                .AsNoTracking()
                 .AsSplitQuery()
                 .ToListAsync(cancellationToken);
 
@@ -77,7 +75,7 @@ public static class GetUserMemberships
 
         private async Task VerifyThatUserExists(Guid userId, CancellationToken ct)
         {
-            var userExists = await _unitOfWork.GetRepository<User>().AsQueryable().AnyAsync(u => u.Id == userId, ct);
+            var userExists = await _queryService.QueryFor<User>().AnyAsync(u => u.Id == userId, ct);
 
             if (!userExists)
                 throw new UserNotFoundException(userId);

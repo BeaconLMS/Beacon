@@ -6,8 +6,6 @@ using Beacon.API.Services;
 using Beacon.App;
 using Beacon.App.Services;
 using Beacon.App.Settings;
-using Beacon.Common.Auth.Requests;
-using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
@@ -64,7 +62,6 @@ public static class BeaconAPI
         // TODO: register via reflection
         AuthEndpoints.Map(endpointRoot);
         LabEndpoints.Map(endpointRoot);
-        UsersEndpoints.Map(endpointRoot);
 
         return app;
     }
