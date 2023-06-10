@@ -1,4 +1,5 @@
 using Beacon.API;
+using Beacon.API.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,4 +31,10 @@ app.MapBeaconEndpoints();
 app.MapGet("api/ping", () => Results.Ok("pong"));
 
 app.MapFallbackToFile("index.html");
+
+using (var scope = app.Services.CreateScope())
+{
+    await scope.ServiceProvider.GetRequiredService<BeaconDbContext>().Database.MigrateAsync();
+}
+
 app.Run();

@@ -18,6 +18,7 @@ internal sealed class LabEndpoints : IApiEndpointMapper
         app.MapPost("laboratories", Create);
         app.MapGet("laboratories/{labId:Guid}", GetDetails);
         app.MapPost("laboratories/{labId:Guid}/invitations", InviteMember);
+        app.MapPut("laboratories/{labId}/memberships/{memberId}/membershipType", UpdateMembershipType);
         app.MapGet("users/me/memberships", GetCurrentUserMemberships);
         app.MapGet("users/{memberId:Guid}/memberships", GetMembershipsByMemberId);
         app.MapGet("invitations/{inviteId:Guid}/accept", AcceptInvitation);
@@ -90,7 +91,7 @@ internal sealed class LabEndpoints : IApiEndpointMapper
         return Results.Ok(memberships);
     }
 
-    private static async Task<IResult> InviteMember(Guid labId, InviteLabMemberRequest request, ISender sender, CancellationToken ct)
+    private static async Task InviteMember(Guid labId, InviteLabMemberRequest request, ISender sender, CancellationToken ct)
     {
         var command = new InviteNewMember.Command
         {
@@ -100,13 +101,17 @@ internal sealed class LabEndpoints : IApiEndpointMapper
         };
 
         await sender.Send(command, ct);
-        return Results.NoContent();
     }
 
-    private static async Task<IResult> AcceptInvitation(Guid inviteId, Guid emailId, ISender sender, CancellationToken ct)
+    private static async Task AcceptInvitation(Guid inviteId, Guid emailId, ISender sender, CancellationToken ct)
     {
         var command = new AcceptEmailInvitation.Command(inviteId, emailId);
         await sender.Send(command, ct);
-        return Results.NoContent();
+    }
+
+    private static async Task UpdateMembershipType(Guid labId, Guid memberId, UpdateMembershipTypeRequest request, ISender sender, CancellationToken ct)
+    {
+        var command = new UpdateUserMembership.Command(labId, memberId, request.MembershipType);        
+        await sender.Send(command, ct);
     }
 }
