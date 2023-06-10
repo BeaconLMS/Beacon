@@ -16,13 +16,11 @@ public class LogoutTests : IClassFixture<BeaconTestApplicationFactory>
     [Fact]
     public async Task Logout_ShouldSucceed()
     {
-        await _factory.SeedDbWithUserData("test@test.com", "test", "pwd12345");
-
         // log in:
         await _httpClient.PostAsJsonAsync("api/auth/login", new LoginRequest
         {
-            EmailAddress = "test@test.com",
-            Password = "pwd12345"
+            EmailAddress = CurrentUserDefaults.EmailAddress,
+            Password = CurrentUserDefaults.Password
         });
 
         // current user should be available after logging in:

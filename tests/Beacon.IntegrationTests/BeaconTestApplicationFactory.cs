@@ -1,13 +1,16 @@
 ﻿using Beacon.API.Persistence;
+using Beacon.API.Services;
 using Beacon.App.Entities;
-using Beacon.App.Services;
 using Beacon.WebHost;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Data.Common;
+using System.Net.Http.Headers;
 
 namespace Beacon.IntegrationTests;
 
@@ -34,27 +37,42 @@ public class BeaconTestApplicationFactory : WebApplicationFactory<BeaconWebHost>
             var sp = services.BuildServiceProvider();
             using var scope = sp.CreateScope();
             using var dbContext = scope.ServiceProvider.GetRequiredService<BeaconDbContext>();
-            dbContext.Database.EnsureCreated();
+            
+            if (dbContext.Database.EnsureCreated())
+            {
+                dbContext.Users.Add(new User
+                {
+                    Id = CurrentUserDefaults.Id,
+                    DisplayName = CurrentUserDefaults.DisplayName,
+                    EmailAddress = CurrentUserDefaults.EmailAddress,
+                    HashedPassword = new PasswordHasher().Hash(CurrentUserDefaults.Password, out var salt),
+                    HashedPasswordSalt = salt
+                });
+                dbContext.SaveChanges();
+            }           
         });
 
         builder.UseEnvironment("Development");
     }
 
-    public async Task SeedDbWithUserData(string email, string displayName, string password)
+    public BeaconTestApplicationFactory AddMockAuthentication()
     {
-        using var scope = Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<BeaconDbContext>();
-        var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
-
-        db.Users.Add(new User
+        WithWebHostBuilder(builder =>
         {
-            Id = Guid.NewGuid(),
-            EmailAddress = email,
-            DisplayName = displayName,
-            HashedPassword = passwordHasher.Hash(password, out var salt),
-            HashedPasswordSalt = salt
+            builder.ConfigureTestServices(services =>
+            {
+                services.AddAuthentication(defaultScheme: "TestScheme")
+                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("TestScheme", options => { });
+            });
         });
 
-        await db.SaveChangesAsync();
+        return this;
+    }
+
+    public HttpClient CreateClientWithMockAuthentication()
+    {
+        var client = CreateClient();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "TestScheme");
+        return client;
     }
 }

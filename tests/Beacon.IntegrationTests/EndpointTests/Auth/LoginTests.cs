@@ -29,13 +29,11 @@ public class LoginTests : IClassFixture<BeaconTestApplicationFactory>
     [Fact]
     public async Task Login_ShouldFail_WhenPasswordIsInvalid()
     {
-        await _factory.SeedDbWithUserData("test@test.com", "test", "pwd12345");
-
         var response = await _httpClient.PostAsJsonAsync("api/auth/login", new LoginRequest
         {
-            EmailAddress = "test@test.com",
-            Password = "pwd123456"
-        });
+            EmailAddress = CurrentUserDefaults.EmailAddress,
+            Password = "not" + CurrentUserDefaults.Password // an invalid password
+        }); ;
 
         response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
@@ -44,8 +42,6 @@ public class LoginTests : IClassFixture<BeaconTestApplicationFactory>
     [Fact]
     public async Task Login_ShouldSucceed_WhenCredentialsAreValid()
     {
-        await _factory.SeedDbWithUserData("test@test.com", "test", "pwd12345");
-
         // getting current user should fail if we're not logged in:
         var currentUser = await _httpClient.GetAsync("api/auth/me");
         currentUser.IsSuccessStatusCode.Should().BeFalse();
@@ -53,8 +49,8 @@ public class LoginTests : IClassFixture<BeaconTestApplicationFactory>
         // log in:
         var response = await _httpClient.PostAsJsonAsync("api/auth/login", new LoginRequest
         {
-            EmailAddress = "test@test.com",
-            Password = "pwd12345"
+            EmailAddress = CurrentUserDefaults.EmailAddress,
+            Password = CurrentUserDefaults.Password
         });
 
         // check that login was successful:

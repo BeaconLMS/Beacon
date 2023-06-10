@@ -5,7 +5,6 @@ using Beacon.API.Persistence;
 using Beacon.API.Services;
 using Beacon.App;
 using Beacon.App.Services;
-using Beacon.App.Services.Security;
 using Beacon.App.Settings;
 using Beacon.Common.Auth.Requests;
 using FluentValidation;

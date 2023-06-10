@@ -33,8 +33,4 @@
     <ProjectReference Include="..\..\src\Server\Beacon.WebHost\Beacon.WebHost.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="EndpointTests\Laboratories\" />
-  </ItemGroup>
-
 </Project>

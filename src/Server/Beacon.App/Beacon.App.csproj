@@ -15,8 +15,4 @@
     <ProjectReference Include="..\..\Shared\Beacon.Common\Beacon.Common.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\Email\" />
-  </ItemGroup>
-
 </Project>

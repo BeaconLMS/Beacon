@@ -1,7 +1,4 @@
-﻿using Beacon.API.Persistence;
-using Beacon.Common.Auth.Requests;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Beacon.Common.Auth.Requests;
 
 namespace Beacon.IntegrationTests.EndpointTests.Auth;
 
@@ -19,11 +16,9 @@ public class RegisterTests : IClassFixture<BeaconTestApplicationFactory>
     [Fact]
     public async Task Register_ShouldFail_IfEmailIsTaken()
     {
-        await _factory.SeedDbWithUserData("test@test.com", "test", "pwd12345");
-
         var response = await _httpClient.PostAsJsonAsync("api/auth/register", new RegisterRequest
         {
-            EmailAddress = "test@test.com",
+            EmailAddress = CurrentUserDefaults.EmailAddress,
             DisplayName = "someValidName",
             Password = "someValidPassword"
         });

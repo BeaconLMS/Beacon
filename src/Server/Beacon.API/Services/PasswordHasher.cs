@@ -1,10 +1,11 @@
-﻿using System.Security.Cryptography;
+﻿using Beacon.App.Services;
+using System.Security.Cryptography;
 using System.Text;
 
-namespace Beacon.App.Services.Security;
+namespace Beacon.API.Services;
 
 // https://code-maze.com/csharp-hashing-salting-passwords-best-practices/
-internal sealed class PasswordHasher : IPasswordHasher
+public sealed class PasswordHasher : IPasswordHasher
 {
     const int _keySize = 64;
     const int _iterations = 350000;
