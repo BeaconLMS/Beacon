@@ -38,7 +38,7 @@ jobs:
       inputs:
         command: test
         projects: '$(solution)'
-        arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:ExcludeByFile="**/Migrations/*.cs"'
+        arguments: '--configuration $(buildConfiguration) --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:ExcludeByFile="**/Migrations/*.cs"'
         publishTestResults: true
 
     - script: |
