@@ -28,7 +28,7 @@ public abstract class EndpointTestBase : IClassFixture<BeaconTestApplicationFact
         return _factory.Services.CreateScope();
     }
 
-    protected HttpClient CreateClient()
+    protected HttpClient CreateClient(Action<BeaconDbContext>? dbAction = null)
     {
         var factory = GetWebApplicationFactory();
 
@@ -36,6 +36,7 @@ public abstract class EndpointTestBase : IClassFixture<BeaconTestApplicationFact
         {
             var db = scope.ServiceProvider.GetRequiredService<BeaconDbContext>();
             db.EnsureSeeded();
+            dbAction?.Invoke(db);
         }
 
         var client = factory.CreateClient();

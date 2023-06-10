@@ -5,13 +5,11 @@ using Beacon.Common.Laboratories.Enums;
 
 namespace Beacon.IntegrationTests.EndpointTests.Laboratories;
 
-public class AcceptLaboratoryInviteTests : IClassFixture<BeaconTestApplicationFactory>
+public class AcceptLaboratoryInviteTests : EndpointTestBase
 {
-    private readonly BeaconTestApplicationFactory _factory;
-
-    public AcceptLaboratoryInviteTests(BeaconTestApplicationFactory factory)
+    public AcceptLaboratoryInviteTests(BeaconTestApplicationFactory factory) : base(factory)
     {
-        _factory = factory;
+        AddTestAuthorization();
     }
 
     [Fact]
@@ -21,7 +19,7 @@ public class AcceptLaboratoryInviteTests : IClassFixture<BeaconTestApplicationFa
         Guid emailId = Guid.Empty;
         Guid labId = Guid.Empty;
 
-        var client = _factory.CreateClientWithMockAuthentication(db =>
+        var client = CreateClient(db =>
         {
             (inviteId, emailId, labId) = SeedDbWithEmailInvitation(db);
         });
