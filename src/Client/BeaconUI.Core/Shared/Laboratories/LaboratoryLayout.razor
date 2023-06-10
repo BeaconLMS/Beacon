@@ -41,17 +41,40 @@
     public void Dispose()
     {
         NavManager.LocationChanged -= HandleLocationChanged;
+        LabClient.OnMembershipChanged -= HandleMembershipChanged;
     }
 
     protected override void OnInitialized()
     {
         NavManager.LocationChanged += HandleLocationChanged;
+        LabClient.OnMembershipChanged += HandleMembershipChanged;
         TrySetLabId();
     }
 
     private void HandleLocationChanged(object? o, LocationChangedEventArgs e)
     {
         TrySetLabId();
+        StateHasChanged();
+    }
+
+    private void HandleMembershipChanged(LaboratoryMembershipDto membership)
+    {
+        if (ActiveLaboratory is not { IsError: false } activeLab || activeLab.Value.Id != membership.Laboratory.Id)
+            return;
+
+        var labDetails = activeLab.Value;
+
+        ActiveLaboratory = ErrorOrFactory.From(labDetails with
+        {
+            Members = labDetails.Members.Select(m => m.Id != membership.Member.Id ? m : new LaboratoryMemberDto
+            {
+                Id = m.Id,
+                DisplayName = m.DisplayName,
+                EmailAddress = m.EmailAddress,
+                MembershipType = membership.MembershipType
+            }).ToList()
+        });
+
         StateHasChanged();
     }
 

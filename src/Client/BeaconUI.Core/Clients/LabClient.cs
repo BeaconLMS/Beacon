@@ -1,14 +1,14 @@
-﻿using Beacon.Common.Laboratories;
+﻿using Beacon.Common;
+using Beacon.Common.Laboratories;
 using Beacon.Common.Laboratories.Requests;
-using BeaconUI.Core.Helpers;
 using ErrorOr;
-using System.Net.Http.Json;
 
 namespace BeaconUI.Core.Clients;
 
 public sealed class LabClient : ApiClientBase
 {
     public Action? OnCurrentUserMembershipsChanged;
+    public Action<LaboratoryMembershipDto>? OnMembershipChanged;
 
     public LabClient(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
     {
@@ -39,8 +39,18 @@ public sealed class LabClient : ApiClientBase
         return PostAsync($"api/laboratories/{labId}/invitations", request, ct);
     }
 
-    public Task<ErrorOr<Success>> UpdateMembershipType(Guid labId, Guid memberId, UpdateMembershipTypeRequest request, CancellationToken ct = default)
+    public async Task<ErrorOr<Success>> UpdateMembershipType(LaboratoryDto lab, UserDto member, UpdateMembershipTypeRequest request, CancellationToken ct = default)
     {
-        return PutAsync($"api/laboratories/{labId}/memberships/{memberId}/membershipType", request, ct);
+        var result = await PutAsync($"api/laboratories/{lab.Id}/memberships/{member.Id}/membershipType", request, ct);
+
+        if (!result.IsError)
+            OnMembershipChanged?.Invoke(new LaboratoryMembershipDto
+            {
+                Laboratory = lab,
+                Member = member,
+                MembershipType = request.MembershipType
+            });
+
+        return result;
     }
 }
