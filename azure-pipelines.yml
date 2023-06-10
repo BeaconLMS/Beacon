@@ -13,8 +13,7 @@ jobs:
     - task: UseDotNet@2
       inputs:
         packageType: 'sdk'
-        version: '7.x'
-        installationPath: $(Agent.ToolsDirectory)/dotnet
+        useGlobalJson: true
 
     - task: DotNetCoreCLI@2
       displayName: 'Restore dependencies'
