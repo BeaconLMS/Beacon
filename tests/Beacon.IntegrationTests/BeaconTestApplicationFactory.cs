@@ -17,12 +17,6 @@ namespace Beacon.IntegrationTests;
 
 public class BeaconTestApplicationFactory : WebApplicationFactory<BeaconWebHost>
 {
-    public BeaconTestApplicationFactory()
-    {
-        using var scope = Services.CreateScope();
-        scope.ServiceProvider.GetRequiredService<BeaconDbContext>().Database.EnsureCreated();
-    }
-
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureServices(services =>
@@ -63,7 +57,7 @@ public class BeaconTestApplicationFactory : WebApplicationFactory<BeaconWebHost>
         using (var scope = factory.Services.CreateScope())
         {
             var db = scope.ServiceProvider.GetRequiredService<BeaconDbContext>();
-            Utilities.EnsureSeeded(db);
+            db.EnsureSeeded();
             dbAction?.Invoke(db);
         }
 

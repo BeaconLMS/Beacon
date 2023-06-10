@@ -1,26 +1,19 @@
-﻿using Beacon.API.Persistence;
-using Beacon.Common.Laboratories;
+﻿using Beacon.Common.Laboratories;
 using Beacon.Common.Laboratories.Requests;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
-using System.Net.Http.Headers;
 
 namespace Beacon.IntegrationTests.EndpointTests.Laboratories;
 
-public class CreateLaboratoryTests : IClassFixture<BeaconTestApplicationFactory>
+public class CreateLaboratoryTests : EndpointTestBase
 {
-    private readonly BeaconTestApplicationFactory _factory;
-
-    public CreateLaboratoryTests(BeaconTestApplicationFactory factory)
+    public CreateLaboratoryTests(BeaconTestApplicationFactory factory) : base(factory)
     {
-        _factory = factory;
     }
 
     [Fact]
     public async Task CreateLab_ShouldFail_WhenRequestIsInvalid()
     {
-        var client = _factory.CreateClientWithMockAuthentication();
+        AddTestAuthorization();
+        var client = CreateClient();
         var response = await client.PostAsJsonAsync("api/laboratories", new CreateLaboratoryRequest
         {
             LaboratoryName = "no" // must be at least 3 characters
@@ -33,9 +26,8 @@ public class CreateLaboratoryTests : IClassFixture<BeaconTestApplicationFactory>
     [Fact]
     public async Task CreateLab_ShouldSucceed_WhenRequestIsValid()
     {
-        var client = _factory.CreateClientWithMockAuthentication();
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "TestScheme");
-
+        AddTestAuthorization();
+        var client = CreateClient();
         var response = await client.PostAsJsonAsync("api/laboratories", new CreateLaboratoryRequest
         {
             LaboratoryName = "Test Lab"

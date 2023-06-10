@@ -30,19 +30,8 @@ internal sealed class CurrentUser : ICurrentUser
     {
         var userId = UserId;
 
-        var userQuery = _unitOfWork.QueryFor<User>();
-
-        try
-        {
-            var user = await userQuery.FirstOrDefaultAsync(u => u.Id == userId, ct);
-
-            return user!;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            throw;
-        }
-       
+        return await _unitOfWork
+            .QueryFor<User>()
+            .FirstAsync(u => u.Id == userId, ct);
     }
 }

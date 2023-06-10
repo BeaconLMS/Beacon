@@ -4,7 +4,7 @@ namespace Beacon.IntegrationTests;
 
 public static class Utilities
 {
-    public static void EnsureSeeded(BeaconDbContext db)
+    public static void EnsureSeeded(this BeaconDbContext db)
     {
         db.Database.EnsureCreated();
 

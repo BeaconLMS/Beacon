@@ -1,26 +1,17 @@
-﻿using Beacon.API.Persistence;
-using Beacon.Common.Auth.Requests;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Beacon.Common.Auth.Requests;
 
 namespace Beacon.IntegrationTests.EndpointTests.Auth;
 
-public class LogoutTests : IClassFixture<BeaconTestApplicationFactory>
+public class LogoutTests : EndpointTestBase
 {
-    private readonly BeaconTestApplicationFactory _factory;
-
-    public LogoutTests(BeaconTestApplicationFactory factory)
+    public LogoutTests(BeaconTestApplicationFactory factory) : base(factory)
     {
-        _factory = factory;
-
-        using var scope = _factory.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<BeaconDbContext>();
-        Utilities.EnsureSeeded(db);
     }
 
     [Fact]
     public async Task Logout_ShouldSucceed()
     {
-        var client = _factory.CreateClient();
+        var client = CreateClient();
 
         // log in:
         await client.PostAsJsonAsync("api/auth/login", new LoginRequest

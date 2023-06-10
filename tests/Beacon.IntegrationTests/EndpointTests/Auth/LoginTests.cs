@@ -1,26 +1,17 @@
-﻿using Beacon.API.Persistence;
-using Beacon.Common.Auth.Requests;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Beacon.Common.Auth.Requests;
 
 namespace Beacon.IntegrationTests.EndpointTests.Auth;
 
-public class LoginTests : IClassFixture<BeaconTestApplicationFactory>
+public class LoginTests : EndpointTestBase
 {
-    private readonly BeaconTestApplicationFactory _factory;
-
-    public LoginTests(BeaconTestApplicationFactory factory)
+    public LoginTests(BeaconTestApplicationFactory factory) : base(factory)
     {
-        _factory = factory;
-
-        using var scope = _factory.Services.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<BeaconDbContext>();
-        Utilities.EnsureSeeded(db);
     }
 
     [Fact]
     public async Task Login_ShouldFail_WhenUserDoesNotExist()
     {
-        var client = _factory.CreateClient();
+        var client = CreateClient();
 
         var response = await client.PostAsJsonAsync("api/auth/login", new LoginRequest
         {
@@ -35,7 +26,7 @@ public class LoginTests : IClassFixture<BeaconTestApplicationFactory>
     [Fact]
     public async Task Login_ShouldFail_WhenPasswordIsInvalid()
     {
-        var client = _factory.CreateClient();
+        var client = CreateClient();
 
         var response = await client.PostAsJsonAsync("api/auth/login", new LoginRequest
         {
@@ -50,7 +41,7 @@ public class LoginTests : IClassFixture<BeaconTestApplicationFactory>
     [Fact]
     public async Task Login_ShouldSucceed_WhenCredentialsAreValid()
     {
-        var client = _factory.CreateClient();
+        var client = CreateClient();
 
         // getting current user should fail if we're not logged in:
         var currentUser = await client.GetAsync("api/auth/me");
