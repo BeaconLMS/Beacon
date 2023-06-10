@@ -8,5 +8,6 @@ public abstract class BeaconTestContext : TestContext
     {
         Services.AddBeaconUI();
         JSInterop.SetupModule("./_content/Blazored.Modal/BlazoredModal.razor.js");
+        JSInterop.SetupModule("https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js");
     }
 }
