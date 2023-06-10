@@ -5,16 +5,18 @@ namespace Beacon.IntegrationTests.EndpointTests.Laboratories;
 
 public class CreateLaboratoryTests : EndpointTestBase
 {
+    private readonly HttpClient _httpClient;
+
     public CreateLaboratoryTests(BeaconTestApplicationFactory factory) : base(factory)
     {
+        AddTestAuthorization();
+        _httpClient = CreateClient();
     }
 
     [Fact]
     public async Task CreateLab_ShouldFail_WhenRequestIsInvalid()
     {
-        AddTestAuthorization();
-        var client = CreateClient();
-        var response = await client.PostAsJsonAsync("api/laboratories", new CreateLaboratoryRequest
+        var response = await _httpClient.PostAsJsonAsync("api/laboratories", new CreateLaboratoryRequest
         {
             LaboratoryName = "no" // must be at least 3 characters
         });
@@ -26,9 +28,7 @@ public class CreateLaboratoryTests : EndpointTestBase
     [Fact]
     public async Task CreateLab_ShouldSucceed_WhenRequestIsValid()
     {
-        AddTestAuthorization();
-        var client = CreateClient();
-        var response = await client.PostAsJsonAsync("api/laboratories", new CreateLaboratoryRequest
+        var response = await _httpClient.PostAsJsonAsync("api/laboratories", new CreateLaboratoryRequest
         {
             LaboratoryName = "Test Lab"
         });
@@ -36,7 +36,7 @@ public class CreateLaboratoryTests : EndpointTestBase
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
         var labSummary = await response.Content.ReadFromJsonAsync<LaboratorySummaryDto>();
-        var labDetails = await client.GetFromJsonAsync<LaboratoryDetailDto>($"api/laboratories/{labSummary?.Id}", BeaconTestApplicationFactory.GetDefaultJsonSerializerOptions());
+        var labDetails = await _httpClient.GetFromJsonAsync<LaboratoryDetailDto>($"api/laboratories/{labSummary?.Id}", BeaconTestApplicationFactory.GetDefaultJsonSerializerOptions());
 
         (labDetails?.Members).Should().ContainSingle().Which.Id.Should().Be(CurrentUserDefaults.Id);
     }
