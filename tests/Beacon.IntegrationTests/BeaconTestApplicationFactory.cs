@@ -1,6 +1,6 @@
-﻿using Beacon.API.App.Services.Security;
-using Beacon.API.Domain.Entities;
-using Beacon.API.Persistence;
+﻿using Beacon.API.Persistence;
+using Beacon.App.Entities;
+using Beacon.App.Services;
 using Beacon.WebHost;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;

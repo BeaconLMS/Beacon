@@ -1,4 +1,4 @@
-﻿using Beacon.API.App.Services;
+﻿using Beacon.App.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Beacon.API.Persistence;
