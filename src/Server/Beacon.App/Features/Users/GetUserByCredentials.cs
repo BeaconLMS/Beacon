@@ -30,6 +30,8 @@ public static class GetUserByCredentials
 
         public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
         {
+            var allUsers = await _unitOfWork.QueryFor<User>().ToListAsync(cancellationToken);
+
             var user = await _unitOfWork.GetRepository<User>()
                 .AsQueryable()
                 .Where(u => u.EmailAddress == request.EmailAddress)

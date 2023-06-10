@@ -28,7 +28,7 @@ internal sealed class LabEndpoints : IApiEndpointMapper
     {
         var command = new CreateLaboratory.Command
         {
-            LaboratoryName = request.LaboratoryName.Trim()
+            LaboratoryName = request.LaboratoryName
         };
 
         await sender.Send(command, ct);
@@ -91,7 +91,7 @@ internal sealed class LabEndpoints : IApiEndpointMapper
         return Results.Ok(memberships);
     }
 
-    private static async Task InviteMember(Guid labId, InviteLabMemberRequest request, ISender sender, CancellationToken ct)
+    private static async Task<IResult> InviteMember(Guid labId, InviteLabMemberRequest request, ISender sender, CancellationToken ct)
     {
         var command = new InviteNewMember.Command
         {
@@ -101,17 +101,20 @@ internal sealed class LabEndpoints : IApiEndpointMapper
         };
 
         await sender.Send(command, ct);
+        return Results.NoContent();
     }
 
-    private static async Task AcceptInvitation(Guid inviteId, Guid emailId, ISender sender, CancellationToken ct)
+    private static async Task<IResult> AcceptInvitation(Guid inviteId, Guid emailId, ISender sender, CancellationToken ct)
     {
         var command = new AcceptEmailInvitation.Command(inviteId, emailId);
         await sender.Send(command, ct);
+        return Results.NoContent();
     }
 
-    private static async Task UpdateMembershipType(Guid labId, Guid memberId, UpdateMembershipTypeRequest request, ISender sender, CancellationToken ct)
+    private static async Task<IResult> UpdateMembershipType(Guid labId, Guid memberId, UpdateMembershipTypeRequest request, ISender sender, CancellationToken ct)
     {
         var command = new UpdateUserMembership.Command(labId, memberId, request.MembershipType);
         await sender.Send(command, ct);
+        return Results.NoContent();
     }
 }

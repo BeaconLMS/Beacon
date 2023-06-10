@@ -1,4 +1,7 @@
-﻿namespace Beacon.IntegrationTests;
+﻿using Beacon.API.Services;
+using Beacon.App.Entities;
+
+namespace Beacon.IntegrationTests;
 
 public static class CurrentUserDefaults
 {
@@ -6,4 +9,13 @@ public static class CurrentUserDefaults
     public static string DisplayName { get; } = "Test";
     public static string EmailAddress { get; } = "test@test.com";
     public static string Password { get; } = "password123";
+
+    public static User UserEntity { get; } = new User
+    {
+        Id = Id,
+        DisplayName = DisplayName,
+        EmailAddress = EmailAddress,
+        HashedPassword = new PasswordHasher().Hash(Password, out var salt),
+        HashedPasswordSalt = salt
+    };
 }

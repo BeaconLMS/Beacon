@@ -41,8 +41,7 @@ public static class GetLaboratoryDetails
         public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
         {
             var lab = await _unitOfWork
-                .GetRepository<Laboratory>()
-                .AsQueryable()
+                .QueryFor<Laboratory>()
                 .Where(l => l.Id == request.LaboratoryId)
                 .Select(l => new LaboratoryDto
                 {

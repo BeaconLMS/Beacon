@@ -1,16 +1,14 @@
 ﻿using Beacon.API.Persistence;
-using Beacon.API.Services;
-using Beacon.App.Entities;
 using Beacon.WebHost;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Data.Common;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -32,44 +30,44 @@ public class BeaconTestApplicationFactory : WebApplicationFactory<BeaconWebHost>
             services.RemoveAll<DbContextOptions<BeaconDbContext>>();
             services.RemoveAll<DbConnection>();
 
-            services.AddDbContext<BeaconDbContext>(options =>
+            // Create open SqliteConnection so EF won't automatically close it.
+            services.AddSingleton<DbConnection>(container =>
             {
-                options.UseInMemoryDatabase("InMemoryBeaconDb");
-            });
+                var connection = new SqliteConnection("DataSource=:memory:");
+                connection.Open();
 
-            var sp = services.BuildServiceProvider();
-            using var scope = sp.CreateScope();
-            using var dbContext = scope.ServiceProvider.GetRequiredService<BeaconDbContext>();
+                return connection;
+            });
             
-            if (dbContext.Database.EnsureCreated())
+            services.AddDbContext<BeaconDbContext>((container, options) =>
             {
-                dbContext.Users.Add(new User
-                {
-                    Id = CurrentUserDefaults.Id,
-                    DisplayName = CurrentUserDefaults.DisplayName,
-                    EmailAddress = CurrentUserDefaults.EmailAddress,
-                    HashedPassword = new PasswordHasher().Hash(CurrentUserDefaults.Password, out var salt),
-                    HashedPasswordSalt = salt
-                });
-                dbContext.SaveChanges();
-            }           
+                var connection = container.GetRequiredService<DbConnection>();
+                options.UseSqlite(connection);
+            });
         });
 
         builder.UseEnvironment("Development");
     }
 
-    public HttpClient CreateClientWithMockAuthentication()
+    public HttpClient CreateClientWithMockAuthentication(Action<BeaconDbContext>? dbAction = null)
     {
-        var client = WithWebHostBuilder(builder =>
+        var factory = WithWebHostBuilder(builder =>
         {
             builder.ConfigureTestServices(services =>
             {
                 services.AddAuthentication(defaultScheme: "TestScheme")
                     .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("TestScheme", options => { });
             });
-        })
-        .CreateClient();
+        });
 
+        using (var scope = factory.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<BeaconDbContext>();
+            Utilities.EnsureSeeded(db);
+            dbAction?.Invoke(db);
+        }
+
+        var client = factory.CreateClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "TestScheme");
         return client;
     }

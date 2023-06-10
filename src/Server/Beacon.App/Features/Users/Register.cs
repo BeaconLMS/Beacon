@@ -37,7 +37,7 @@ public static class Register
 
         private async Task<bool> BeAUniqueEmailAddress(string emailAddress, CancellationToken ct)
         {
-            var emailExists = await _unitOfWork.GetRepository<User>().AsQueryable().AnyAsync(u => u.EmailAddress == emailAddress, ct);
+            var emailExists = await _unitOfWork.QueryFor<User>().AnyAsync(u => u.EmailAddress == emailAddress, ct);
             return !emailExists;
         }
     }
@@ -64,7 +64,7 @@ public static class Register
                 HashedPasswordSalt = salt
             });
 
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);            
         }
     }
 }
