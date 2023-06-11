@@ -9,7 +9,6 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Moq;
 using System.Data.Common;
 using System.Net.Http.Headers;
 
@@ -25,7 +24,7 @@ public class BeaconTestApplicationFactory : WebApplicationFactory<BeaconWebHost>
             services.RemoveAll<DbConnection>();
 
             services.RemoveAll<IEmailService>();
-            services.AddScoped(_ => Mock.Of<IEmailService>());
+            services.AddScoped<IEmailService, FakeEmailService>();
 
             // Create open SqliteConnection so EF won't automatically close it.
             services.AddSingleton<DbConnection>(container =>
