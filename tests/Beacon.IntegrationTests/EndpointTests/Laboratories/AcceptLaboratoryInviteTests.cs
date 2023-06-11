@@ -32,7 +32,7 @@ public class AcceptLaboratoryInviteTests : EndpointTestBase
         response.IsSuccessStatusCode.Should().BeTrue();
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
-        var labDetails = await client.GetFromJsonAsync<LaboratoryDetailDto>($"api/laboratories/{labId}", BeaconTestApplicationFactory.GetDefaultJsonSerializerOptions());
+        var labDetails = await client.GetFromJsonAsync<LaboratoryDetailDto>($"api/laboratories/{labId}", JsonSerializerOptions);
         var labMembers = labDetails?.Members;
         labMembers.Should().Contain(m => m.Id == TestData.DefaultUser.Id);
     }

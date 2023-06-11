@@ -15,10 +15,8 @@ public class GetCurrentUserMembershipsTest : EndpointTestBase
     [Fact]
     public async Task GetCurrentUserMemberships_ShouldReturnExpectedMemberships()
     {
-        var memberships = await _httpClient.GetFromJsonAsync<List<LaboratoryMembershipDto>>(
-            "api/users/me/memberships",
-            BeaconTestApplicationFactory.GetDefaultJsonSerializerOptions()
-        );
+        var memberships = await _httpClient
+            .GetFromJsonAsync<List<LaboratoryMembershipDto>>("api/users/me/memberships", JsonSerializerOptions);
 
         var membership = memberships.Should().ContainSingle().Which;
         membership.Laboratory.Id.Should().Be(TestData.DefaultLaboratory.Id);

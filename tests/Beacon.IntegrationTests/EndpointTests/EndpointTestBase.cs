@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http.Headers;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Beacon.IntegrationTests.EndpointTests;
 
@@ -12,6 +14,21 @@ public abstract class EndpointTestBase : IClassFixture<BeaconTestApplicationFact
 {
     private readonly BeaconTestApplicationFactory _factory;
     private bool _addTestAuthorization;
+
+    protected static JsonSerializerOptions JsonSerializerOptions
+    {
+        get
+        {
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
+            options.Converters.Add(new JsonStringEnumConverter());
+
+            return options;
+        }
+    }
 
     public EndpointTestBase(BeaconTestApplicationFactory factory)
     {

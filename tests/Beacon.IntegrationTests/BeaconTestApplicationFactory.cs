@@ -12,8 +12,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
 using System.Data.Common;
 using System.Net.Http.Headers;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Beacon.IntegrationTests;
 
@@ -69,17 +67,5 @@ public class BeaconTestApplicationFactory : WebApplicationFactory<BeaconWebHost>
         var client = factory.CreateClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "TestScheme");
         return client;
-    }
-
-    public static JsonSerializerOptions GetDefaultJsonSerializerOptions()
-    {
-        var options = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        };
-
-        options.Converters.Add(new JsonStringEnumConverter());
-
-        return options;
     }
 }
