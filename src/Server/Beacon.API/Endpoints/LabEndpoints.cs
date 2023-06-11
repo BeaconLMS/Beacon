@@ -33,7 +33,7 @@ internal sealed class LabEndpoints : IApiEndpointMapper
 
         await sender.Send(command, ct);
 
-        return Results.Created($"laboratories/{command.LaboratoryId}", new LaboratorySummaryDto
+        return Results.Created($"laboratories/{command.LaboratoryId}", new LaboratoryDto
         {
             Id = command.LaboratoryId,
             Name = request.LaboratoryName

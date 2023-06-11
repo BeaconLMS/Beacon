@@ -29,7 +29,7 @@ public sealed class BeaconAuthStateProvider : AuthenticationStateProvider, IDisp
         if (CurrentUser == null)
         {
             var result = await _apiClient.GetCurrentUserAsync();
-            CurrentUser = result.IsError ? AnonymousUser : result.Value.ToClaimsPrincipal();
+            CurrentUser = GetClaimsPrincipal(result.IsError ? null : result.Value);
         }
 
         return new AuthenticationState(CurrentUser);
@@ -42,4 +42,21 @@ public sealed class BeaconAuthStateProvider : AuthenticationStateProvider, IDisp
     }
 
     private static ClaimsPrincipal AnonymousUser { get; } = new ClaimsPrincipal(new ClaimsIdentity());
+
+    private static ClaimsPrincipal GetClaimsPrincipal(AuthUserDto? user)
+    {
+        if (user is null)
+            return AnonymousUser;
+
+        var identity = new ClaimsIdentity("AuthCookie");
+
+        identity.AddClaims(new[]
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, user.DisplayName),
+            new Claim(ClaimTypes.Email, user.EmailAddress)
+        });
+
+        return new ClaimsPrincipal(identity);
+    }
 }
