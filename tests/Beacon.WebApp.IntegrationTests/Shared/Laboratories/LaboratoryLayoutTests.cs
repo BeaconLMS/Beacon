@@ -5,15 +5,17 @@ using Bunit.TestDoubles;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using RichardSzalay.MockHttp;
-using System.Reflection.Emit;
 
 namespace Beacon.WebApp.IntegrationTests.Shared.Laboratories;
 
 public class LaboratoryLayoutTests : BeaconTestContext
 {
+    [Fact]
     public void LabLayout_ShowsError_WhenApiReturnsError()
     {
         SetupCoreServices();
+        Services.AddScoped<IAuthorizationService, FakeAuthorizationService>();
+
         var labId = Guid.NewGuid();
 
         var mockHttp = Services.AddMockHttpClient();
@@ -26,9 +28,12 @@ public class LaboratoryLayoutTests : BeaconTestContext
         cut.WaitForState(() => cut.FindAll("h5").Any(m => m.GetInnerText() == "There was a problem loading lab details."));
     }
 
+    [Fact]
     public void LabLayout_ShowsLabDetails_WhenApiReturnsOk()
     {
         SetupCoreServices();
+        Services.AddScoped<IAuthorizationService, FakeAuthorizationService>();
+
         var lab = new LaboratoryDetailDto
         {
             Id = Guid.NewGuid(),
