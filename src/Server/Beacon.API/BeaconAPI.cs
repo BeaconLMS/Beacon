@@ -31,7 +31,14 @@ public static class BeaconAPI
         services.Configure<ApplicationSettings>(config.GetRequiredSection("ApplicationSettings"));
 
         // Auth
-        services.AddAuthentication().AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
+        services.AddAuthentication().AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+        {
+            options.Events.OnRedirectToLogin = context =>
+            {
+                context.Response.StatusCode = 401;
+                return Task.CompletedTask;
+            };
+        });
         services.AddAuthorization();
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUser, CurrentUser>();

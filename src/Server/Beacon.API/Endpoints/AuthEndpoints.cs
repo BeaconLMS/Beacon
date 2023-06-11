@@ -14,11 +14,13 @@ internal sealed class AuthEndpoints : IApiEndpointMapper
     {
         var authGroup = app.MapGroup("auth");
 
-        authGroup.MapGet("me", async (ISender sender, CancellationToken ct) =>
-        {
-            var currentUser = await sender.Send(new GetCurrentUser.Query(), ct);
-            return Results.Ok(currentUser);
-        });
+        authGroup
+            .MapGet("me", async (ISender sender, CancellationToken ct) =>
+            {
+                var currentUser = await sender.Send(new GetCurrentUser.Query(), ct);
+                return Results.Ok(currentUser);
+            })
+            .RequireAuthorization();
 
         authGroup.MapPost("login", async (LoginRequest request, ISender sender, CancellationToken ct) =>
         {
