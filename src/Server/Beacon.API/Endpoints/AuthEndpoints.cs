@@ -23,9 +23,7 @@ internal sealed class AuthEndpoints : IApiEndpointMapper
         authGroup.MapPost("login", async (LoginRequest request, ISender sender, CancellationToken ct) =>
         {
             await sender.Send(new Login.Command(request.EmailAddress, request.Password), ct);
-
-            var currentUser = await sender.Send(new GetCurrentUser.Query(), ct);
-            return Results.Ok(currentUser);
+            return Results.NoContent();
         });
 
         authGroup.MapPost("register", async (RegisterRequest request, ISender sender, CancellationToken ct) =>
@@ -39,13 +37,13 @@ internal sealed class AuthEndpoints : IApiEndpointMapper
 
             await sender.Send(new Login.Command(request.EmailAddress, request.Password), ct);
 
-            var currentUser = await sender.Send(new GetCurrentUser.Query(), ct);
-            return Results.Ok(currentUser);
+            return Results.NoContent();
         });
 
         authGroup.MapGet("logout", async (ISender sender, CancellationToken ct) =>
         {
             await sender.Send(new Logout.Command(), ct);
+            return Results.NoContent();
         });
     }
 }
