@@ -1,76 +1,51 @@
-﻿using Beacon.API.Helpers;
+﻿using Beacon.App.Features.Auth;
 using Beacon.App.Features.Users;
-using Beacon.Common.Auth;
 using Beacon.Common.Auth.Requests;
-using Beacon.Common.Validation;
 using MediatR;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 namespace Beacon.API.Endpoints;
 
-internal class AuthEndpoints : IApiEndpointMapper
+internal sealed class AuthEndpoints : IApiEndpointMapper
 {
     public static void Map(IEndpointRouteBuilder app)
     {
         var authGroup = app.MapGroup("auth");
 
-        authGroup.MapGet("me", GetCurrentUser);
-        authGroup.MapPost("login", Login);
-        authGroup.MapPost("register", Register);
-        authGroup.MapGet("logout", (context) => context.SignOutAsync());
-    }
-
-    private static async Task<IResult> GetCurrentUser(ISender sender, CancellationToken ct)
-    {
-        var query = new GetCurrentUser.Query();
-        var response = await sender.Send(query, ct);
-        return Results.Ok(response);
-    }
-
-    private static async Task<IResult> Login(LoginRequest request, ISender sender, HttpContext httpContext, CancellationToken ct)
-    {
-        var query = new GetUserByCredentials.Query(request.EmailAddress, request.Password);
-        var response = await sender.Send(query, ct);
-
-        if (response.User is not { } user)
-            return Results.UnprocessableEntity(new BeaconValidationProblem
-            {
-                Errors = new()
-                {
-                    { nameof(LoginRequest.EmailAddress), new[] { "Email address or password is incorrect." } }
-                }
-            });
-
-        await httpContext.SignInAsync(user.Id);
-
-        return Results.Ok(new AuthUserDto
+        authGroup.MapGet("me", async (ISender sender, CancellationToken ct) =>
         {
-            Id = user.Id,
-            DisplayName = user.DisplayName,
-            EmailAddress = user.EmailAddress
+            var currentUser = await sender.Send(new GetCurrentUser.Query(), ct);
+            return Results.Ok(currentUser);
         });
-    }
 
-    private static async Task<IResult> Register(RegisterRequest request, ISender sender, HttpContext httpContext, CancellationToken ct)
-    {
-        var command = new Register.Command
+        authGroup.MapPost("login", async (LoginRequest request, ISender sender, CancellationToken ct) =>
         {
-            DisplayName = request.DisplayName.Trim(),
-            EmailAddress = request.EmailAddress.Trim(),
-            PlainTextPassword = request.Password
-        };
+            await sender.Send(new Login.Command(request.EmailAddress, request.Password), ct);
 
-        await sender.Send(command, ct);
-        await httpContext.SignInAsync(command.UserId);
+            var currentUser = await sender.Send(new GetCurrentUser.Query(), ct);
+            return Results.Ok(currentUser);
+        });
 
-        return Results.Created("auth/me", new AuthUserDto
+        authGroup.MapPost("register", async (RegisterRequest request, ISender sender, CancellationToken ct) =>
         {
-            Id = command.UserId,
-            DisplayName = command.DisplayName,
-            EmailAddress = command.EmailAddress
+            await sender.Send(new Register.Command
+            {
+                DisplayName = request.DisplayName,
+                EmailAddress = request.EmailAddress,
+                PlainTextPassword = request.Password
+            }, ct);
+
+            await sender.Send(new Login.Command(request.EmailAddress, request.Password), ct);
+
+            var currentUser = await sender.Send(new GetCurrentUser.Query(), ct);
+            return Results.Ok(currentUser);
+        });
+
+        authGroup.MapGet("logout", async (ISender sender, CancellationToken ct) =>
+        {
+            await sender.Send(new Logout.Command(), ct);
         });
     }
 }

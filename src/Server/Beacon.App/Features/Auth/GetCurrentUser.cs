@@ -3,7 +3,7 @@ using Beacon.App.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Beacon.App.Features.Users;
+namespace Beacon.App.Features.Auth;
 
 public static class GetCurrentUser
 {
