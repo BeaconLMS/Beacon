@@ -1,5 +1,4 @@
 ﻿using Beacon.App.Features.Auth;
-using Beacon.App.Features.Users;
 using Beacon.Common.Auth.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
