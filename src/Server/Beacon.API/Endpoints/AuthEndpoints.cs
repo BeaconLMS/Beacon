@@ -19,33 +19,38 @@ internal sealed class AuthEndpoints : IApiEndpointMapper
             {
                 var currentUser = await sender.Send(new GetCurrentUser.Query(), ct);
                 return Results.Ok(currentUser);
-            })
-            .RequireAuthorization();
+            });
 
-        authGroup.MapPost("login", async (LoginRequest request, ISender sender, CancellationToken ct) =>
-        {
-            await sender.Send(new Login.Command(request.EmailAddress, request.Password), ct);
-            return Results.NoContent();
-        });
-
-        authGroup.MapPost("register", async (RegisterRequest request, ISender sender, CancellationToken ct) =>
-        {
-            await sender.Send(new Register.Command
+        authGroup
+            .MapPost("login", async (LoginRequest request, ISender sender, CancellationToken ct) =>
             {
-                DisplayName = request.DisplayName,
-                EmailAddress = request.EmailAddress,
-                PlainTextPassword = request.Password
-            }, ct);
+                await sender.Send(new Login.Command(request.EmailAddress, request.Password), ct);
+                return Results.NoContent();
+            })
+            .AllowAnonymous();
 
-            await sender.Send(new Login.Command(request.EmailAddress, request.Password), ct);
+        authGroup
+            .MapPost("register", async (RegisterRequest request, ISender sender, CancellationToken ct) =>
+            {
+                await sender.Send(new Register.Command
+                {
+                    DisplayName = request.DisplayName,
+                    EmailAddress = request.EmailAddress,
+                    PlainTextPassword = request.Password
+                }, ct);
 
-            return Results.NoContent();
-        });
+                await sender.Send(new Login.Command(request.EmailAddress, request.Password), ct);
 
-        authGroup.MapGet("logout", async (ISender sender, CancellationToken ct) =>
-        {
-            await sender.Send(new Logout.Command(), ct);
-            return Results.NoContent();
-        });
+                return Results.NoContent();
+            })
+            .AllowAnonymous();
+
+        authGroup
+            .MapGet("logout", async (ISender sender, CancellationToken ct) =>
+            {
+                await sender.Send(new Logout.Command(), ct);
+                return Results.NoContent();
+            })
+            .AllowAnonymous();
     }
 }

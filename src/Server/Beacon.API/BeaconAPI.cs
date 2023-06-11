@@ -65,7 +65,7 @@ public static class BeaconAPI
             ExceptionHandler = ExceptionHandler.HandleException
         });
 
-        var endpointRoot = app.MapGroup("api");
+        var endpointRoot = app.MapGroup("api").RequireAuthorization();
 
         // TODO: register via reflection
         AuthEndpoints.Map(endpointRoot);
