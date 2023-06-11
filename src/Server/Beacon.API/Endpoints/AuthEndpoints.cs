@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using System.Security.Claims;
 
 namespace Beacon.API.Endpoints;
 
@@ -24,23 +23,11 @@ internal class AuthEndpoints : IApiEndpointMapper
         authGroup.MapGet("logout", (context) => context.SignOutAsync());
     }
 
-    private static async Task<IResult> GetCurrentUser(ClaimsPrincipal currentUser, ISender sender, CancellationToken ct)
+    private static async Task<IResult> GetCurrentUser(ISender sender, CancellationToken ct)
     {
-        if (currentUser.Identity?.IsAuthenticated is not true)
-            return Results.Unauthorized();
-
-        var query = new GetUserById.Query(currentUser.GetUserId());
+        var query = new GetCurrentUser.Query();
         var response = await sender.Send(query, ct);
-
-        if (response.User is not { } user)
-            return Results.NotFound();
-
-        return Results.Ok(new AuthUserDto
-        {
-            Id = user.Id,
-            DisplayName = user.DisplayName,
-            EmailAddress = user.EmailAddress
-        });
+        return Results.Ok(response);
     }
 
     private static async Task<IResult> Login(LoginRequest request, ISender sender, HttpContext httpContext, CancellationToken ct)
