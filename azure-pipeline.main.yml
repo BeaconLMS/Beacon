@@ -1,7 +1,5 @@
 trigger:
-  branches:
-    include:
-      - main
+  - main
 
 variables:
   solution: '**/*.sln'
@@ -37,7 +35,19 @@ steps:
     inputs:
       command: test
       projects: '**/tests/**/*.csproj'
-      arguments: '--configuration $(buildConfiguration)'
+      arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:ExcludeByFile="**/Migrations/*.cs"'
+      publishTestResults: true
+
+  - script: |
+      dotnet tool install -g dotnet-reportgenerator-globaltool
+      reportgenerator -reports:$(Agent.WorkFolder)\**\coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)\CodeCoverage -reporttypes:Cobertura
+    displayName: 'Create code coverage report'
+
+  - task: PublishCodeCoverageResults@1
+    displayName: 'Publish code coverage'
+    inputs:
+      codeCoverageTool: 'Cobertura'
+      summaryFileLocation: '$(Build.SourcesDirectory)/CodeCoverage/Cobertura.xml'
 
   - task: DotNetCoreCLI@2
     displayName: 'Install EF Core Tools'
