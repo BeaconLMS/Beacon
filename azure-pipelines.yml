@@ -42,7 +42,7 @@ steps:
 
   - script: |
       dotnet tool install -g dotnet-reportgenerator-globaltool
-      reportgenerator -reports:$(Agent.WorkFolder)\**\coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)\CodeCoverage -reporttypes:Cobertura
+      reportgenerator -reports:$(Agent.WorkFolder)\**\coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)\CodeCoverage -reporttypes:Cobertura;MarkdownSummary
     displayName: 'Create code coverage report'
 
   - task: PublishCodeCoverageResults@1
