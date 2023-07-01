@@ -1,9 +1,13 @@
 ﻿using Beacon.API.IntegrationTests.Collections;
 using Beacon.API.Persistence;
 using Beacon.Common.Models;
+using System.ComponentModel;
 
 namespace Beacon.API.IntegrationTests.Endpoints.Auth;
 
+[Category("UserStory")]
+[DisplayName("Get current user tests")]
+[Trait("UserStory", "1")]
 public sealed class GetCurrentUserTests : CoreTestBase
 {
     public GetCurrentUserTests(TestFixture fixture) : base(fixture)
