@@ -1,0 +1,14 @@
+@APIGateway_HostAddress = http://localhost:5282
+
+POST {{APIGateway_HostAddress}}/auth/login/
+Content-Type: application/json
+
+{
+  "email":"erinmclaughlin219@gmail.com",
+  "password":"Password123!"
+}
+###
+
+GET {{APIGateway_HostAddress}}/auth/manage/info
+Authorization: Bearer CfDJ8AAtiaAGLHFLlxljUsq2NVg_PEepxFDl2zzhlxga5c0BqGCQ0O8GpnZPOfxik1C2w-l9Ioy_KE79EJmV8a8vjoWG3ik17w3plFC8xPW-OKJgtuD6ililZ7BLYUkLDpVDdWWdMdOFN5EYMORNT7eC5ym73unU2Xc_j2JxXFirBudi0O-QT9vRn3x_3R7ABi3FvkIyDl3CMJ753AkUx6cOfwy6UGqHYU3vMgSZQdpbcxNEkBiCVp74SpAuCWUDorR1bYExQGgRaSf-p-DaR_2iJ9ChckR5Ff1XIT3AhAyjRMKVJXI3gBfuo9_q-cbqqU4N7k3s-UGGB91ncsW3RXbC5UGSgpiF-rr86Y1eRg1JkY3Da82p7IfuCxs3L4GW4eSdGNUlgAC49ZVnPFvlfphfEtm-EQ_W7aY_LRCB0qrBUcJs-TYHHyYKCwsM-gB4qKX8aTfBeW44p2eTnSZLMqGCE1d020pcb0guHvmq7p7GgjDzQMKQlxnVXRyJXYa52lK-Edmjw9Gq-emwvM5gPVuCw-BNc2X5ssJ8aQBqyq26yi8gmjIsvBU8akcWrxYPAVV7VkQikPm57rlSaTnA1gfTBVo168vNGa5P90_dptvdHIWWDefV8uyfC2dFRWpGKYJK4N9m45tftQ-23i-IRt0Ggc330CQkbjXLpgYJjvgCp54xpfxerhvWAcYwoEPy9yFHWhQnpRdAoBDJX2JIIimiValQTs98EHw6TfmCVMyDx88g
+###

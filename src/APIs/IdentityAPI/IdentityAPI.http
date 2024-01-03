@@ -1,0 +1,6 @@
+@IdentityAPI_HostAddress = https://localhost:7053/api
+
+GET {{IdentityAPI_HostAddress}}/ping/
+Accept: application/json
+
+###
